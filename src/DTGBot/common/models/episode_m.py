@@ -4,13 +4,13 @@ from sqlmodel import Field, Relationship
 import sqlmodel as sqm
 import sqlalchemy as sqa
 import pydantic as _p
-
 from scrapaw import EpisodeBase, ScrapawConfig
-from .links import GuruEpisodeLink, RedditThreadEpisodeLink
+
+from DTGBot.common.models.links import GuruEpisodeLink, RedditThreadEpisodeLink
 
 if TYPE_CHECKING:
     from DTGBot.common.models.guru_m import Guru
-    from .reddit_m import RedditThread
+    from DTGBot.common.models.reddit_m import RedditThread
 
 
 class Episode(EpisodeBase, sqm.SQLModel, table=True):

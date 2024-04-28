@@ -12,7 +12,7 @@ from sqlmodel import select
 from DTGBot.common.database import get_session
 from DTGBot.common.models.episode_m import Episode
 from DTGBot.common.models.guru_m import Guru
-from suppawt.pawlogger.config_loguru import logger
+from pawlogger.config_loguru import logger
 
 SearchKind = _t.Literal['title', 'guru', 'notes']
 # app = FastAPI()

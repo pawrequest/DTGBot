@@ -1,7 +1,9 @@
 import datetime as dt
 
 import scrapaw
-from . import guru_m, reddit_m
+
+from DTGBot.common.models.guru_m import GuruBase
+from DTGBot.common.models.reddit_m import RedditThreadBase
 
 
 class EpisodeOut(scrapaw.EpisodeBase):
@@ -13,23 +15,23 @@ class EpisodeOut(scrapaw.EpisodeBase):
     links: dict[str, str]
     number: str
 
-    gurus: list[guru_m.GuruBase]
-    reddit_threads: list[reddit_m.RedditThreadBase]
+    gurus: list[GuruBase]
+    reddit_threads: list[RedditThreadBase]
 
     @property
     def slug(self):
         return f'/eps/{self.id}'
 
 
-class GuruOut(guru_m.GuruBase):
+class GuruOut(GuruBase):
     id: int
     episodes: list[scrapaw.EpisodeBase]
-    reddit_threads: list[reddit_m.RedditThreadBase]
+    reddit_threads: list[RedditThreadBase]
 
 
-class RedditThreadOut(reddit_m.RedditThreadBase):
+class RedditThreadOut(RedditThreadBase):
     id: int
-    gurus: list[guru_m.GuruBase]
+    gurus: list[GuruBase]
     episodes: list[scrapaw.EpisodeBase]
 
 # class EpisodeMeta(BaseModel):

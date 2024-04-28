@@ -2,9 +2,9 @@ import asyncio
 
 from loguru import logger
 
-from .models.episode_m import Episode
-from .models.guru_m import Guru
-from .models.reddit_m import RedditThread
+from DTGBot.common.models.episode_m import Episode
+from DTGBot.common.models.guru_m import Guru
+from DTGBot.common.models.reddit_m import RedditThread
 
 DB_MODEL_TYPE = Guru | Episode | RedditThread
 

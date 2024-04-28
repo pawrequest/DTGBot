@@ -8,11 +8,11 @@ from sqlmodel import Field, Relationship, SQLModel
 import sqlalchemy as sa
 import pydantic as _p
 
-from .links import GuruEpisodeLink, RedditThreadGuruLink
+from DTGBot.common.models.links import GuruEpisodeLink, RedditThreadGuruLink
 
 if TYPE_CHECKING:
-    from .episode_m import Episode
-    from .reddit_m import RedditThread
+    from DTGBot.common.models.episode_m import Episode
+    from DTGBot.common.models.reddit_m import RedditThread
 
 
 class GuruBase(SQLModel):

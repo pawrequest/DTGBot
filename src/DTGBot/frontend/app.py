@@ -8,9 +8,9 @@ from starlette.responses import HTMLResponse, RedirectResponse
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
-from .routes.episode_route import router as ep_router
-from .routes.guru_route import router as guru_router
-from ..common.database import create_db
+from DTGBot.frontend.routes.episode_route import router as ep_router
+from DTGBot.frontend.routes.guru_route import router as guru_router
+from DTGBot.common.database import create_db
 
 TEMPLATES_ = '/templates/'
 THIS_DIR = Path(__file__).resolve().parent
