@@ -1,0 +1,69 @@
+[project]
+name = "DTGBot"
+version = "0.1.0"
+description = "Decoding The Guru Podcast Bot"
+authors = [
+    { name = "pawrequest", email = "paw@pawrequest.com" }
+]
+readme = "README.md"
+requires-python = ">= 3.12"
+dependencies = [
+    "pawlogger @ git+https://github.com/pawrequest/pawlogger",
+    "scrapaw @ git+https://github.com/pawrequest/scrapaw",
+
+    'asyncpraw',
+    'sqlmodel',
+    "uvicorn[standard]",
+    'fastapi',
+    'pydantic',
+    "aiohttp",
+    "loguru",
+    "httpx",
+    "pydantic-settings",
+    'python-multipart',
+]
+[project.optional-dependencies]
+git = [
+    "scrapaw @ git+https://github.com/pawrequest/scrapaw",
+]
+dev = [
+    "pytest-asyncio",
+    'autodoc_pydantic',
+    "pytest",
+    "sphinx",
+    "sphinx-autodoc-typehints",
+    "sphinx-rtd-theme",
+    "sphinx-readme",
+    "sphinx_rtd_dark_mode",
+    "myst-parser",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = false
+dev-dependencies = [
+    "pytest-asyncio",
+    'autodoc_pydantic',
+    "pytest",
+    "sphinx",
+    "sphinx-autodoc-typehints",
+    "sphinx-rtd-theme",
+    "sphinx-readme",
+    "sphinx_rtd_dark_mode",
+    "myst-parser",
+
+]
+
+[tool.ruff]
+line-length = 120
+extend-select = ["Q", "RUF100", "UP"]
+flake8-quotes = { inline-quotes = "single", multiline-quotes = "double" }
+format.quote-style = "single"
+
+
+[tool.hatch.metadata]
+allow-direct-references = true
+

@@ -1,0 +1,12 @@
+git+https://github.com/pawrequest/pawlogger
+git+https://github.com/pawrequest/scrapaw
+sqlmodel
+sqlalchemy
+pydantic
+asyncpraw
+loguru
+httpx
+fastapi
+aiohttp
+pydantic-settings
+python-multipart

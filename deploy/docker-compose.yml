@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  app:
+    restart: unless-stopped
+    build: .
+    volumes:
+      - ./src:/code/src
+      - ./data:/code/data
+    env_file:
+      - .env
+    networks:
+      - app-network
+
+  nginx:
+    restart: unless-stopped
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./server/nginx/:/etc/nginx/conf.d:ro
+    depends_on:
+      - app
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

@@ -1,0 +1,9 @@
+<div id='guru-detail'>
+    <h1 id='guru-{{ guru.id }}'>{{ guru.name }}</h1>
+
+    <h3>Featured in Episodes</h3>
+    {% for episode in guru.episodes %}
+        <p>{{ episode.title }}</p>
+        <a href={{ episode.slug }}> Details</a>
+    {% endfor %}
+</div>

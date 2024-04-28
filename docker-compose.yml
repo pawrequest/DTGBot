@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  dtgbot:
+    image: dtgbot
+    volumes:
+      - C:\Users\RYZEN\prdev\envs\reddit.env:/app/reddit.env
+      - C:\Users\RYZEN\prdev\envs\guru_server.env:/app/guru.env
+      - C:\Users\RYZEN\prdev\workbench\DTGBot\data\gurunames.txt:/app/gurunames.txt
+    environment:
+      - REDDIT_ENV=/app/reddit.env
+      - GURU_ENV=/app/guru.env
+    command: python DTGBot/updater/update_db.py
+
+  fastapi:
+    image: dtgbot
+    volumes:
+      - C:\Users\RYZEN\prdev\envs\reddit.env:/app/reddit.env
+      - C:\Users\RYZEN\prdev\envs\guru_server.env:/app/guru.env
+      - C:\Users\RYZEN\prdev\workbench\DTGBot\data\gurunames.txt:/app/gurunames.txt
+    environment:
+      - REDDIT_ENV=/app/reddit.env
+      - GURU_ENV=/app/guru.env
+      -
+    command: python DTGBot/frontend/app.py

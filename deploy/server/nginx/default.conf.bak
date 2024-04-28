@@ -1,0 +1,19 @@
+server {
+    listen 80;
+
+    location = /eps/ {
+        proxy_pass http://app:8000;
+        include /etc/nginx/conf.d/proxy_params.conf;
+
+    }
+
+    location ~ ^/eps/\d+$ {
+        proxy_pass http://app:8000;
+        include /etc/nginx/conf.d/proxy_params.conf;
+
+    }
+
+    location / {
+        deny all;
+    }
+}
