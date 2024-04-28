@@ -20,5 +20,4 @@ services:
     environment:
       - REDDIT_ENV=/app/reddit.env
       - GURU_ENV=/app/guru.env
-      -
-    command: python DTGBot/frontend/app.py
+    command: uvicorn DTGBot.frontend.app:app --host 0.0.0.0 --port 8000 --reload
