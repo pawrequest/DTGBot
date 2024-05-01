@@ -10,3 +10,4 @@ fastapi
 aiohttp
 pydantic-settings
 python-multipart
+jinja2
