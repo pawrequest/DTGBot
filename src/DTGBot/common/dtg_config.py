@@ -8,12 +8,11 @@ import typing as _t
 from pawlogger import get_loguru
 from pydantic import HttpUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
 from scrapaw.scrapaw_config import ScrapawConfig
 
 
 @functools.lru_cache
-def guru_env_from_env():
+def dtg_env_from_env():
     guru_env = os.getenv('GURU_ENV')
     print(guru_env)
     if not guru_env or not Path(guru_env).exists():
@@ -74,8 +73,7 @@ class DTGBotConfig(BaseSettings):
             _env_ignore_empty=True,
         )
 
-    model_config = SettingsConfigDict(env_ignore_empty=True, env_file=guru_env_from_env())
-    # model_config = SettingsConfigDict(env_ignore_empty=True, env_file=guru_env_from_env())
+    model_config = SettingsConfigDict(env_ignore_empty=True, env_file=dtg_env_from_env())
 
 
 @functools.lru_cache
