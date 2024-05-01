@@ -20,7 +20,7 @@ def get_db_url():
 def engine_():
     db_url = get_db_url()
     connect_args = {'check_same_thread': False}
-    return create_engine(db_url, echo=False, connect_args=connect_args)
+    return create_engine(db_url, echo=dtg_config.dtgb_sett().debug, connect_args=connect_args)
 
 
 def get_session(engine=None) -> Session:
