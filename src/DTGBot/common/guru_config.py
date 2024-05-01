@@ -74,7 +74,7 @@ class DTGBotConfig(BaseSettings):
             _env_ignore_empty=True,
         )
 
-    model_config = SettingsConfigDict(env_ignore_empty=True)
+    model_config = SettingsConfigDict(env_ignore_empty=True, env_file=guru_env_from_env())
     # model_config = SettingsConfigDict(env_ignore_empty=True, env_file=guru_env_from_env())
 
 
