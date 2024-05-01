@@ -4,7 +4,9 @@ from loguru import logger
 from sqlalchemy import create_engine, text
 from sqlmodel import SQLModel, Session
 
-from DTGBot.common.guru_config import dtgb_sett
+from DTGBot.common.dtg_config import dtgb_sett
+
+from DTGBot.common import dtg_config
 
 
 @functools.lru_cache

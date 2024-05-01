@@ -12,7 +12,7 @@ from sqlmodel import select
 
 from DTGBot.common.database import engine_
 from DTGBot.common.dtg_types import DB_MODEL_TYPE, quiet_cancel, title_or_name_val
-from DTGBot.common.guru_config import DTGBotConfig, RedditConfig, dtgb_sett, reddit_sett
+from DTGBot.common.dtg_config import DTGBotConfig, RedditConfig, dtgb_sett, reddit_sett
 from DTGBot.common.models import episode_m, guru_m, reddit_m
 from DTGBot.common.models.episode_m import Episode
 from DTGBot.common.models.guru_m import Guru

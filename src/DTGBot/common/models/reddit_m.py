@@ -8,7 +8,7 @@ import pydantic as _p
 import sqlalchemy as sqa
 import sqlmodel as sqm
 
-from DTGBot.common.guru_config import RedditConfig
+from DTGBot.common.dtg_config import RedditConfig
 from DTGBot.common.models.links import RedditThreadEpisodeLink, RedditThreadGuruLink
 
 if TYPE_CHECKING:

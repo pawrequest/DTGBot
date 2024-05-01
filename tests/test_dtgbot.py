@@ -1,5 +1,5 @@
 import pytest
-from DTGBot.models.guru_config import DTGBotConfig
+from DTGBot.common.dtg_config import DTGBotConfig
 
 
 def test_1():

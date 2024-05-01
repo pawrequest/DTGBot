@@ -8,7 +8,7 @@ from pawlogger.config_loguru import get_loguru
 from sqlalchemy import StaticPool, create_engine
 from sqlmodel import SQLModel, Session
 
-from DTGBot.guru_config import RedditConfig
+from DTGBot.common.dtg_config import RedditConfig
 from scrapaw.scrapaw_config import ScrapawConfig
 
 TEST_DB = 'sqlite://'
