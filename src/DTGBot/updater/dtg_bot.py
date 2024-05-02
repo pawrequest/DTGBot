@@ -9,6 +9,7 @@ from asyncpraw.reddit import Subreddit
 from loguru import logger
 from pydantic import alias_generators
 from sqlmodel import select
+from scrapaw import dtg
 
 from DTGBot.common.database import engine_
 from DTGBot.common.dtg_types import DB_MODEL_TYPE, quiet_cancel, title_or_name_val
@@ -17,7 +18,6 @@ from DTGBot.common.models import episode_m, guru_m, reddit_m
 from DTGBot.common.models.episode_m import Episode
 from DTGBot.common.models.guru_m import Guru
 from DTGBot.common.models.reddit_m import RedditThread
-from scrapaw import dtg
 
 type EndOfStream = object
 
@@ -64,7 +64,7 @@ class DTG:
         await self.http_session.close()
 
     async def run(self):
-        """Run the bot
+        """Find new Episodes and Reddit Threads, assign their related items and add them to the database
 
         spawn queue managers and processors for episodes and reddit threads
         """
@@ -203,10 +203,8 @@ class DTG:
 
     async def assign_rel(self, item, relation_class):
         """Add related items to the item"""
-        related_items = db_obj_matches(self.sqm_session, item, relation_class) if not isinstance(
-            item,
-            relation_class
-        ) else []
+        related_items = db_obj_matches(self.sqm_session, item, relation_class) \
+            if not isinstance(item, relation_class) else []
         alias = alias_generators.to_snake(relation_class.__name__) + 's'
         getattr(item, alias).extend(related_items)
 
@@ -229,36 +227,12 @@ def db_obj_matches[T:DB_MODEL_TYPE](session: sqm.Session, obj: DB_MODEL_TYPE, mo
     """
 
     db_objs = session.exec(sqm.select(model)).all()
-    title_or_name_value = title_or_name_val(obj)
-    title_or_name = title_or_name_var(model)
 
-    if matched_tag_models := [
-        _ for _ in db_objs
-        if one_in_other(_, title_or_name, title_or_name_value)
-    ]:
+    if matched_tag_models := [_ for _ in db_objs if _.matches(obj)]:
         logger.debug(
-            f"Found {len(matched_tag_models)} '{model.__name__}' {'match' if len(matched_tag_models) == 1 else 'matches'} for {obj.__class__.__name__} - {title_or_name_value}"
+            f"Found {len(matched_tag_models)} '{model.__name__}' {'match' if len(matched_tag_models) == 1 else 'matches'} for {obj.__class__.__name__}"
         )
     return matched_tag_models
-
-
-def title_or_name_var(obj):
-    return 'title' if hasattr(obj, 'title') else 'name'
-
-
-def one_in_other(obj: DB_MODEL_TYPE, obj_var: str, compare_val: str) -> bool:
-    """Check if one string is in another
-
-    Args:
-        obj (DB_MODEL_VAR): Object to check
-        obj_var (str): Attribute to check
-        compare_val (str): Value to compare
-
-    Returns:
-        bool: True if one string is in the other
-    """
-    ob_low = getattr(obj, obj_var).lower()
-    return ob_low in compare_val.lower() or compare_val.lower() in ob_low
 
 
 def gurus_from_file(session):
