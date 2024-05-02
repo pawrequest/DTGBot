@@ -30,8 +30,8 @@ class Episode(EpisodeBase, sqm.SQLModel, table=True):
     def slug(self):
         return f'/{type(self).rout_prefix}/{self.id}'
 
-        # return f'/{self.rout_prefix}/{self.id}'
-
-    # @classmethod
-    # def rout_prefix(cls):
-    #     return '/eps/'
+    def matches(self, other):
+        if isinstance(other, Guru):
+            return other.name in self.title
+        elif isinstance(other, RedditThread):
+            return other.title in self.title or self.title in other.title

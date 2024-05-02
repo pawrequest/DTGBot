@@ -72,7 +72,12 @@ class RedditThread(RedditThreadBase, table=True, extend_existing=True):
     def slug(self):
         return f'/red/{self.id}'
 
-
     @classmethod
     def rout_prefix(cls):
         return '/red/'
+
+    def matches(self, other):
+        if isinstance(other, Guru):
+            return other.name in self.title
+        elif isinstance(other, Episode):
+            return other.title in self.title or self.title in other.title

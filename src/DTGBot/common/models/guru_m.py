@@ -53,3 +53,9 @@ class Guru(GuruBase, table=True):
         return hashlib.md5(
             ','.join([self.name]).encode('utf-8')
         ).hexdigest()
+
+    def matches(self, other):
+        if isinstance(other, RedditThread):
+            return other.title in self.name
+        elif isinstance(other, Episode):
+            return other.title in self.name
