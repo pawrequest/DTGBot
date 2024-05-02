@@ -166,7 +166,7 @@ class DTG:
             relation_classes: list[type(_p.BaseModel)],
             log_category: str = 'General',
     ):
-        """Process items from the queue
+        """Process items from the queue - validate and add to the database, assign related items
 
         Args:
             queue (Queue): Queue to process
