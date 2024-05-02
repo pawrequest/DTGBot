@@ -93,7 +93,6 @@ async def one_ep(
 async def ep_index(request: Request, session=fastapi.Depends(get_session)):
     logger.debug('all_eps')
     episodes = session.exec(select(Episode).order_by(desc(Episode.date))).all()
-    # episodes = sorted(episodes, key=lambda ep: ep.date, reverse=True)
     return templates.TemplateResponse(
         request=request, name='episode/episode_index.html', context={'episodes': episodes}
     )
