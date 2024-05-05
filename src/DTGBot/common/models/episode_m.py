@@ -24,7 +24,6 @@ class Episode(EpisodeBase, sqm.SQLModel, table=True):
         back_populates='episodes',
         link_model=RedditThreadEpisodeLink
     )
-    settings_class: ClassVar[_p.BaseModel] = ScrapawConfig
     rout_prefix: ClassVar[str] = 'eps'
 
     @property

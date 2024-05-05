@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import date, datetime
 from typing import NamedTuple
 
 from fastapi import Query
@@ -10,7 +10,7 @@ PAGE_SIZE = 27
 
 
 def templates():
-    return Jinja2Templates(directory=str(dtg_sett().frontend_dir / 'templates'))
+    return Jinja2Templates(directory=str(dtg_sett().guru_frontend / 'templates'))
 
 
 def get_pagination(limit: int = Query(PAGE_SIZE, gt=0), offset: int = Query(0, ge=0)):
@@ -24,6 +24,13 @@ class Pagination(NamedTuple):
 
 def select_page(sqlselect, pagination: Pagination):
     return sqlselect.offset(pagination.offset).limit(pagination.limit)
+
+
+def select_page_more(session, sqlselect, pagination: Pagination) -> tuple[list, bool]:
+    stmt = sqlselect.offset(pagination.offset).limit(pagination.limit + 1)
+    res = session.exec(stmt).all()
+    more = len(res) > pagination.limit
+    return res[:pagination.limit], more
 
 
 def ordinal(n):

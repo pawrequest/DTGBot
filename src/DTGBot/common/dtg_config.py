@@ -6,7 +6,7 @@ from pathlib import Path
 import typing as _t
 
 from pawlogger import get_loguru
-from pydantic import HttpUrl
+from pydantic import HttpUrl, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from scrapaw.scrapaw_config import ScrapawConfig
 
@@ -50,17 +50,27 @@ class RedditConfig(BaseSettings):
 
 
 class DTGConfig(BaseSettings):
-    podcast_url: HttpUrl
-    db_loc: Path
-    guru_names_file: Path
-    frontend_dir: Path
-    log_file: Path
+    guru_frontend: Path
+    guru_data: Path
+
+    podcast_url: HttpUrl = 'https://decoding-the-gurus.captivate.fm/'
     log_profile: _t.Literal['local', 'remote', 'default'] = 'local'
+
+    db_loc: Path | None = None
+    guru_names_file: Path | None = None
+    log_file: Path | None = None
 
     debug: bool = False
     sleep: int = 60 * 60  # 1 hour
     max_dupes: int = 5  # 1 page in captivate
     scrape_limit: int | None = None
+
+    @model_validator(mode='after')
+    def get_db_name(self):
+        self.db_loc = self.db_loc or self.guru_data / 'guru.db'
+        self.guru_names_file = self.guru_names_file or self.guru_data / 'gurunames.txt'
+        self.log_file = self.log_file or self.guru_data / 'logs' / 'dtgbot.log'
+        return self
 
     @functools.cached_property
     def scrap_config(self):
@@ -73,8 +83,8 @@ class DTGConfig(BaseSettings):
             _env_file=None,
             _env_ignore_empty=True,
         )
-
-    model_config = SettingsConfigDict(env_ignore_empty=True, env_file=dtg_env_from_env())
+    model_config = SettingsConfigDict()
+    # model_config = SettingsConfigDict(env_ignore_empty=True, env_file=dtg_env_from_env())
 
 
 @functools.lru_cache

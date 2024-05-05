@@ -11,20 +11,23 @@ from pawlogger.config_loguru import logger
 from DTGBot.common.database import get_session
 from DTGBot.common.models.episode_m import Episode
 from DTGBot.common.models.guru_m import Guru
-from DTGBot.fapi.shared import (Pagination, get_pagination, select_page, templates)
+from DTGBot.fapi.shared import (
+    Pagination,
+    get_pagination,
+    select_page_more,
+    templates,
+)
 
 router = fastapi.APIRouter()
 SearchKind = _t.Literal['title', 'guru', 'notes']
 
-
-# def episode_matches(session: sqlmodel.Session, search_str: str, search_kind: SearchKind = 'title'):
 
 def episode_matches(
         session: sqlmodel.Session,
         search_str: str,
         search_kind: SearchKind = 'title',
         pagination: Pagination = None,
-):
+) -> tuple[list[Episode], bool]:
     match search_kind:
         case 'guru':
             stmt = select(Guru).where(
@@ -32,9 +35,9 @@ def episode_matches(
             )
             matching_gurus = session.exec(stmt).all()
             matching_episodes = {ep for guru in matching_gurus for ep in guru.episodes}
-            # return matching_episodes
+            more = len(matching_episodes) > pagination.limit
             return sorted(list(matching_episodes), key=lambda ep: ep.date, reverse=True)[
-                   pagination.offset:pagination.limit + pagination.offset]
+                   pagination.offset:pagination.limit + pagination.offset], more
 
         case 'title':
             stmt = select(Episode).order_by(desc(Episode.date)).where(
@@ -48,20 +51,18 @@ def episode_matches(
         case _:
             raise ValueError(f'Invalid kind: {search_kind}')
 
-    stmt = select_page(stmt, pagination)
-    return session.exec(stmt).all()
+    episodes, more = select_page_more(session, stmt, pagination)
+    return episodes, more
 
 
 @router.get('/get/', response_class=HTMLResponse)
-async def get_eps(
+async def get_eps2(
         request: Request,
         session: sqlmodel.Session = fastapi.Depends(get_session),
         pagination: Pagination = fastapi.Depends(get_pagination),
 ):
     stmt = select(Episode).order_by(desc(Episode.date))
-    stmt = select_page(stmt, pagination)
-    episodes = session.exec(stmt).all()
-    more = len(episodes) == pagination.limit
+    episodes, more = select_page_more(session, stmt, pagination)
 
     return templates().TemplateResponse(
         request=request,
@@ -80,7 +81,7 @@ async def search_eps(
 ):
     if search_kind and search_str:
         logger.debug(f'{search_kind=} {search_str=}')
-        episodes = episode_matches(
+        episodes, more = episode_matches(
             session,
             search_str,
             search_kind,
@@ -89,10 +90,7 @@ async def search_eps(
 
     else:
         stmt = select(Episode).order_by(desc(Episode.date))
-        stmt = select_page(stmt, pagination)
-        episodes = session.exec(stmt).all()
-
-    more = len(episodes) == pagination.limit
+        episodes, more = select_page_more(session, stmt, pagination)
 
     return templates().TemplateResponse(
         request=request,
@@ -119,7 +117,6 @@ async def ep_detail(
 async def ep_index(
         request: Request,
 ):
-    logger.debug('all_eps')
     return templates().TemplateResponse(
         request=request,
         name='episode/episode_index.html',

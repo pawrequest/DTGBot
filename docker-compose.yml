@@ -1,42 +1,19 @@
 version: '3.8'
 services:
-  dtgbot:
-    image: dtgbot
-    volumes:
-      - C:\Users\RYZEN\prdev\envs\reddit.env:/app/reddit.env
-      - C:\Users\RYZEN\prdev\workbench\DTGBot\data\gurunames.txt:/app/gurunames.txt
-      - C:\ProgramData\pawrequest\decodethebot\guru.db:/app/guru.db
-      - C:\ProgramData\pawrequest\decodethebot\logs\dtg.log:/app/logs/dtg.log
-    environment:
-      - REDDIT_ENV=/app/reddit.env
-      - GURU_NAMES_FILE=/app/gurunames.txt
-      - DB_LOC=/app/guru.db
-      - LOG_FILE=/app/logs/dtg.log
-      - LOG_PROFILE=local
-      - PODCAST_URL=https://decoding-the-gurus.captivate.fm/
-
-    networks:
-      - dtgbot-network
-    command: python DTGBot/updater/update_db.py
-
   fastapi:
     restart: unless-stopped
     image: dtgbot
     volumes:
       - C:\Users\RYZEN\prdev\envs\reddit.env:/app/reddit.env
-      - C:\Users\RYZEN\prdev\workbench\DTGBot\data\gurunames.txt:/app/gurunames.txt
-      - C:\ProgramData\pawrequest\decodethebot\guru.db:/app/guru.db
-      - C:\ProgramData\pawrequest\decodethebot\logs\dtg.log:/app/logs/dtg.log
+      - ${GURU_DATA}:/app/guru_data/
+      - ${GURU_FRONTEND}:/app/guru_fontend/
     environment:
       - REDDIT_ENV=/app/reddit.env
-      - GURU_NAMES_FILE=/app/gurunames.txt
-      - DB_LOC=/app/guru.db
-      - LOG_FILE=/app/logs/dtg.log
-      - LOG_PROFILE=local
-      - PODCAST_URL=https://decoding-the-gurus.captivate.fm/
+      - GURU_DATA=/app/guru_data/
+      - GURU_FRONTEND=/app/guru_fontend/
     ports:
       - "8000:8000"
-    command: uvicorn DTGBot.frontend.app:app --host 0.0.0.0 --port 8000
+    command: uvicorn DTGBot.fapi.app:app --host 0.0.0.0 --port 8000
 
   nginx:
     restart: unless-stopped

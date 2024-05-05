@@ -14,8 +14,8 @@ from DTGBot.fapi.red_route import router as red_router
 from DTGBot.common.database import create_db
 
 dtg_settings = dtg_sett()
-STATIC = dtg_settings.frontend_dir / 'static'
-TEMPLATES_DIR = str(dtg_settings.frontend_dir / 'templates')
+STATIC = dtg_settings.guru_frontend / 'static'
+TEMPLATES_DIR = str(dtg_settings.guru_frontend / 'templates')
 
 
 @asynccontextmanager

@@ -14,7 +14,7 @@ from DTGBot.common.models.reddit_m import RedditThread
 from DTGBot.fapi.shared import (
     Pagination,
     get_pagination,
-    select_page,
+    select_page_more,
     templates,
 )
 
@@ -40,17 +40,18 @@ def thread_matches(
             )
             matching_gurus = session.exec(stmt).all()
             matching_threads = {thread for guru in matching_gurus for thread in guru.reddit_threads}
+            more = len(matching_threads) > pagination.limit
             return sorted(
                 list(matching_threads)[pagination.offset:pagination.limit + pagination.offset],
                 key=lambda thread: thread.created_datetime,
                 reverse=True
-            )
+            ), more
 
         case _:
             raise ValueError(f'Invalid kind: {search_kind}')
 
-    stmt = select_page(stmt, pagination)
-    return session.exec(stmt).all()
+    threads, more = select_page_more(session, stmt, pagination)
+    return threads, more
 
 
 @router.get('/get/', response_class=HTMLResponse)
@@ -59,9 +60,7 @@ async def get_threads(
         pagination: Pagination = fastapi.Depends(get_pagination)
 ):
     stmt = select(RedditThread).order_by(desc(RedditThread.created_datetime))
-    stmt = select_page(stmt, pagination)
-    threads = session.exec(stmt).all()
-    more = len(threads) == pagination.limit
+    threads, more = select_page_more(session, stmt, pagination)
 
     return templates().TemplateResponse(
         request=request,
@@ -77,17 +76,13 @@ async def search_threads(
         search_str: str = Form(...),
         session: sqlmodel.Session = fastapi.Depends(get_session),
         pagination: Pagination = fastapi.Depends(get_pagination)
-
 ):
     if search_kind and search_str:
         logger.debug(f'{search_kind=} {search_str=}')
-        threads = thread_matches(session, search_str, pagination, search_kind)
+        threads, more = thread_matches(session, search_str, pagination, search_kind)
     else:
         stmt = select(RedditThread).order_by(desc(RedditThread.created_datetime))
-        stmt = select_page(stmt, pagination)
-        threads = session.exec(stmt).all()
-
-    more = len(threads) == pagination.limit
+        threads, more = select_page_more(session, stmt, pagination)
 
     return templates().TemplateResponse(
         request=request,
