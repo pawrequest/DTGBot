@@ -4,29 +4,39 @@
     <article class="detail-page">
         <div class="topbar">
             <span>Episode {{ episode.number }}</span>
-            <span>{{ episode.date.strftime('%A %B %d %Y') }}</span>
+            <span>{{ episode.ordinal_date }}</span>
             <a class='play-btn' href='{{ episode.url }}'>Play on Captivate.fm</a>
         </div>
         <h1 id='ep-{{ episode.id }}'>{{ episode.title }}</h1>
 
-        <h3>Show Notes:</h3>
-        {% for note in episode.notes %}
-            <p>{{ note }}</p>
-        {% endfor %}
 
-        <h3>Show Links:</h3>
-        {% for text, link in episode.links.items() %}
-            <a href="{{ link }}">{{ text }}</a><br>
-        {% endfor %}
+        {% if episode.notes %}
+            <h3>Show Notes:</h3>
+            {% for note in episode.notes %}
+                <p>{{ note }}</p>
+            {% endfor %}
+        {% endif %}
 
-        <h3>Featured Gurus</h3>
-        {% for guru in episode.gurus %}
-            <a href={{ guru.slug }}> {{ guru.name }}</a>
-        {% endfor %}
+        {% if episode.links %}
+            <h3>Show Links:</h3>
+            {% for text, link in episode.links.items() %}
+                <a href="{{ link }}">{{ text }}</a><br>
+            {% endfor %}
+        {% endif %}
 
-        <h3>Related Reddit Threads</h3>
-        {% for thread in episode.reddit_threads %}
-            <a href="{{ thread.shortlink }}">{{ thread.title }}</a><br>
-        {% endfor %}
+        {% if episode.gurus %}
+            <h3>Featured Gurus</h3>
+            {% for guru in episode.gurus %}
+                <a href={{ guru.slug }}> {{ guru.name }}</a>
+            {% endfor %}
+        {% endif %}
+
+        {% if episode.reddit_threads %}
+            <h3>Related Reddit Threads</h3>
+            {% for thread in episode.reddit_threads %}
+                <a href="{{ thread.shortlink }}">{{ thread.title }}</a><br>
+            {% endfor %}
+        {% endif %}
+
     </article>
 {% endblock %}

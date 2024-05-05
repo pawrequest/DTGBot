@@ -1,3 +1,4 @@
+from datetime import datetime, date
 from typing import NamedTuple
 
 from fastapi import Query
@@ -5,7 +6,7 @@ from starlette.templating import Jinja2Templates
 
 from DTGBot.common.dtg_config import dtg_sett
 
-PAGE_SIZE = 18
+PAGE_SIZE = 27
 
 
 def templates():
@@ -23,3 +24,11 @@ class Pagination(NamedTuple):
 
 def select_page(sqlselect, pagination: Pagination):
     return sqlselect.offset(pagination.offset).limit(pagination.limit)
+
+
+def ordinal(n):
+    return str(n) + ('th' if 4 <= n % 100 <= 20 else {1: 'st', 2: 'nd', 3: 'rd'}.get(n % 10, 'th'))
+
+
+def dt_ordinal(dt: datetime | date) -> str:
+    return dt.strftime('%a {th} %b %Y').replace('{th}', ordinal(dt.day))

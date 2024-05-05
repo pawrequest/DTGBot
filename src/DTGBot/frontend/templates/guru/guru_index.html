@@ -19,10 +19,9 @@
             </div>
         </div>
         <div id="search-results" class="cards"
-             hx-get="/guru/get/?limit={{ pagination.limit }}&offset={{ pagination.offset }}"
+             hx-get="/guru/get/"
              hx-trigger="load" hx-target="this">
         </div>
-        {% include 'paginate.html' with context %}
 
 
     </div>

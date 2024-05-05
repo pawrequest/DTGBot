@@ -2,6 +2,7 @@
 
 {% block content %}
     <h1 class="heading">Episodes</h1>
+
     <div class="search_wrapper">
         <div class="search">
             <p>Filter By Guru</p>
@@ -48,11 +49,9 @@
 
     </div>
     <div id="search-results" class="cards"
-         hx-get="/eps/get/?limit={{ pagination.limit }}&offset={{ pagination.offset }}"
+         hx-get="/eps/get/"
          hx-trigger="load" hx-target="this">
-
     </div>
-    {% include 'paginate.html' with context %}
 
 
 {% endblock %}

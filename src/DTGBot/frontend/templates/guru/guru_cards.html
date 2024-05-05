@@ -2,12 +2,10 @@
     <article class="card guru-card">
         <a href="{{ guru.slug }}" class="simple-link">
             <h1>{{ guru.name }}</h1>
-            <div class="card-detail">
-                <h2>{{ guru.interest }} mentions</h2>
-            </div>
+            {#            <h2>{{ guru.interest }} mentions</h2>#}
         </a>
     </article>
-    {% if loop.last %}
+    {% if loop.last and more %}
         {% include 'infinite_scroll.html' with context %}
     {% endif %}
 

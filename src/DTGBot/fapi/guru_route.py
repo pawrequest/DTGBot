@@ -22,12 +22,40 @@ router = fastapi.APIRouter()
 SearchKind = _t.Literal['name']
 
 
+async def gurus_from_sesh(session: sqlmodel.Session, pagination: Pagination):
+    one_extra = pagination.limit + 1
+
+    stmt = (
+        select(
+            Guru,
+            # func.count(GuruEpisodeLink.guru_id),
+        )
+        .join(GuruEpisodeLink, isouter=True)
+        .join(RedditThreadGuruLink, isouter=True)
+        .group_by(Guru.id)
+        .having(
+            (func.count(GuruEpisodeLink.guru_id) + func.count(RedditThreadGuruLink.guru_id)) > 0
+        )
+        .order_by(
+            func.count(GuruEpisodeLink.guru_id) + func.count(RedditThreadGuruLink.guru_id).desc()
+        )
+        .offset(pagination.offset)
+        .limit(one_extra)
+    )
+    result = session.exec(stmt).all()
+    more = len(result) >= one_extra
+    result_ = result[:pagination.limit]
+
+    return result_, more
+
+
 def guru_matches(
         session,
         search_str,
         search_kind: SearchKind = 'title',
         pagination: Pagination = get_pagination(),
 ):
+    one_extra = pagination.limit + 1
     match search_kind:
         case 'name':
             stmt = select(Guru).where(
@@ -37,8 +65,10 @@ def guru_matches(
         case _:
             raise ValueError(f'Invalid kind: {search_kind}')
     # return sorted(matched_, key=lambda ep: ep.date, reverse=True)
-    stmt = select_page(stmt, pagination)
-    return session.exec(stmt).all()
+    stmt = stmt.offset(pagination.offset).limit(one_extra)
+    gurus = session.exec(stmt).all()
+    more = len(gurus) >= one_extra
+    return gurus[:pagination.limit], more
 
 
 @router.get('/get/', response_class=HTMLResponse)
@@ -46,12 +76,13 @@ async def get(
         request: Request, session: sqlmodel.Session = fastapi.Depends(get_session),
         pagination: Pagination = fastapi.Depends(get_pagination)
 ):
-    gurus = await gurus_from_sesh(session, pagination)
+    gurus, more = await gurus_from_sesh(session, pagination)
+    logger.warning(f'{more=} {len(gurus)=}')
 
     return templates().TemplateResponse(
         request=request,
         name='guru/guru_cards.html',
-        context={'gurus': gurus, 'pagination': pagination, 'route_url': 'guru'}
+        context={'gurus': gurus, 'pagination': pagination, 'route_url': 'guru', 'more': more}
     )
 
 
@@ -64,22 +95,24 @@ async def search_gurus(
         pagination: Pagination = fastapi.Depends(get_pagination)
 ):
     if search_kind and search_str:
-        matched_gurus = guru_matches(
+        gurus, more = guru_matches(
             session,
             search_str,
             search_kind,
             pagination
         )
     else:
-        matched_gurus = await gurus_from_sesh(
+        gurus, more = await gurus_from_sesh(
             session,
             pagination
         )
 
+    logger.warning(f'{more=} {len(gurus)=}')
+
     return templates().TemplateResponse(
         request=request,
         name='guru/guru_cards.html',
-        context={'gurus': matched_gurus, 'pagination': pagination, 'route_url': 'guru'}
+        context={'gurus': gurus, 'pagination': pagination, 'route_url': 'guru', 'more': more}
     )
 
 
@@ -100,29 +133,8 @@ async def guru_detail(
 @router.get('/', response_class=HTMLResponse)
 async def guru_index(
         request: Request,
-        pagination: Pagination = fastapi.Depends(get_pagination)
 ):
-    logger.debug('all_gurus')
     return templates().TemplateResponse(
         request=request,
         name='guru/guru_index.html',
-        context={'pagination': pagination, 'route_url': 'guru'}
     )
-
-
-async def gurus_from_sesh(session: sqlmodel.Session, pagination: Pagination):
-    stmt = (
-        select(
-            Guru,
-        )
-        .join(GuruEpisodeLink, isouter=True)
-        .join(RedditThreadGuruLink, isouter=True)
-        .group_by(Guru.id)
-        .order_by(
-            func.count(GuruEpisodeLink.guru_id) + func.count(RedditThreadGuruLink.guru_id).desc()
-        )
-    )
-    stmt = select_page(stmt, pagination)
-    result = session.exec(stmt).all()
-
-    return result

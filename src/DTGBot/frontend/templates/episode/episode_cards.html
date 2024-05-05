@@ -1,17 +1,16 @@
 {% for episode in episodes %}
     <article class="card">
         <a href="{{ episode.slug }}">
+            <h3>{{ episode.number_date }}</h3>
             <h1>{{ episode.title }}</h1>
-            <div class="card-detail">
-                {% if episode.notes %}
-                    {% for note in episode.notes %}
-                        <p>{{ note }}</p>
-                    {% endfor %}
-                {% endif %}
-            </div>
+            {% if episode.notes %}
+                {% for note in episode.notes %}
+                    <p>{{ note }}</p>
+                {% endfor %}
+            {% endif %}
         </a>
     </article>
-    {% if loop.last %}
+    {% if loop.last and more %}
         {% include 'infinite_scroll.html' with context %}
     {% endif %}
 

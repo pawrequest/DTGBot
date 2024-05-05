@@ -9,7 +9,8 @@
             </div>
         </a>
     </article>
-    {% if loop.last %}
+
+    {% if loop.last and more %}
         {% include 'infinite_scroll.html' with context %}
     {% endif %}
 

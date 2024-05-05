@@ -11,18 +11,14 @@ from pawlogger.config_loguru import logger
 from DTGBot.common.database import get_session
 from DTGBot.common.models.episode_m import Episode
 from DTGBot.common.models.guru_m import Guru
-from DTGBot.fapi.shared import (
-    templates,
-    get_pagination,
-    Pagination,
-    select_page,
-)
+from DTGBot.fapi.shared import (Pagination, get_pagination, select_page, templates)
 
 router = fastapi.APIRouter()
 SearchKind = _t.Literal['title', 'guru', 'notes']
 
 
 # def episode_matches(session: sqlmodel.Session, search_str: str, search_kind: SearchKind = 'title'):
+
 def episode_matches(
         session: sqlmodel.Session,
         search_str: str,
@@ -57,7 +53,7 @@ def episode_matches(
 
 
 @router.get('/get/', response_class=HTMLResponse)
-async def all_eps(
+async def get_eps(
         request: Request,
         session: sqlmodel.Session = fastapi.Depends(get_session),
         pagination: Pagination = fastapi.Depends(get_pagination),
@@ -65,11 +61,12 @@ async def all_eps(
     stmt = select(Episode).order_by(desc(Episode.date))
     stmt = select_page(stmt, pagination)
     episodes = session.exec(stmt).all()
+    more = len(episodes) == pagination.limit
 
     return templates().TemplateResponse(
         request=request,
         name='episode/episode_cards.html',
-        context={'episodes': episodes, 'pagination': pagination, 'route_url': 'eps'}
+        context={'episodes': episodes, 'pagination': pagination, 'route_url': 'eps', 'more': more}
     )
 
 
@@ -89,17 +86,18 @@ async def search_eps(
             search_kind,
             pagination,
         )
+
     else:
         stmt = select(Episode).order_by(desc(Episode.date))
         stmt = select_page(stmt, pagination)
         episodes = session.exec(stmt).all()
 
-        # episodes = session.exec(select(Episode).order_by(desc(Episode.date))).all()
+    more = len(episodes) == pagination.limit
 
     return templates().TemplateResponse(
         request=request,
         name='episode/episode_cards.html',
-        context={'episodes': episodes, 'pagination': pagination, 'route_url': 'eps'}
+        context={'episodes': episodes, 'pagination': pagination, 'route_url': 'eps', 'more': more}
     )
 
 
@@ -120,9 +118,9 @@ async def ep_detail(
 @router.get('/', response_class=HTMLResponse)
 async def ep_index(
         request: Request,
-        pagination: Pagination = fastapi.Depends(get_pagination)
 ):
     logger.debug('all_eps')
     return templates().TemplateResponse(
-        request=request, name='episode/episode_index.html', context={'pagination': pagination, 'route_url': 'eps'}
+        request=request,
+        name='episode/episode_index.html',
     )

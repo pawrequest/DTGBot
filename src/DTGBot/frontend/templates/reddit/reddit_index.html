@@ -74,10 +74,9 @@
 
     </div>
     <div id="search-results" class="cards"
-         hx-get="/red/get/?limit={{ pagination.limit }}&offset={{ pagination.offset }}"
+         hx-get="/red/get/"
          hx-trigger="load" hx-target="this">
     </div>
-    {% include 'paginate.html' with context %}
 
 
 {% endblock %}

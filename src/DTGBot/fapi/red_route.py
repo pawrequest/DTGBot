@@ -54,16 +54,19 @@ def thread_matches(
 
 
 @router.get('/get/', response_class=HTMLResponse)
-async def all_threads(
+async def get_threads(
         request: Request, session: sqlmodel.Session = fastapi.Depends(get_session),
         pagination: Pagination = fastapi.Depends(get_pagination)
 ):
     stmt = select(RedditThread).order_by(desc(RedditThread.created_datetime))
     stmt = select_page(stmt, pagination)
     threads = session.exec(stmt).all()
+    more = len(threads) == pagination.limit
 
     return templates().TemplateResponse(
-        request=request, name='reddit/reddit_cards.html', context={'threads': threads, 'pagination': pagination, 'route_url': 'red'}
+        request=request,
+        name='reddit/reddit_cards.html',
+        context={'threads': threads, 'pagination': pagination, 'route_url': 'red', 'more': more}
     )
 
 
@@ -84,19 +87,21 @@ async def search_threads(
         stmt = select_page(stmt, pagination)
         threads = session.exec(stmt).all()
 
+    more = len(threads) == pagination.limit
+
     return templates().TemplateResponse(
-        request=request, name='reddit/reddit_cards.html', context={'threads': threads, 'pagination': pagination, 'route_url': 'red'}
+        request=request,
+        name='reddit/reddit_cards.html',
+        context={'threads': threads, 'pagination': pagination, 'route_url': 'red', 'more': more}
     )
 
 
 @router.get('/', response_class=HTMLResponse)
 async def red_index(
         request: Request,
-        pagination: dict = fastapi.Depends(get_pagination)
 ):
     logger.debug('all_red')
     return templates().TemplateResponse(
         request=request,
         name='reddit/reddit_index.html',
-        context={'pagination': pagination, 'route_url': 'red'}
     )

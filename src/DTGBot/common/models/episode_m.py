@@ -7,6 +7,7 @@ import pydantic as _p
 from scrapaw import EpisodeBase, ScrapawConfig
 
 from DTGBot.common.models.links import GuruEpisodeLink, RedditThreadEpisodeLink
+from DTGBot.fapi.shared import dt_ordinal
 
 if TYPE_CHECKING:
     from DTGBot.common.models.guru_m import Guru
@@ -27,6 +28,16 @@ class Episode(EpisodeBase, sqm.SQLModel, table=True):
     rout_prefix: ClassVar[str] = 'eps'
 
     @property
-    def slug(self):
-        return f'/{type(self).rout_prefix}/{self.id}'
+    def number_date(self) -> str:
+        astr = f'Episode {self.number}' if self.number.isnumeric() else f'{self.number} Episode'
+        return f'{astr} - {self.ordinal_date}'
 
+    @property
+    def slug(self) -> str:
+        return f'/{self.rout_prefix}/{self.id}'
+        # astr = f'/{self.rout_prefix}/{self.number}_{self.date.isoformat()}'
+        # return astr
+
+    @property
+    def ordinal_date(self) -> str:
+        return dt_ordinal(self.date)
