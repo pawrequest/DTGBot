@@ -14,7 +14,6 @@ from DTGBot.common.models.reddit_m import RedditThread
 from DTGBot.fapi.shared import (
     Pagination,
     get_pagination,
-    get_pagination_tup,
     select_page,
     templates,
 )
@@ -54,27 +53,27 @@ def thread_matches(
     return session.exec(stmt).all()
 
 
-@router.get('/get_red/', response_class=HTMLResponse)
+@router.get('/get/', response_class=HTMLResponse)
 async def all_threads(
         request: Request, session: sqlmodel.Session = fastapi.Depends(get_session),
-        pagination: Pagination = fastapi.Depends(get_pagination_tup)
+        pagination: Pagination = fastapi.Depends(get_pagination)
 ):
     stmt = select(RedditThread).order_by(desc(RedditThread.created_datetime))
     stmt = select_page(stmt, pagination)
     threads = session.exec(stmt).all()
 
     return templates().TemplateResponse(
-        request=request, name='reddit/reddit_cards.html', context={'threads': threads}
+        request=request, name='reddit/reddit_cards.html', context={'threads': threads, 'pagination': pagination, 'route_url': 'red'}
     )
 
 
-@router.post('/get_red/', response_class=HTMLResponse)
+@router.post('/get/', response_class=HTMLResponse)
 async def search_threads(
         request: Request,
         search_kind: SearchKind = Form(...),
         search_str: str = Form(...),
         session: sqlmodel.Session = fastapi.Depends(get_session),
-        pagination: Pagination = fastapi.Depends(get_pagination_tup)
+        pagination: Pagination = fastapi.Depends(get_pagination)
 
 ):
     if search_kind and search_str:
@@ -86,14 +85,14 @@ async def search_threads(
         threads = session.exec(stmt).all()
 
     return templates().TemplateResponse(
-        request=request, name='reddit/reddit_cards.html', context={'threads': threads}
+        request=request, name='reddit/reddit_cards.html', context={'threads': threads, 'pagination': pagination, 'route_url': 'red'}
     )
 
 
 @router.get('/', response_class=HTMLResponse)
 async def red_index(
         request: Request,
-        pagination: dict = fastapi.Depends(get_pagination_tup)
+        pagination: dict = fastapi.Depends(get_pagination)
 ):
     logger.debug('all_red')
     return templates().TemplateResponse(

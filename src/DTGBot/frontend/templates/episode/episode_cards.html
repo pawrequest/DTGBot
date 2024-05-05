@@ -9,8 +9,10 @@
                     {% endfor %}
                 {% endif %}
             </div>
-
         </a>
-
     </article>
+    {% if loop.last %}
+        {% include 'infinite_scroll.html' with context %}
+    {% endif %}
+
 {% endfor %}

@@ -14,7 +14,6 @@ from DTGBot.common.models.links import GuruEpisodeLink, RedditThreadGuruLink
 from DTGBot.fapi.shared import (
     Pagination,
     get_pagination,
-    get_pagination_tup,
     select_page,
     templates,
 )
@@ -27,7 +26,7 @@ def guru_matches(
         session,
         search_str,
         search_kind: SearchKind = 'title',
-        pagination: Pagination = get_pagination_tup(),
+        pagination: Pagination = get_pagination(),
 ):
     match search_kind:
         case 'name':
@@ -42,10 +41,10 @@ def guru_matches(
     return session.exec(stmt).all()
 
 
-@router.get('/get_gurus/', response_class=HTMLResponse)
-async def get_gurus(
+@router.get('/get/', response_class=HTMLResponse)
+async def get(
         request: Request, session: sqlmodel.Session = fastapi.Depends(get_session),
-        pagination: Pagination = fastapi.Depends(get_pagination_tup)
+        pagination: Pagination = fastapi.Depends(get_pagination)
 ):
     gurus = await gurus_from_sesh(session, pagination)
 
@@ -56,13 +55,13 @@ async def get_gurus(
     )
 
 
-@router.post('/get_gurus/', response_class=HTMLResponse)
+@router.post('/get/', response_class=HTMLResponse)
 async def search_gurus(
         request: Request,
         search_kind: SearchKind = Form(...),
         search_str: str = Form(...),
         session: sqlmodel.Session = fastapi.Depends(get_session),
-        pagination: Pagination = fastapi.Depends(get_pagination_tup)
+        pagination: Pagination = fastapi.Depends(get_pagination)
 ):
     if search_kind and search_str:
         matched_gurus = guru_matches(
@@ -101,7 +100,7 @@ async def guru_detail(
 @router.get('/', response_class=HTMLResponse)
 async def guru_index(
         request: Request,
-        pagination: Pagination = fastapi.Depends(get_pagination_tup)
+        pagination: Pagination = fastapi.Depends(get_pagination)
 ):
     logger.debug('all_gurus')
     return templates().TemplateResponse(

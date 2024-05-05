@@ -45,6 +45,7 @@ class Guru(GuruBase, table=True):
         return f'/{type(self).rout_prefix}/{self.id}'
 
     @_p.computed_field
+    @cached_property
     def interest(self) -> int:
         return len(self.episodes) + len(self.reddit_threads)
 

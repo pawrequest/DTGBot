@@ -1,12 +1,11 @@
 from typing import NamedTuple
 
 from fastapi import Query
-from loguru import logger
 from starlette.templating import Jinja2Templates
 
 from DTGBot.common.dtg_config import dtg_sett
 
-PAGE_SIZE = 9
+PAGE_SIZE = 18
 
 
 def templates():
@@ -14,11 +13,6 @@ def templates():
 
 
 def get_pagination(limit: int = Query(PAGE_SIZE, gt=0), offset: int = Query(0, ge=0)):
-    logger.info(f'got limit: {limit}, offset: {offset}')
-    return {'limit': limit, 'offset': offset}
-
-
-def get_pagination_tup(limit: int = Query(PAGE_SIZE, gt=0), offset: int = Query(0, ge=0)):
     return Pagination(limit=limit, offset=offset)
 
 

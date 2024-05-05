@@ -11,7 +11,7 @@
                         <input type="hidden" name="search_kind" value="name">
                         <input class="form-control" type="search"
                                name="search_str" placeholder="Begin Typing To Filter..."
-                               hx-post="/guru/get_gurus/"
+                               hx-post="/guru/get/"
                                hx-trigger="input changed delay:500ms, search"
                                hx-target="#search-results">
                     </div>
@@ -19,7 +19,7 @@
             </div>
         </div>
         <div id="search-results" class="cards"
-             hx-get="/guru/get_gurus/?limit={{ pagination.limit }}&offset={{ pagination.offset }}"
+             hx-get="/guru/get/?limit={{ pagination.limit }}&offset={{ pagination.offset }}"
              hx-trigger="load" hx-target="this">
         </div>
         {% include 'paginate.html' with context %}

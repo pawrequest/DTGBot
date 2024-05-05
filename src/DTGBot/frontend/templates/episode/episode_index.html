@@ -10,7 +10,7 @@
                     <input type="hidden" name="search_kind" value="guru">
                     <input class="form-control" type="search"
                            name="search_str" placeholder="Begin Typing To Filter..."
-                           hx-post="/eps/get_eps/"
+                           hx-post="/eps/get/"
                            hx-trigger="input changed delay:500ms, search"
                            hx-target="#search-results">
                 </div>
@@ -24,7 +24,7 @@
                     <input type="hidden" name="search_kind" value="title">
                     <input class="form-control" type="search"
                            name="search_str" placeholder="Begin Typing To Filter..."
-                           hx-post="/eps/get_eps/"
+                           hx-post="/eps/get/"
                            hx-trigger="input changed delay:500ms, search"
                            hx-target="#search-results">
                 </div>
@@ -39,7 +39,7 @@
                     <input type="hidden" name="search_kind" value="notes">
                     <input class="form-control" type="search"
                            name="search_str" placeholder="Begin Typing To Filter..."
-                           hx-post="/eps/get_eps/"
+                           hx-post="/eps/get/"
                            hx-trigger="input changed delay:500ms, search"
                            hx-target="#search-results">
                 </div>
@@ -48,7 +48,7 @@
 
     </div>
     <div id="search-results" class="cards"
-         hx-get="/eps/get_eps/?limit={{ pagination.limit }}&offset={{ pagination.offset }}"
+         hx-get="/eps/get/?limit={{ pagination.limit }}&offset={{ pagination.offset }}"
          hx-trigger="load" hx-target="this">
 
     </div>

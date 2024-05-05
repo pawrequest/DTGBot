@@ -12,10 +12,8 @@ from DTGBot.common.database import get_session
 from DTGBot.common.models.episode_m import Episode
 from DTGBot.common.models.guru_m import Guru
 from DTGBot.fapi.shared import (
-    get_pagination,
     templates,
-    PAGE_SIZE,
-    get_pagination_tup,
+    get_pagination,
     Pagination,
     select_page,
 )
@@ -58,11 +56,11 @@ def episode_matches(
     return session.exec(stmt).all()
 
 
-@router.get('/get_eps/', response_class=HTMLResponse)
+@router.get('/get/', response_class=HTMLResponse)
 async def all_eps(
         request: Request,
         session: sqlmodel.Session = fastapi.Depends(get_session),
-        pagination: Pagination = fastapi.Depends(get_pagination_tup),
+        pagination: Pagination = fastapi.Depends(get_pagination),
 ):
     stmt = select(Episode).order_by(desc(Episode.date))
     stmt = select_page(stmt, pagination)
@@ -75,13 +73,13 @@ async def all_eps(
     )
 
 
-@router.post('/get_eps/', response_class=HTMLResponse)
+@router.post('/get/', response_class=HTMLResponse)
 async def search_eps(
         request: Request,
         search_kind: SearchKind = Form(...),
         search_str: str = Form(...),
         session: sqlmodel.Session = fastapi.Depends(get_session),
-        pagination: Pagination = fastapi.Depends(get_pagination_tup)
+        pagination: Pagination = fastapi.Depends(get_pagination)
 ):
     if search_kind and search_str:
         logger.debug(f'{search_kind=} {search_str=}')
@@ -122,7 +120,7 @@ async def ep_detail(
 @router.get('/', response_class=HTMLResponse)
 async def ep_index(
         request: Request,
-        pagination: Pagination = fastapi.Depends(get_pagination_tup)
+        pagination: Pagination = fastapi.Depends(get_pagination)
 ):
     logger.debug('all_eps')
     return templates().TemplateResponse(
