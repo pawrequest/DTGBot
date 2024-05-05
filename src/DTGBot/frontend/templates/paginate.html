@@ -1,0 +1,7 @@
+<div class="pagination">
+    {% if pagination.offset > 0 %}
+        <a href="/{{ route_url }}?offset={{ pagination.offset - pagination.limit }}"><h2>Previous</h2></a>
+    {% endif %}
+    <h2>page {{ pagination.offset // pagination.limit + 1 }}</h2>
+    <a href="/{{ route_url }}?offset={{ pagination.offset + pagination.limit }}"><h2>Next</h2></a>
+</div>

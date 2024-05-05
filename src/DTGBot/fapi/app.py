@@ -1,5 +1,4 @@
 from contextlib import asynccontextmanager
-from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
@@ -8,15 +7,15 @@ from starlette.responses import HTMLResponse, RedirectResponse
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
+from DTGBot.common.dtg_config import dtg_sett
 from DTGBot.fapi.episode_route import router as ep_router
 from DTGBot.fapi.guru_route import router as guru_router
+from DTGBot.fapi.red_route import router as red_router
 from DTGBot.common.database import create_db
 
-TEMPLATES_ = '/templates/'
-THIS_DIR = Path(__file__).resolve().parent
-STATIC = THIS_DIR.parent / 'frontend' / 'static'
-
-logger.info(f'{STATIC=} \n{TEMPLATES_=}')
+dtg_settings = dtg_sett()
+STATIC = dtg_settings.frontend_dir / 'static'
+TEMPLATES_DIR = str(dtg_settings.frontend_dir / 'templates')
 
 
 @asynccontextmanager
@@ -32,10 +31,12 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 app.mount('/static', StaticFiles(directory=STATIC), name='static')
-templates = Jinja2Templates(directory=TEMPLATES_)
+app.mount('/img', StaticFiles(directory=STATIC.parent / 'img'), name='img')
+templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 app.include_router(ep_router, prefix='/eps')
 app.include_router(guru_router, prefix='/guru')
+app.include_router(red_router, prefix='/red')
 
 
 @app.get('/robots.txt', response_class=PlainTextResponse)

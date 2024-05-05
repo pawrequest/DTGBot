@@ -1,11 +1,9 @@
 import typing as _t
-from pathlib import Path
 
 import fastapi
 import sqlmodel
 from fastapi import Form, Request
 from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
 from sqlalchemy import func
 from sqlmodel import desc, select
 from pawlogger.config_loguru import logger
@@ -13,16 +11,26 @@ from pawlogger.config_loguru import logger
 from DTGBot.common.database import get_session
 from DTGBot.common.models.episode_m import Episode
 from DTGBot.common.models.guru_m import Guru
+from DTGBot.fapi.shared import (
+    get_pagination,
+    templates,
+    PAGE_SIZE,
+    get_pagination_tup,
+    Pagination,
+    select_page,
+)
 
 router = fastapi.APIRouter()
 SearchKind = _t.Literal['title', 'guru', 'notes']
-THIS_DIR = Path(__file__).resolve().parent
-template_dir = THIS_DIR.parent / 'templates'
-print('TEMPLATE DIR', template_dir)
-templates = Jinja2Templates(directory=str(template_dir))
 
 
-def episode_matches(session: sqlmodel.Session, search_str: str, search_kind: SearchKind = 'title'):
+# def episode_matches(session: sqlmodel.Session, search_str: str, search_kind: SearchKind = 'title'):
+def episode_matches(
+        session: sqlmodel.Session,
+        search_str: str,
+        search_kind: SearchKind = 'title',
+        pagination: Pagination = None,
+):
     match search_kind:
         case 'guru':
             stmt = select(Guru).where(
@@ -31,7 +39,8 @@ def episode_matches(session: sqlmodel.Session, search_str: str, search_kind: Sea
             matching_gurus = session.exec(stmt).all()
             matching_episodes = {ep for guru in matching_gurus for ep in guru.episodes}
             # return matching_episodes
-            return sorted(list(matching_episodes), key=lambda ep: ep.date, reverse=True)
+            return sorted(list(matching_episodes), key=lambda ep: ep.date, reverse=True)[
+                   pagination.offset:pagination.limit + pagination.offset]
 
         case 'title':
             stmt = select(Episode).order_by(desc(Episode.date)).where(
@@ -45,15 +54,24 @@ def episode_matches(session: sqlmodel.Session, search_str: str, search_kind: Sea
         case _:
             raise ValueError(f'Invalid kind: {search_kind}')
 
+    stmt = select_page(stmt, pagination)
     return session.exec(stmt).all()
 
 
 @router.get('/get_eps/', response_class=HTMLResponse)
-async def get_ep_cards(request: Request, session: sqlmodel.Session = fastapi.Depends(get_session)):
-    episodes = session.exec(select(Episode).order_by(desc(Episode.date))).all()
+async def all_eps(
+        request: Request,
+        session: sqlmodel.Session = fastapi.Depends(get_session),
+        pagination: Pagination = fastapi.Depends(get_pagination_tup),
+):
+    stmt = select(Episode).order_by(desc(Episode.date))
+    stmt = select_page(stmt, pagination)
+    episodes = session.exec(stmt).all()
 
-    return templates.TemplateResponse(
-        request=request, name='episode/episode_cards.html', context={'episodes': episodes}
+    return templates().TemplateResponse(
+        request=request,
+        name='episode/episode_cards.html',
+        context={'episodes': episodes, 'pagination': pagination, 'route_url': 'eps'}
     )
 
 
@@ -63,26 +81,38 @@ async def search_eps(
         search_kind: SearchKind = Form(...),
         search_str: str = Form(...),
         session: sqlmodel.Session = fastapi.Depends(get_session),
+        pagination: Pagination = fastapi.Depends(get_pagination_tup)
 ):
     if search_kind and search_str:
         logger.debug(f'{search_kind=} {search_str=}')
-        episodes = episode_matches(session, search_str, search_kind)
+        episodes = episode_matches(
+            session,
+            search_str,
+            search_kind,
+            pagination,
+        )
     else:
-        episodes = session.exec(select(Episode).order_by(desc(Episode.date))).all()
+        stmt = select(Episode).order_by(desc(Episode.date))
+        stmt = select_page(stmt, pagination)
+        episodes = session.exec(stmt).all()
 
-    return templates.TemplateResponse(
-        request=request, name='episode/episode_cards.html', context={'episodes': episodes}
+        # episodes = session.exec(select(Episode).order_by(desc(Episode.date))).all()
+
+    return templates().TemplateResponse(
+        request=request,
+        name='episode/episode_cards.html',
+        context={'episodes': episodes, 'pagination': pagination, 'route_url': 'eps'}
     )
 
 
 @router.get('/{ep_id}/', response_class=HTMLResponse)
-async def one_ep(
+async def ep_detail(
         ep_id: int,
         request: Request,
         sesssion: sqlmodel.Session = fastapi.Depends(get_session)
 ):
     episode = sesssion.get(Episode, ep_id)
-    return templates.TemplateResponse(
+    return templates().TemplateResponse(
         request=request,
         name='episode/episode_detail.html',
         context={'episode': episode}
@@ -90,9 +120,11 @@ async def one_ep(
 
 
 @router.get('/', response_class=HTMLResponse)
-async def ep_index(request: Request, session=fastapi.Depends(get_session)):
+async def ep_index(
+        request: Request,
+        pagination: Pagination = fastapi.Depends(get_pagination_tup)
+):
     logger.debug('all_eps')
-    episodes = session.exec(select(Episode).order_by(desc(Episode.date))).all()
-    return templates.TemplateResponse(
-        request=request, name='episode/episode_index.html', context={'episodes': episodes}
+    return templates().TemplateResponse(
+        request=request, name='episode/episode_index.html', context={'pagination': pagination, 'route_url': 'eps'}
     )

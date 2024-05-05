@@ -16,11 +16,11 @@ if TYPE_CHECKING:
     from DTGBot.common.models.guru_m import Guru
 
 
-def submission_to_dict(submission: Submission):
-    serializable_types = (int, float, str, bool, type(None))
-    if isinstance(submission, Submission):
-        submission = vars(submission)
-    return {k: v for k, v in submission.items() if isinstance(v, serializable_types)}
+# def submission_to_dict(submission: Submission):
+#     serializable_types = (int, float, str, bool, type(None))
+#     if isinstance(submission, Submission):
+#         submission = vars(submission)
+#     return {k: v for k, v in submission.items() if isinstance(v, serializable_types)}
 
 
 class RedditThreadBase(sqm.SQLModel):
@@ -28,11 +28,11 @@ class RedditThreadBase(sqm.SQLModel):
     title: str
     shortlink: str
     created_datetime: datetime
-    submission: dict = sqm.Field(default=None, sa_column=sqa.Column(sqa.JSON))
+    # submission: dict = sqm.Field(default=None, sa_column=sqa.Column(sqa.JSON))
 
-    @_p.field_validator('submission', mode='before')
-    def validate_submission(cls, v):
-        return submission_to_dict(v)
+    # @_p.field_validator('submission', mode='before')
+    # def validate_submission(cls, v):
+    #     return submission_to_dict(v)
 
     @classmethod
     def from_submission(cls, submission: Submission):
@@ -41,7 +41,7 @@ class RedditThreadBase(sqm.SQLModel):
             title=submission.title,
             shortlink=submission.shortlink,
             created_datetime=submission.created_utc,
-            submission=submission,
+            # submission=submission,
         )
         return cls.model_validate(tdict)
 
@@ -75,9 +75,3 @@ class RedditThread(RedditThreadBase, table=True, extend_existing=True):
     @classmethod
     def rout_prefix(cls):
         return '/red/'
-
-    def matches(self, other):
-        if isinstance(other, Guru):
-            return other.name in self.title
-        elif isinstance(other, Episode):
-            return other.title in self.title or self.title in other.title

@@ -1,14 +1,10 @@
 {% for guru in gurus %}
-    <article class="card">
+    <article class="card guru-card">
         <a href="{{ guru.slug }}" class="simple-link">
-            <div class="card-title">{{ guru.name }}</div>
-            {% if guru.episodes %}
-                <div class="card-detail">
-                    {% for episode in guru.episodes %}
-                        <p class="episode-note">{{ episode.title }}</p>
-                    {% endfor %}
-                </div>
-            {% endif %}
+            <h1>{{ guru.name }}</h1>
+            <div class="card-detail">
+                <h2>{{ guru.interest }} mentions</h2>
+            </div>
         </a>
     </article>
 {% endfor %}

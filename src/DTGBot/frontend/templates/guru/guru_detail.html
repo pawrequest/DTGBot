@@ -1,9 +1,18 @@
-<div id='guru-detail'>
-    <h1 id='guru-{{ guru.id }}'>{{ guru.name }}</h1>
+{% extends "base.html" %}
 
-    <h3>Featured in Episodes</h3>
-    {% for episode in guru.episodes %}
-        <p>{{ episode.title }}</p>
-        <a href={{ episode.slug }}> Details</a>
-    {% endfor %}
-</div>
+{% block content %}
+    <article class="detail-page">
+        <h1 id='guru-{{ guru.id }}'>{{ guru.name }}</h1>
+
+        <h3>Featured in Episodes</h3>
+        {% for episode in guru.episodes %}
+            <a href={{ episode.slug }}> {{ episode.title }}</a>
+        {% endfor %}
+
+        <h3>Related Reddit Threads</h3>
+        {% for thread in guru.reddit_threads %}
+            <a href="{{ thread.shortlink }}">{{ thread.title }}</a><br>
+        {% endfor %}
+        {#    </div>#}
+    </article>
+{% endblock %}

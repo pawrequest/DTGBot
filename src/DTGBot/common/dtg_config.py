@@ -49,17 +49,18 @@ class RedditConfig(BaseSettings):
     )
 
 
-class DTGBotConfig(BaseSettings):
-    guru_names_file: Path
+class DTGConfig(BaseSettings):
+    podcast_url: HttpUrl
     db_loc: Path
+    guru_names_file: Path
+    frontend_dir: Path
     log_file: Path
     log_profile: _t.Literal['local', 'remote', 'default'] = 'local'
-    podcast_url: HttpUrl
 
     debug: bool = False
-
     sleep: int = 60 * 60  # 1 hour
     max_dupes: int = 5  # 1 page in captivate
+    scrape_limit: int | None = None
 
     @functools.cached_property
     def scrap_config(self):
@@ -68,7 +69,7 @@ class DTGBotConfig(BaseSettings):
             podcast_url=self.podcast_url,
             debug=self.debug,
             max_dupes=self.max_dupes,
-            scrape_limit=5 if self.debug else None,
+            scrape_limit=self.scrape_limit,
             _env_file=None,
             _env_ignore_empty=True,
         )
@@ -77,8 +78,8 @@ class DTGBotConfig(BaseSettings):
 
 
 @functools.lru_cache
-def dtgb_sett():
-    sett = DTGBotConfig()
+def dtg_sett():
+    sett = DTGConfig()
     logger = get_loguru(log_file=sett.log_file, profile=sett.log_profile)
     logger.info('DTGBotConfig loaded')
     return sett

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Episodes</title>
+    <link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet">
+    <script src="https://unpkg.com/htmx.org@1.9.11"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+<body>
+<header class="wrapper">
+    <img src="{{ url_for('img', path='/dtg_logo_cut.png') }}" alt="">
+    <h1>DECODING THE GURUS</h1>
+    <nav>
+        <ul>
+            <li><a href="/eps">Episodes</a></li>
+            <li><a href="/guru">Gurus</a></li>
+            <li><a href="/red">Reddits</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main class="wrapper">
+    {% block content %}{% endblock %}
+
+</main>
+
+<footer class="wrapper">
+    <img src="{{ url_for('img', path='/dtg_logo_cut_short_flip.png') }}" alt="">
+
+</footer>
+</body>
+</html>
+

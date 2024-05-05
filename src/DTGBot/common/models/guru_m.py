@@ -31,7 +31,14 @@ class Guru(GuruBase, table=True):
         link_model=RedditThreadGuruLink
     )
 
+    # relevant: bool = Field(default=False)
+
     rout_prefix: ClassVar[str] = 'guru'
+
+    # @_p.model_validator(mode='after')
+    # def validate_relevant(self):
+    #     self.relevant = any([self.episodes, self.reddit_threads])
+    #     return self
 
     @cached_property
     def slug(self):
@@ -53,9 +60,3 @@ class Guru(GuruBase, table=True):
         return hashlib.md5(
             ','.join([self.name]).encode('utf-8')
         ).hexdigest()
-
-    def matches(self, other):
-        if isinstance(other, RedditThread):
-            return other.title in self.name
-        elif isinstance(other, Episode):
-            return other.title in self.name

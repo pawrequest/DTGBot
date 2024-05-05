@@ -4,14 +4,14 @@ from loguru import logger
 from sqlalchemy import create_engine, text
 from sqlmodel import SQLModel, Session
 
-from DTGBot.common.dtg_config import dtgb_sett
+from DTGBot.common.dtg_config import dtg_sett
 
 from DTGBot.common import dtg_config
 
 
 @functools.lru_cache
 def get_db_url():
-    sett = dtgb_sett()
+    sett = dtg_sett()
     logger.info(f'USING DB FILE: {sett.db_loc}')
     return f'sqlite:///{sett.db_loc}'
 
@@ -20,7 +20,7 @@ def get_db_url():
 def engine_():
     db_url = get_db_url()
     connect_args = {'check_same_thread': False}
-    return create_engine(db_url, echo=dtg_config.dtgb_sett().debug, connect_args=connect_args)
+    return create_engine(db_url, echo=dtg_config.dtg_sett().debug, connect_args=connect_args)
 
 
 def get_session(engine=None) -> Session:
@@ -34,8 +34,9 @@ def get_session(engine=None) -> Session:
 def create_db(engine=None):
     if engine is None:
         engine = engine_()
-    from DTGBot.common.dtg_types import DB_MODEL_TYPE  # noqa: F401
+    from DTGBot.common.dtg_types import DB_MODEL_TYPE, LINK_TYPES  # noqa: F401
     SQLModel.metadata.create_all(engine)
+    logger.info('tables created')
 
 
 def trim_db(session):

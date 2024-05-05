@@ -13,7 +13,7 @@ from scrapaw import dtg
 
 from DTGBot.common.database import engine_
 from DTGBot.common.dtg_types import DB_MODEL_TYPE, quiet_cancel, title_or_name_val
-from DTGBot.common.dtg_config import DTGBotConfig, RedditConfig, dtgb_sett, reddit_sett
+from DTGBot.common.dtg_config import DTGConfig, RedditConfig, dtg_sett, reddit_sett
 from DTGBot.common.models import episode_m, guru_m, reddit_m
 from DTGBot.common.models.episode_m import Episode
 from DTGBot.common.models.guru_m import Guru
@@ -26,16 +26,16 @@ class DTG:
     def __init__(
             self,
             reddit_settings: RedditConfig | None = None,
-            dtgb_settings: DTGBotConfig | None = None,
+            dtgb_settings: DTGConfig | None = None,
     ):
         """Decoding The Gurus Bot
 
         Attributes:
             reddit_settings (RedditConfig): Reddit Configuration
-            dtgb_settings (DTGBotConfig): DTGBot Configuration
+            dtgb_settings (DTGConfig): DTGBot Configuration
         """
         self.r_settings = reddit_settings or reddit_sett()
-        self.d_settings = dtgb_settings or dtgb_sett()
+        self.d_settings = dtgb_settings or dtg_sett()
         self.episode_q = Queue()
         self.reddit_q = Queue()
         self.guru_q = Queue()
@@ -68,7 +68,7 @@ class DTG:
 
         spawn queue managers and processors for episodes and reddit threads
         """
-        logger.info('Initialised')
+        logger.info('Updater Initialised')
         self.tasks = [
             asyncio.create_task(self.get_episodes()),
             asyncio.create_task(self.get_reddit_threads()),
@@ -228,7 +228,7 @@ def db_obj_matches[T:DB_MODEL_TYPE](session: sqm.Session, obj: DB_MODEL_TYPE, mo
 
     db_objs = session.exec(sqm.select(model)).all()
 
-    if matched_tag_models := [_ for _ in db_objs if _.matches(obj)]:
+    if matched_tag_models := [_ for _ in db_objs if matches(obj, _)]:
         logger.debug(
             f"Found {len(matched_tag_models)} '{model.__name__}' {'match' if len(matched_tag_models) == 1 else 'matches'} for {obj.__class__.__name__}"
         )
@@ -237,7 +237,7 @@ def db_obj_matches[T:DB_MODEL_TYPE](session: sqm.Session, obj: DB_MODEL_TYPE, mo
 
 def gurus_from_file(session):
     """Add gurus from a file to the database"""
-    infile = DTGBotConfig.guru_names_file
+    infile = DTGConfig.guru_names_file
     with open(infile) as f:
         guru_names = f.read().split(',')
     session_gurus = session.exec(sqm.select(guru_m.Guru.name)).all()
@@ -246,3 +246,23 @@ def gurus_from_file(session):
         gurus = [guru_m.Guru(name=_) for _ in new_gurus]
         session.add_all(gurus)
         session.commit()
+
+
+def matches(obj: DB_MODEL_TYPE, other: DB_MODEL_TYPE):
+    if isinstance(obj, type(other)):
+        return False
+    if isinstance(obj, Episode):
+        if isinstance(other, Guru):
+            return other.name in obj.title
+        if isinstance(other, RedditThread):
+            return obj.title in other.title or other.title in obj.title
+    if isinstance(obj, Guru):
+        if isinstance(other, Episode):
+            return obj.name in other.title
+        if isinstance(other, RedditThread):
+            return obj.name in other.title or other.title in obj.name
+    if isinstance(obj, RedditThread):
+        if isinstance(other, Episode):
+            return obj.title in other.title or other.title in obj.title
+        if isinstance(other, Guru):
+            return other.name in obj.title
