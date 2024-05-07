@@ -11,6 +11,7 @@ from DTGBot.common.dtg_config import dtg_sett
 from DTGBot.fapi.episode_route import router as ep_router
 from DTGBot.fapi.guru_route import router as guru_router
 from DTGBot.fapi.red_route import router as red_router
+from DTGBot.fapi.admin_route import router as admin_router
 from DTGBot.common.database import create_db
 
 dtg_settings = dtg_sett()
@@ -37,6 +38,7 @@ templates = Jinja2Templates(directory=TEMPLATES_DIR)
 app.include_router(ep_router, prefix='/eps')
 app.include_router(guru_router, prefix='/guru')
 app.include_router(red_router, prefix='/red')
+app.include_router(admin_router, prefix='/admin')
 
 
 @app.get('/robots.txt', response_class=PlainTextResponse)
@@ -49,7 +51,7 @@ async def favicon_ico() -> str:
     return 'page not found'
 
 
-@app.get('/', response_class=HTMLResponse)
-async def index():
-    logger.info('index')
-    return RedirectResponse(url='/eps/')
+# @app.get('/', response_class=HTMLResponse)
+# async def index():
+#     logger.info('index')
+#     return RedirectResponse(url='/eps/')

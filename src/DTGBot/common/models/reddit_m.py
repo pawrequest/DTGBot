@@ -5,11 +5,11 @@ from typing import ClassVar, TYPE_CHECKING
 
 from asyncpraw.models import Submission
 import pydantic as _p
-import sqlalchemy as sqa
 import sqlmodel as sqm
 
 from DTGBot.common.dtg_config import RedditConfig
 from DTGBot.common.models.links import RedditThreadEpisodeLink, RedditThreadGuruLink
+from DTGBot.fapi.shared import dt_ordinal
 
 if TYPE_CHECKING:
     from DTGBot.common.models.episode_m import Episode
@@ -28,6 +28,11 @@ class RedditThreadBase(sqm.SQLModel):
     title: str
     shortlink: str
     created_datetime: datetime
+
+    @property
+    def ordinal_date(self) -> str:
+        return dt_ordinal(self.created_datetime)
+
     # submission: dict = sqm.Field(default=None, sa_column=sqa.Column(sqa.JSON))
 
     # @_p.field_validator('submission', mode='before')
@@ -49,24 +54,19 @@ class RedditThreadBase(sqm.SQLModel):
 class RedditThread(RedditThreadBase, table=True, extend_existing=True):
     id: int | None = sqm.Field(default=None, primary_key=True)
 
-    gurus: list['Guru'] = sqm.Relationship(
-        back_populates='reddit_threads',
-        link_model=RedditThreadGuruLink
-    )
-    episodes: list['Episode'] = sqm.Relationship(
-        back_populates='reddit_threads',
-        link_model=RedditThreadEpisodeLink
-    )
+    gurus: list['Guru'] = sqm.Relationship(back_populates='reddit_threads', link_model=RedditThreadGuruLink)
+    episodes: list['Episode'] = sqm.Relationship(back_populates='reddit_threads', link_model=RedditThreadEpisodeLink)
     settings_class: ClassVar[_p.BaseModel] = RedditConfig
 
     def __hash__(self):
         return hash(self.reddit_id)
 
+    def __eq__(self, other):
+        return self.reddit_id == other.reddit_id
+
     @property
     def get_hash(self):
-        return hashlib.md5(
-            ','.join([self.reddit_id]).encode('utf-8')
-        ).hexdigest()
+        return hashlib.md5(','.join([self.reddit_id]).encode('utf-8')).hexdigest()
 
     @property
     def slug(self):
@@ -75,3 +75,6 @@ class RedditThread(RedditThreadBase, table=True, extend_existing=True):
     @classmethod
     def rout_prefix(cls):
         return '/red/'
+
+def submission_str(submisssion: Submission):
+    return f'{submisssion.title} - {dt_ordinal(datetime.fromtimestamp(submisssion.created_utc))}'

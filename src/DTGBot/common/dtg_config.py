@@ -6,7 +6,7 @@ from pathlib import Path
 import typing as _t
 
 from pawlogger import get_loguru
-from pydantic import HttpUrl, model_validator
+from pydantic import HttpUrl, model_validator, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from scrapaw.scrapaw_config import ScrapawConfig
 
@@ -29,15 +29,15 @@ def reddit_env_from_env():
 
 
 class RedditConfig(BaseSettings):
-    refresh_token: str
+    refresh_token: SecretStr
     client_id: str
-    client_secret: str
+    client_secret: SecretStr
     user_agent: str
 
-    custom_flair_id: str | None = None
+    custom_flair_id: SecretStr | None = None
     redirect_uri: str
 
-    send_key: str
+    send_key: SecretStr
 
     subreddit_name: str = 'test'
     wiki_name: str = 'test'

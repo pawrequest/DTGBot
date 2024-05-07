@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 from asyncio import Queue, Task, gather
 
 import pydantic as _p
@@ -24,9 +25,9 @@ type EndOfStream = object
 
 class DTG:
     def __init__(
-            self,
-            reddit_settings: RedditConfig | None = None,
-            dtgb_settings: DTGConfig | None = None,
+        self,
+        reddit_settings: RedditConfig | None = None,
+        dtgb_settings: DTGConfig | None = None,
     ):
         """Decoding The Gurus Bot
 
@@ -50,10 +51,10 @@ class DTG:
         self.sqm_session = sqm.Session(engine_())
         self.reddit = Reddit(
             client_id=self.r_settings.client_id,
-            client_secret=self.r_settings.client_secret,
+            client_secret=self.r_settings.client_secret.get_secret_value(),
             user_agent=self.r_settings.user_agent,
             redirect_uri=self.r_settings.redirect_uri,
-            refresh_token=self.r_settings.refresh_token,
+            refresh_token=self.r_settings.refresh_token.get_secret_value(),
         )
         self.subreddit = await self.reddit.subreddit(self.r_settings.subreddit_name)
         return self
@@ -120,11 +121,9 @@ class DTG:
         episode__all = self.sqm_session.exec(select(episode_m.Episode)).all()
 
         dupes = 0
-        async for ep_ in dtg.episode_generator(
-                self.d_settings.scrap_config, self.http_session
-        ):
+        async for ep_ in dtg.episode_generator(self.d_settings.scrap_config, self.http_session):
             ep = episode_m.Episode.model_validate(ep_)
-            if ep.get_hash in [_.get_hash for _ in episode__all]:
+            if ep in episode__all:
                 dupes += 1
                 logger.debug(f'Duplicate Episode: {ep.title}', category='episode')
                 if max_dupes is not None and dupes > max_dupes:
@@ -139,19 +138,15 @@ class DTG:
         return None
 
     async def get_reddit_threads(self) -> None:
-        """Get Reddit Threads from the subreddit and add them to the reddit queue """
-        max_dupes = self.d_settings.max_dupes
-        dupes = 0
-        thread__all = self.sqm_session.exec(select(RedditThread)).all()
-        async for sub in self.subreddit.stream.submissions(skip_existing=False):
-            thrd = reddit_m.RedditThread.from_submission(sub)
-            if thrd.get_hash in [_.get_hash for _ in thread__all]:
-                dupes += 1
-                if max_dupes is not None and dupes > max_dupes:
-                    break
+        """Get Reddit Threads from the subreddit and add them to the reddit queue"""
+        # max_dupes = self.d_settings.max_dupes
+        all_thread_ids = set(self.sqm_session.exec(select(RedditThread.reddit_id)).all())
+        async for sub in self.subreddit.top(time_filter='week'):
+            if sub.id in all_thread_ids:
+                logger.debug(f'Duplicate Reddit Thread: {sub.title}, {datetime.datetime.fromtimestamp(sub.created_utc)}', category='reddit')
                 continue
-
-            logger.info(f'Found Reddit Thread: {thrd.title}', category='reddit')
+            thrd = reddit_m.RedditThread.from_submission(sub)
+            logger.info(f'Found New Reddit Thread: {thrd.title}', category='reddit')
             await self.reddit_q.put(thrd)
 
         logger.debug('Reddit Generator Complete', category='reddit')
@@ -160,11 +155,11 @@ class DTG:
 
     @quiet_cancel
     async def process_queue(
-            self,
-            queue,
-            model_class: type(_p.BaseModel),
-            relation_classes: list[type(_p.BaseModel)],
-            log_category: str = 'General',
+        self,
+        queue,
+        model_class: type(_p.BaseModel),
+        relation_classes: list[type(_p.BaseModel)],
+        log_category: str = 'General',
     ):
         """Process items from the queue - validate and add to the database, assign related items
 
@@ -187,10 +182,10 @@ class DTG:
             logger.info(f'Processed {item_str}', category=log_category)
 
     async def process_item(
-            self,
-            item,
-            relation_classes: list[type(_p.BaseModel)],
-            log_category: str = 'General',
+        self,
+        item,
+        relation_classes: list[type(_p.BaseModel)],
+        log_category: str = 'General',
     ):
         item_str = f'{item.__class__.__name__} - {title_or_name_val(item)}'
         logger.debug(f'Processing {item_str}', category=log_category)
@@ -203,15 +198,14 @@ class DTG:
 
     async def assign_rel(self, item, relation_class):
         """Add related items to the item"""
-        related_items = db_obj_matches(self.sqm_session, item, relation_class) \
-            if not isinstance(item, relation_class) else []
+        related_items = (
+            db_obj_matches(self.sqm_session, item, relation_class) if not isinstance(item, relation_class) else []
+        )
         alias = alias_generators.to_snake(relation_class.__name__) + 's'
         getattr(item, alias).extend(related_items)
 
 
-def db_obj_matches[T:DB_MODEL_TYPE](session: sqm.Session, obj: DB_MODEL_TYPE, model: type[T]) -> \
-        list[
-            T]:
+def db_obj_matches[T: DB_MODEL_TYPE](session: sqm.Session, obj: DB_MODEL_TYPE, model: type[T]) -> list[T]:
     """Get matching objects from the database
 
     # todo much better logic here

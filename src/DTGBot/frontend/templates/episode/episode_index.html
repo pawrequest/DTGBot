@@ -4,12 +4,12 @@
     <h1 class="heading">Episodes</h1>
     <div class="search_wrapper">
         <div class="search">
-            <p>Filter By Guru</p>
+{#            <p>Filter By Guru</p>#}
             <form>
                 <div class="form-input">
                     <input type="hidden" name="search_kind" value="guru">
                     <input class="form-control" type="search"
-                           name="search_str" placeholder="Begin Typing To Filter..."
+                           name="search_str" placeholder="Filter By Guru..."
                            hx-post="/eps/get/"
                            hx-trigger="input changed delay:500ms, search"
                            hx-target="#search-results">
@@ -18,12 +18,12 @@
         </div>
 
         <div class="search">
-            <p>Filter By Title</p>
+{#            <p>Filter By Title</p>#}
             <form>
                 <div class="form-input">
                     <input type="hidden" name="search_kind" value="title">
                     <input class="form-control" type="search"
-                           name="search_str" placeholder="Begin Typing To Filter..."
+                           name="search_str" placeholder="Filter By Title..."
                            hx-post="/eps/get/"
                            hx-trigger="input changed delay:500ms, search"
                            hx-target="#search-results">
@@ -33,12 +33,12 @@
 
 
         <div class="search">
-            <p>Filter By Notes</p>
+{#            <p>Filter By Notes</p>#}
             <form>
                 <div class="form-input">
                     <input type="hidden" name="search_kind" value="notes">
                     <input class="form-control" type="search"
-                           name="search_str" placeholder="Begin Typing To Filter..."
+                           name="search_str" placeholder="Filter By Notes..."
                            hx-post="/eps/get/"
                            hx-trigger="input changed delay:500ms, search"
                            hx-target="#search-results">

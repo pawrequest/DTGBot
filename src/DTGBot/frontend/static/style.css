@@ -7,15 +7,15 @@
     --fw-bold: 700;
     --fw-xbold: 900;
 
-    --fs-100: calc(16px + 0.1vw);
-    --fs-200: calc(16px + 0.5vw);
-    --fs-300: calc(16px + 0.8vw);
-    --fs-400: calc(16px + 1vw);
-    --fs-500: calc(16px + 1.5vw);
-    --fs-600: calc(16px + 2vw);
-    --fs-700: calc(16px + 2.5vw);
-    --fs-800: calc(16px + 3vw);
-    --fs-900: calc(16px + 3.5vw);
+    --fs-100: calc(16px + 0.1rem);
+    --fs-200: calc(16px + 0.5rem);
+    --fs-300: calc(16px + 0.8rem);
+    --fs-400: calc(16px + 1rem);
+    --fs-500: calc(16px + 1.5rem);
+    --fs-600: calc(16px + 2rem);
+    --fs-700: calc(16px + 2.5rem);
+    --fs-800: calc(16px + 3rem);
+    --fs-900: calc(16px + 3.5rem);
 
 
     --clr-dtg-yellow-400: hsl(48 60% 70%);
@@ -124,11 +124,14 @@ header {
 .heading {
     /*background-color: black;*/
     color: var(--clr-dtg-orange-700);
+    /*width: 100px;*/
+    /*width: clamp(300px, 60rem, 90%);*/
+
     font-weight: 800;
     text-align: center;
     font-size: var(--fs-600);
     margin-inline: auto;
-    padding-block: 3vw;
+    padding-block: 1vw;
 }
 
 
@@ -268,13 +271,13 @@ header {
     display: grid;
     grid-template-columns: 1fr;
     text-align: left;
-    width: clamp(20rem, 60rem, 90%);
+    width: clamp(50px, 50rem, 90%);
     margin-inline: auto;
     gap: 1rem;
-    font-size: var(--fs-200);
+    font-size: var(--fs-100);
 
     h1 {
-        font-size: var(--fs-700);
+        font-size: var(--fs-500);
         color: var(--clr-dtg-orange-700);
         font-weight: var(--fw-xbold);
         /*text-align: justify-all;*/
