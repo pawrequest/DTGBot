@@ -27,9 +27,13 @@ class Episode(EpisodeBase, sqm.SQLModel, table=True):
     rout_prefix: ClassVar[str] = 'eps'
 
     @property
+    def number_str(self) -> str:
+        return f'Episode {self.number}' if self.number.isnumeric() else f'{self.number.title()} Episode'
+
+
+    @property
     def number_date(self) -> str:
-        astr = f'Episode {self.number}' if self.number.isnumeric() else f'{self.number} Episode'
-        return f'{astr} - {self.ordinal_date}'
+        return f'{self.number_str} - {self.ordinal_date}'
 
     @property
     def slug(self) -> str:

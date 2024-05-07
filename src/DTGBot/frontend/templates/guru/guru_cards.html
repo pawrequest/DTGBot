@@ -1,8 +1,8 @@
 {% for guru in gurus %}
     <article class="card guru-card">
-        <a href="{{ guru.slug }}" class="simple-link">
+        <a href="{{ guru.slug }}">
             <h1>{{ guru.name }}</h1>
-            {#            <h2>{{ guru.interest }} mentions</h2>#}
+            <p>{{ guru.interest }} mentions</p>
         </a>
     </article>
     {% if loop.last and more %}

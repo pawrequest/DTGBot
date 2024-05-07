@@ -2,13 +2,14 @@
 
 {% block content %}
     <article class="detail-page">
+        {#        <div class="detail-heading">#}
+        <h1 class="heading">{{ episode.title }}</h1>
         <div class="topbar">
-            <span>Episode {{ episode.number }}</span>
             <span>{{ episode.ordinal_date }}</span>
+            <span>{{ episode.number_str }}</span>
             <a class='play-btn' href='{{ episode.url }}'>Play on Captivate.fm</a>
         </div>
-        <h1 id='ep-{{ episode.id }}'>{{ episode.title }}</h1>
-
+        {#        </div>#}
 
         {% if episode.notes %}
             <h3>Show Notes:</h3>

@@ -22,17 +22,6 @@ class Pagination(NamedTuple):
     offset: int
 
 
-def select_page(sqlselect, pagination: Pagination):
-    return sqlselect.offset(pagination.offset).limit(pagination.limit)
-
-
-def select_page_more(session, sqlselect, pagination: Pagination) -> tuple[list, bool]:
-    stmt = sqlselect.offset(pagination.offset).limit(pagination.limit + 1)
-    res = session.exec(stmt).all()
-    more = len(res) > pagination.limit
-    return res[:pagination.limit], more
-
-
 def ordinal(n):
     return str(n) + ('th' if 4 <= n % 100 <= 20 else {1: 'st', 2: 'nd', 3: 'rd'}.get(n % 10, 'th'))
 

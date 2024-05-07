@@ -4,60 +4,40 @@ import fastapi
 import sqlmodel
 from fastapi import Form, Request
 from fastapi.responses import HTMLResponse
-from sqlalchemy import func
-from sqlmodel import select
 
 from DTGBot.common.database import get_session
 from DTGBot.common.models.guru_m import Guru
-from DTGBot.common.models.links import GuruEpisodeLink, RedditThreadGuruLink
-from DTGBot.fapi.shared import Pagination, get_pagination, select_page_more, templates
+from DTGBot.fapi.shared import Pagination, get_pagination, templates
+from DTGBot.fapi.sql_stmts import (by_column, gurus_w_interest, select_page_more)
 
 router = fastapi.APIRouter()
 SearchKind = _t.Literal['name']
 
 
-async def gurus_from_sesh(session: sqlmodel.Session, pagination: Pagination):
-    stmt = (
-        select(Guru)
-        .join(GuruEpisodeLink, isouter=True)
-        .join(RedditThreadGuruLink, isouter=True)
-        .group_by(Guru.id)
-        .having(
-            (func.count(GuruEpisodeLink.guru_id) + func.count(RedditThreadGuruLink.guru_id)) > 0
-        )
-        .order_by(
-            func.count(GuruEpisodeLink.guru_id) + func.count(RedditThreadGuruLink.guru_id).desc()
-        )
-    )
-    gurus, more = select_page_more(session, stmt, pagination)
-    return gurus, more
-
-
-def guru_matches(
+async def search_db(
         session,
         search_str,
-        search_kind: SearchKind = 'title',
+        search_kind: SearchKind = 'name',
         pagination: Pagination = get_pagination(),
 ):
     match search_kind:
         case 'name':
-            stmt = select(Guru).where(
-                func.lower(Guru.name).like(f'%{search_str.lower()}%')
-            )
-
+            stmt = await by_column(Guru, Guru.name, search_str)
         case _:
             raise ValueError(f'Invalid kind: {search_kind}')
 
-    gurus, more = select_page_more(session, stmt, pagination)
-    return gurus[:pagination.limit], more
+    gurus, more = await select_page_more(session, stmt, pagination)
+    return gurus, more
 
 
 @router.get('/get/', response_class=HTMLResponse)
 async def get(
-        request: Request, session: sqlmodel.Session = fastapi.Depends(get_session),
+        request: Request,
+        session: sqlmodel.Session = fastapi.Depends(get_session),
         pagination: Pagination = fastapi.Depends(get_pagination)
 ):
-    gurus, more = await gurus_from_sesh(session, pagination)
+    stmt = await gurus_w_interest()
+    gurus, more = await select_page_more(session, stmt, pagination)
 
     return templates().TemplateResponse(
         request=request,
@@ -67,7 +47,7 @@ async def get(
 
 
 @router.post('/get/', response_class=HTMLResponse)
-async def search_gurus(
+async def search(
         request: Request,
         search_kind: SearchKind = Form(...),
         search_str: str = Form(...),
@@ -75,17 +55,10 @@ async def search_gurus(
         pagination: Pagination = fastapi.Depends(get_pagination)
 ):
     if search_kind and search_str:
-        gurus, more = guru_matches(
-            session,
-            search_str,
-            search_kind,
-            pagination
-        )
+        gurus, more = await search_db(session, search_str, search_kind, pagination)
     else:
-        gurus, more = await gurus_from_sesh(
-            session,
-            pagination
-        )
+        stmt = await gurus_w_interest()
+        gurus, more = await select_page_more(session, stmt, pagination)
 
     return templates().TemplateResponse(
         request=request,
@@ -95,7 +68,7 @@ async def search_gurus(
 
 
 @router.get('/{guru_id}/', response_class=HTMLResponse)
-async def guru_detail(
+async def detail(
         guru_id: int,
         request: Request,
         sesssion: sqlmodel.Session = fastapi.Depends(get_session)
@@ -109,7 +82,7 @@ async def guru_detail(
 
 
 @router.get('/', response_class=HTMLResponse)
-async def guru_index(
+async def index(
         request: Request,
 ):
     return templates().TemplateResponse(

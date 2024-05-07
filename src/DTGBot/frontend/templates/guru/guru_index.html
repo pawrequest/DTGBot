@@ -1,28 +1,26 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="wrapper">
-        <h1 class="heading">Gurus</h1>
-        <div class="search_wrapper">
-            <div class="search">
-                <span>Filter By Name</span>
-                <form>
-                    <div class="form-input">
-                        <input type="hidden" name="search_kind" value="name">
-                        <input class="form-control" type="search"
-                               name="search_str" placeholder="Begin Typing To Filter..."
-                               hx-post="/guru/get/"
-                               hx-trigger="input changed delay:500ms, search"
-                               hx-target="#search-results">
-                    </div>
-                </form>
-            </div>
+    <h1 class="heading">Gurus</h1>
+    <div class="search_wrapper">
+        <div class="search">
+            <p>Filter By Name</p>
+            <form>
+                <div class="form-input">
+                    <input type="hidden" name="search_kind" value="name">
+                    <input class="form-control" type="search"
+                           name="search_str" placeholder="Begin Typing To Filter..."
+                           hx-post="/guru/get/"
+                           hx-trigger="input changed delay:500ms, search"
+                           hx-target="#search-results">
+                </div>
+            </form>
         </div>
-        <div id="search-results" class="cards"
-             hx-get="/guru/get/"
-             hx-trigger="load" hx-target="this">
-        </div>
-
-
     </div>
+    <div id="search-results" class="cards"
+         hx-get="/guru/get/"
+         hx-trigger="load" hx-target="this">
+    </div>
+
+
 {% endblock %}

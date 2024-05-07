@@ -2,11 +2,9 @@
     <article class="card">
         <a href="{{ thread.shortlink }}">
             <h1>{{ thread.title }}</h1>
-            <div class="card-detail">
-                {% for guru in thread.gurus %}
-                    <p>{{ guru.name }}</p>
-                {% endfor %}
-            </div>
+            {% for guru in thread.gurus %}
+                <span>{{ guru.name }}</span>
+            {% endfor %}
         </a>
     </article>
 

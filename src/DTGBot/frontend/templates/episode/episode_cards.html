@@ -1,12 +1,18 @@
 {% for episode in episodes %}
     <article class="card">
         <a href="{{ episode.slug }}">
-            <h3>{{ episode.number_date }}</h3>
+            <div class="card-top-bar">
+                <span>{{ episode.number_str }}</span>
+                <span>{{ episode.ordinal_date }}</span>
+            </div>
+            {#            </div>#}
             <h1>{{ episode.title }}</h1>
             {% if episode.notes %}
-                {% for note in episode.notes %}
-                    <p>{{ note }}</p>
-                {% endfor %}
+                <div class="ep-notes">
+                    {% for note in episode.notes %}
+                        <p>{{ note }}</p>
+                    {% endfor %}
+                </div>
             {% endif %}
         </a>
     </article>
