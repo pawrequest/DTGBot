@@ -1,49 +1,94 @@
 import functools
 
+from loguru import logger
 from sqlalchemy import func
-from sqlmodel import col, desc, select
+from sqlmodel import and_, col, desc, not_, or_, select
 
 from DTGBot.common.models.episode_m import Episode
 from DTGBot.common.models.guru_m import Guru
-from DTGBot.common.models.links import GuruEpisodeLink, RedditThreadGuruLink
+from DTGBot.common.models.links import GuruEpisodeLink, GuruRedditLink
 from DTGBot.common.models.reddit_m import RedditThread
 from DTGBot.fapi.shared import Pagination
 
 
-async def by_column(table, column, search_str):
+async def search_column(table, column, search_str: str):
     search = f'%{search_str}%'
-    return (
-        select(table)
-        .where(col(column).ilike(search))
+    return select(table).where(col(column).ilike(search))
+
+
+async def search_guru_and_title(model, search_string: str):
+    condition1 = col(Guru.name).ilike(f'%{search_string}%')
+    condition2 = col(model.title).ilike(f'%{search_string}%')
+    return select(model).where(or_(condition1, condition2))
+
+
+async def search_gurus(search_str: str):
+    return select(Guru).where(col(Guru.name).ilike(f'%{search_str}%'))
+
+
+async def search_in_title(model, search_str: str):
+    return select(model).where(col(model.title).ilike(f'%{search_str}%'))
+
+
+async def search_column_array(table, column, search_strs: list[str], excludes: list[str] | None = None):
+    excludes = excludes or []
+    yes_cond = [col(column).ilike(f'%{search_str}%') for search_str in search_strs]
+    no_cond = [not_(col(column).ilike(f'%{search_str}%')) for search_str in excludes]
+    return select(table).where(and_(or_(*yes_cond), *no_cond))
+
+
+async def search_column_specific(table, column, search_strs: list[str], excludes: list[str] | None = None):
+    logger.info(f'{search_strs=}')
+    logger.info(f'{excludes=}')
+
+    excludes = excludes or []
+    yes_cond = [column == search_str for search_str in search_strs]
+    no_cond = [not_(column.ilike(f'%{search_str}%')) for search_str in excludes]
+    return select(table).where(and_(or_(*yes_cond, *no_cond)))
+
+
+async def search_titled_f_guru(titled: Episode | RedditThread, guru_name: str, excludes: list[str] | None = None):
+    excludes = excludes or []
+    logger.info(f'{excludes=}')
+    select(type(titled)).where(col(titled.title).ilike(f'%{guru_name}%'))
+
+
+async def select_episodes_with_guru(guru):
+    return select(Episode).where(
+        and_(
+            or_(
+                col(Episode.title).ilike(f'%{guru.name}%'),
+                col(Episode.notes).ilike(f'%{guru.name}%'),
+                col(Episode.links).ilike(f'%{guru.name}%'),
+                *[col(Episode.title).ilike(f'%{_}%') for _ in guru.include_strs],
+            ),
+            *[not_(col(Episode.title).ilike(f'%{exclude}%')) for exclude in guru.exclude_strs],
+            not_(col(Episode.gurus).contains(guru)),
+        )
     )
 
 
-async def by_related_column(table, link_table, related_table, related_col, search_str):
-    search = f'%{search_str}%'
-    return (
-        select(table)
-        .join(link_table)
-        .join(related_table)
-        .where(col(related_col).ilike(search))
+async def select_threads_with_guru(guru_name: str):
+    return select(RedditThread).where(
+        col(RedditThread.title).ilike(f'%{guru_name}%'),
     )
 
 
-eps_by_guruname = functools.partial(by_related_column, Episode, GuruEpisodeLink, Guru, Guru.name)
-reddit_by_guruname = functools.partial(
-    by_related_column,
-    RedditThread,
-    RedditThreadGuruLink,
-    Guru,
-    Guru.name
-)
-GURU_INTEREST = func.count(GuruEpisodeLink.guru_id) + func.count(RedditThreadGuruLink.guru_id)
+async def search_related_column(table, link_table, related_table, related_col, search_str):
+    search = f'%{search_str}%'
+    return select(table).join(link_table).join(related_table).where(col(related_col).ilike(search))
+
+
+eps_by_guruname = functools.partial(search_related_column, Episode, GuruEpisodeLink, Guru, Guru.name)
+reddit_by_guruname = functools.partial(search_related_column, RedditThread, GuruRedditLink, Guru, Guru.name)
+GURU_INTEREST = func.count(GuruEpisodeLink.guru_id) + func.count(GuruRedditLink.guru_id)
 
 
 async def gurus_w_interest():
     stmt = (
         select(Guru)
         .join(GuruEpisodeLink, isouter=True)
-        .join(RedditThreadGuruLink, isouter=True)
+        .join(GuruRedditLink, isouter=True)
         .group_by(Guru.id)
         .having(GURU_INTEREST > 0)
         .order_by(desc(GURU_INTEREST))
@@ -55,4 +100,35 @@ async def select_page_more(session, sqlselect, pagination: Pagination) -> tuple[
     stmt = sqlselect.offset(pagination.offset).limit(pagination.limit + 1)
     res = session.exec(stmt).all()
     more = len(res) > pagination.limit
-    return res[:pagination.limit], more
+    return res[: pagination.limit], more
+
+
+async def new_links_array(model, search_col, search_strings: list, current_links, excludes: list[str] | None = None):
+    stmt = await search_column_array(model, search_col, search_strings, excludes=excludes)
+    existing_ids = [link.id for link in current_links]
+    new_stmt = stmt.where(not_(col(model.id).in_(existing_ids)))
+    return new_stmt
+
+
+async def new_links(model, search_col, search_string: str, current_links):
+    stmt = await search_column(model, search_col, search_string)
+    existing_ids = [link.id for link in current_links]
+    new_stmt = stmt.where(not_(col(model.id).in_(existing_ids)))
+    return new_stmt
+
+
+async def new_links2(model, search_col, search_string: str, current_links):
+    # stmt = await search_column_bi_directional(model, search_col, search_string)
+    stmt = await search_column(model, search_col, search_string)
+    # stmt = await search_guru_and_title(model, search_string)
+
+    existing_ids = [link.id for link in current_links]
+    new_stmt = stmt.where(not_(col(model.id).in_(existing_ids)))
+    return new_stmt
+
+
+async def existing_links(model, search_col, search_strings, current_links):
+    stmt = await search_column_array(model, search_col, search_strings)
+    existing_ids = [link.id for link in current_links]
+    new_stmt = stmt.where(col(model.id).in_(existing_ids))
+    return new_stmt

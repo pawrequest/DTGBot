@@ -1,10 +1,10 @@
 {% for thread in threads %}
     <article class="card">
         <a href="{{ thread.shortlink }}">
-        <span>{{ thread.ordinal_date }}</span>
+            <span>{{ thread.ordinal_date }}</span>
             <h1>{{ thread.title }}</h1>
             {% for guru in thread.gurus %}
-                <span>{{ guru.name }}</span>
+                <span class="tag">{{ guru.name }}</span>
             {% endfor %}
         </a>
     </article>

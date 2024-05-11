@@ -14,7 +14,7 @@ from DTGBot.fapi.shared import (
     get_pagination,
     templates,
 )
-from DTGBot.fapi.sql_stmts import by_column, reddit_by_guruname, select_page_more
+from DTGBot.fapi.sql_stmts import search_column, reddit_by_guruname, select_page_more
 
 router = fastapi.APIRouter()
 SearchKind = _t.Literal['title', 'guru']
@@ -28,7 +28,7 @@ async def search_db(
 ):
     match search_kind:
         case 'title':
-            stmt = await by_column(RedditThread, RedditThread.title, search_str)
+            stmt = await search_column(RedditThread, RedditThread.title, search_str)
         case 'guru':
             stmt = await reddit_by_guruname(search_str)
         case _:

@@ -1,10 +1,12 @@
 {% for guru in gurus %}
-    <article class="card guru-card">
-        <a href="{{ guru.slug }}">
+    <a href="{{ guru.slug }}" class="card">
+        <div class="card-content">
             <h1>{{ guru.name }}</h1>
-            <p>{{ guru.interest }} mentions</p>
-        </a>
-    </article>
+        </div>
+        <div class="tag-container">
+            <p class="mentions">{{ guru.interest }} mentions</p>
+        </div>
+    </a>
     {% if loop.last and more %}
         {% include 'infinite_scroll.html' with context %}
     {% endif %}

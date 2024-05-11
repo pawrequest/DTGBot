@@ -10,6 +10,7 @@ requires-python = ">= 3.12"
 dependencies = [
     "pawlogger @ git+https://github.com/pawrequest/pawlogger",
     "scrapaw @ git+https://github.com/pawrequest/scrapaw",
+    "pawdantic @ git+https://github.com/pawrequest/pawdantic",
     'jinja2',
     'asyncpraw',
     'sqlmodel',

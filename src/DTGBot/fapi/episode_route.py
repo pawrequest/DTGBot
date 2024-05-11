@@ -14,7 +14,7 @@ from DTGBot.fapi.shared import (
     get_pagination,
     templates,
 )
-from DTGBot.fapi.sql_stmts import by_column, eps_by_guruname, select_page_more
+from DTGBot.fapi.sql_stmts import search_column, eps_by_guruname, select_page_more
 
 router = fastapi.APIRouter()
 SearchKind = _t.Literal['title', 'guru', 'notes']
@@ -31,9 +31,9 @@ async def search_db(
             stmt = await eps_by_guruname(search_str)
             # stmt = await by_related_column(Episode, Guru, Guru.name, search_str)
         case 'title':
-            stmt = await by_column(Episode, Episode.title, search_str)
+            stmt = await search_column(Episode, Episode.title, search_str)
         case 'notes':
-            stmt = await by_column(Episode, Episode.notes, search_str)
+            stmt = await search_column(Episode, Episode.notes, search_str)
         case _:
             raise ValueError(f'Invalid kind: {search_kind}')
     episodes, more = await select_page_more(session, stmt, pagination)

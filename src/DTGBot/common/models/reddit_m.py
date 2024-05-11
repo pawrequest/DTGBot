@@ -1,14 +1,18 @@
 # no dont do this!! from __future__ import annotations
 import hashlib
 from datetime import datetime
-from typing import ClassVar, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from asyncpraw.models import Submission
-import pydantic as _p
 import sqlmodel as sqm
+from sqlmodel import Relationship
 
-from DTGBot.common.dtg_config import RedditConfig
-from DTGBot.common.models.links import RedditThreadEpisodeLink, RedditThreadGuruLink
+from DTGBot.common.models.links import (
+    EpisodeRedditExclude,
+    EpisodeRedditLink,
+    GuruRedditExclude,
+    GuruRedditLink,
+)
 from DTGBot.fapi.shared import dt_ordinal
 
 if TYPE_CHECKING:
@@ -54,9 +58,13 @@ class RedditThreadBase(sqm.SQLModel):
 class RedditThread(RedditThreadBase, table=True, extend_existing=True):
     id: int | None = sqm.Field(default=None, primary_key=True)
 
-    gurus: list['Guru'] = sqm.Relationship(back_populates='reddit_threads', link_model=RedditThreadGuruLink)
-    episodes: list['Episode'] = sqm.Relationship(back_populates='reddit_threads', link_model=RedditThreadEpisodeLink)
-    settings_class: ClassVar[_p.BaseModel] = RedditConfig
+    gurus: list['Guru'] = Relationship(back_populates='reddit_threads', link_model=GuruRedditLink)
+    guru_excludes: list['Guru'] = Relationship(back_populates='reddit_excludes', link_model=GuruRedditExclude)
+    # guru_excludes: list[int] = sqm.Field(default_factory=list, sa_column=Column(sqm.JSON))
+
+    episodes: list['Episode'] = Relationship(back_populates='reddit_threads', link_model=EpisodeRedditLink)
+    # episode_excludes: list[int] = sqm.Field(default_factory=list, sa_column=Column(sqm.JSON))
+    episode_excludes: list['Episode'] = Relationship(back_populates='reddit_excludes', link_model=EpisodeRedditExclude)
 
     def __hash__(self):
         return hash(self.reddit_id)
@@ -75,6 +83,7 @@ class RedditThread(RedditThreadBase, table=True, extend_existing=True):
     @classmethod
     def rout_prefix(cls):
         return '/red/'
+
 
 def submission_str(submisssion: Submission):
     return f'{submisssion.title} - {dt_ordinal(datetime.fromtimestamp(submisssion.created_utc))}'

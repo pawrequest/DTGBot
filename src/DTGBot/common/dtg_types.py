@@ -5,14 +5,15 @@ from loguru import logger
 from DTGBot.common.models.episode_m import Episode
 from DTGBot.common.models.guru_m import Guru
 from DTGBot.common.models.links import (
-    RedditThreadEpisodeLink,
+    EpisodeRedditLink,
     GuruEpisodeLink,
-    RedditThreadGuruLink,
+    GuruRedditLink, EpisodeRedditExclude, GuruEpisodeExclude, GuruRedditExclude,
 )
 from DTGBot.common.models.reddit_m import RedditThread
 
 DB_MODEL_TYPE = Guru | Episode | RedditThread
-LINK_TYPES = GuruEpisodeLink | RedditThreadGuruLink | RedditThreadEpisodeLink
+LINK_TYPES = GuruEpisodeLink | GuruRedditLink | EpisodeRedditLink
+EXCLUDE_LINK_TYPES = GuruEpisodeExclude | GuruRedditExclude | EpisodeRedditExclude
 
 
 def quiet_cancel(func: callable) -> callable:

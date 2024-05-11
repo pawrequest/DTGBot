@@ -3,7 +3,6 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
 from loguru import logger
-from starlette.responses import HTMLResponse, RedirectResponse
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
@@ -27,6 +26,10 @@ async def lifespan(app: FastAPI):
         yield
     finally:
         ...
+
+
+def name_s(model):
+    return model.__name__.lower() + 's'
 
 
 app = FastAPI(lifespan=lifespan)

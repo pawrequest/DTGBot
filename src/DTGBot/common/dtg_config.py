@@ -6,18 +6,18 @@ from pathlib import Path
 import typing as _t
 
 from pawlogger import get_loguru
-from pydantic import HttpUrl, model_validator, SecretStr
+from pydantic import HttpUrl, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from scrapaw.scrapaw_config import ScrapawConfig
 
 
-@functools.lru_cache
-def dtg_env_from_env():
-    guru_env = os.getenv('GURU_ENV')
-    print(guru_env)
-    if not guru_env or not Path(guru_env).exists():
-        raise ValueError('GURU_ENV (path to environment file) not set')
-    return guru_env
+# @functools.lru_cache
+# def dtg_env_from_env():
+#     guru_env = os.getenv('GURU_ENV')
+#     print(guru_env)
+#     if not guru_env or not Path(guru_env).exists():
+#         raise ValueError('GURU_ENV (path to environment file) not set')
+#     return guru_env
 
 
 @functools.lru_cache
@@ -42,11 +42,9 @@ class RedditConfig(BaseSettings):
     subreddit_name: str = 'test'
     wiki_name: str = 'test'
 
-    model_config = SettingsConfigDict(
-        env_ignore_empty=True,
-        env_file=reddit_env_from_env(),
-        extra='ignore'
-    )
+    max_red_dupes: int = 1000
+
+    model_config = SettingsConfigDict(env_ignore_empty=True, env_file=reddit_env_from_env(), extra='ignore')
 
 
 class DTGConfig(BaseSettings):
@@ -57,18 +55,24 @@ class DTGConfig(BaseSettings):
     log_profile: _t.Literal['local', 'remote', 'default'] = 'local'
 
     db_loc: Path | None = None
-    guru_names_file: Path | None = None
     log_file: Path | None = None
+    backup_dir: Path | None = None
+    guru_update_json: Path | None = None
+    gurus_json: Path | None = None
 
+    restore: bool = False
     debug: bool = False
     sleep: int = 60 * 60  # 1 hour
     max_dupes: int = 5  # 1 page in captivate
     scrape_limit: int | None = None
 
     @model_validator(mode='after')
-    def get_db_name(self):
+    def set_paths(self):
         self.db_loc = self.db_loc or self.guru_data / 'guru.db'
-        self.guru_names_file = self.guru_names_file or self.guru_data / 'gurunames.txt'
+        self.backup_dir = self.backup_dir or self.guru_data / 'backup'
+        if not self.backup_dir.exists():
+            self.backup_dir.mkdir(parents=True)
+        self.gurus_json = self.gurus_json or self.backup_dir / 'gurus.json'
         self.log_file = self.log_file or self.guru_data / 'logs' / 'dtgbot.log'
         return self
 
@@ -83,6 +87,7 @@ class DTGConfig(BaseSettings):
             _env_file=None,
             _env_ignore_empty=True,
         )
+
     model_config = SettingsConfigDict()
     # model_config = SettingsConfigDict(env_ignore_empty=True, env_file=dtg_env_from_env())
 

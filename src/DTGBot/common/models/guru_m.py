@@ -1,5 +1,4 @@
 # no dont do this!! from __future__ import annotations
-import hashlib
 from functools import cached_property
 from typing import ClassVar, TYPE_CHECKING
 
@@ -8,7 +7,12 @@ from sqlmodel import Field, Relationship, SQLModel
 import sqlalchemy as sa
 import pydantic as _p
 
-from DTGBot.common.models.links import GuruEpisodeLink, RedditThreadGuruLink
+from DTGBot.common.models.links import (
+    GuruEpisodeExclude,
+    GuruEpisodeLink,
+    GuruRedditExclude,
+    GuruRedditLink,
+)
 
 if TYPE_CHECKING:
     from DTGBot.common.models.episode_m import Episode
@@ -18,27 +22,27 @@ if TYPE_CHECKING:
 class GuruBase(SQLModel):
     name: str = Field(index=True, unique=True)
     notes: list[str] | None = Field(default_factory=list)
+    include_strs: list[str] | None = Field(default_factory=list)
+    exclude_strs: list[str] | None = Field(default_factory=list)
+
+    @property
+    def title(self):
+        return self.name
 
 
 class Guru(GuruBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
     notes: list[str] | None = Field(default_factory=list, sa_column=sqlmodel.Column(sa.JSON))
+    include_strs: list[str] | None = Field(default_factory=list, sa_column=sqlmodel.Column(sa.JSON))
+    exclude_strs: list[str] | None = Field(default_factory=list, sa_column=sqlmodel.Column(sa.JSON))
 
     episodes: list['Episode'] = Relationship(back_populates='gurus', link_model=GuruEpisodeLink)
+    episode_excludes: list['Episode'] = Relationship(back_populates='guru_excludes', link_model=GuruEpisodeExclude)
 
-    reddit_threads: list['RedditThread'] = Relationship(
-        back_populates='gurus',
-        link_model=RedditThreadGuruLink
-    )
-
-    # relevant: bool = Field(default=False)
+    reddit_threads: list['RedditThread'] = Relationship(back_populates='gurus', link_model=GuruRedditLink)
+    reddit_excludes: list['RedditThread'] = Relationship(back_populates='guru_excludes', link_model=GuruRedditExclude)
 
     rout_prefix: ClassVar[str] = 'guru'
-
-    # @_p.model_validator(mode='after')
-    # def validate_relevant(self):
-    #     self.relevant = any([self.episodes, self.reddit_threads])
-    #     return self
 
     @cached_property
     def slug(self):
@@ -54,10 +58,3 @@ class Guru(GuruBase, table=True):
 
     def __eq__(self, other):
         return self.name == other.name
-
-    @_p.computed_field
-    @property
-    def get_hash(self) -> str:
-        return hashlib.md5(
-            ','.join([self.name]).encode('utf-8')
-        ).hexdigest()

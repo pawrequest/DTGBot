@@ -3,10 +3,14 @@ from typing import ClassVar, TYPE_CHECKING
 from sqlmodel import Field, Relationship
 import sqlmodel as sqm
 import sqlalchemy as sqa
-import pydantic as _p
-from scrapaw import EpisodeBase, ScrapawConfig
+from scrapaw import EpisodeBase
 
-from DTGBot.common.models.links import GuruEpisodeLink, RedditThreadEpisodeLink
+from DTGBot.common.models.links import (
+    EpisodeRedditExclude,
+    EpisodeRedditLink,
+    GuruEpisodeExclude,
+    GuruEpisodeLink,
+)
 from DTGBot.fapi.shared import dt_ordinal
 
 if TYPE_CHECKING:
@@ -19,17 +23,19 @@ class Episode(EpisodeBase, sqm.SQLModel, table=True):
     links: dict[str, str] = Field(default_factory=dict, sa_column=sqm.Column(sqa.JSON))
     notes: list[str] = Field(default_factory=list, sa_column=sqm.Column(sqa.JSON))
     id: int | None = Field(default=None, primary_key=True)
+
     gurus: list['Guru'] = Relationship(back_populates='episodes', link_model=GuruEpisodeLink)
-    reddit_threads: list['RedditThread'] = Relationship(
-        back_populates='episodes',
-        link_model=RedditThreadEpisodeLink
-    )
+    guru_excludes: list['Guru'] = Relationship(back_populates='episode_excludes', link_model=GuruEpisodeExclude)
+    # guru_excludes: list[int] = sqm.Field(default_factory=list, sa_column=Column(sqm.JSON))
+
+    reddit_threads: list['RedditThread'] = Relationship(back_populates='episodes', link_model=EpisodeRedditLink)
+    reddit_excludes: list['RedditThread'] = Relationship(back_populates='episode_excludes', link_model=EpisodeRedditExclude)
+    # reddit_excludes: list[int] = Field(default_factory=list, sa_column=Column(sqm.JSON))
     rout_prefix: ClassVar[str] = 'eps'
 
     @property
     def number_str(self) -> str:
         return f'Episode {self.number}' if self.number.isnumeric() else f'{self.number.title()} Episode'
-
 
     @property
     def number_date(self) -> str:
