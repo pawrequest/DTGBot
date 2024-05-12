@@ -12,7 +12,7 @@ from DTGBot.common.models.reddit_m import RedditThread
 from DTGBot.fapi.shared import (
     Pagination,
     get_pagination,
-    templates, base_url_d, base_url,
+    templates_mount, BASE_URL_D, BASE_URL,
 )
 from DTGBot.fapi.sql_stmts import reddit_by_guruname, search_column, select_page_more
 
@@ -47,10 +47,10 @@ async def get(
     stmt = select(RedditThread).order_by(desc(RedditThread.created_datetime))
     threads, more = await select_page_more(session, stmt, pagination)
 
-    return templates().TemplateResponse(
+    return TEMPLATES.TemplateResponse(
         request=request,
         name='reddit/reddit_cards.html',
-        context={'threads': threads, 'pagination': pagination, 'route_url': f'{await base_url()}/red', 'more': more} | await base_url_d(),
+        context={'threads': threads, 'pagination': pagination, 'route_url': f'{BASE_URL}/red', 'more': more, **BASE_URL_D},
     )
 
 
@@ -69,10 +69,10 @@ async def search(
         stmt = select(RedditThread).order_by(desc(RedditThread.created_datetime))
         threads, more = await select_page_more(session, stmt, pagination)
 
-    return templates().TemplateResponse(
+    return TEMPLATES.TemplateResponse(
         request=request,
         name='reddit/reddit_cards.html',
-        context={'threads': threads, 'pagination': pagination, 'route_url': f'{await base_url()}/red', 'more': more} | await base_url_d(),
+        context={'threads': threads, 'pagination': pagination, 'route_url': f'{BASE_URL}/red', 'more': more, **BASE_URL_D},
     )
 
 
@@ -81,8 +81,8 @@ async def index(
     request: Request,
 ):
     logger.debug('all_red')
-    return templates().TemplateResponse(
+    return TEMPLATES.TemplateResponse(
         request=request,
         name='reddit/reddit_index.html',
-        context=await base_url_d(),
+        context=BASE_URL_D,
     )

@@ -184,6 +184,8 @@ header {
     margin-inline: auto;
     flex-basis: 100%;
     gap: 2em;
+    max-width: 100%;
+
     /*position: relative;*/
 
 

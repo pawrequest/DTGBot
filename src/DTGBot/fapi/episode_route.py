@@ -9,7 +9,7 @@ from pawlogger.config_loguru import logger
 
 from DTGBot.common.database import get_session
 from DTGBot.common.models.episode_m import Episode
-from DTGBot.fapi.shared import (Pagination, base_url_d, get_pagination, templates, base_url)
+from DTGBot.fapi.shared import (Pagination, BASE_URL_D, get_pagination, TEMPLATES, BASE_URL)
 from DTGBot.fapi.sql_stmts import eps_by_guruname, search_column, select_page_more
 
 router = fastapi.APIRouter()
@@ -45,10 +45,10 @@ async def get(
     stmt = select(Episode).order_by(desc(Episode.date))
     episodes, more = await select_page_more(session, stmt, pagination)
 
-    return templates().TemplateResponse(
+    return TEMPLATES.TemplateResponse(
         request=request,
         name='episode/episode_cards.html',
-        context={'episodes': episodes, 'pagination': pagination, 'route_url': f'{await base_url()}/eps', 'more': more} | await base_url_d(),
+        context={'episodes': episodes, 'pagination': pagination, 'route_url': f'{BASE_URL}/eps', 'more': more, **BASE_URL_D},
     )
 
 
@@ -73,18 +73,18 @@ async def search(
         stmt = select(Episode).order_by(desc(Episode.date))
         episodes, more = await select_page_more(session, stmt, pagination)
 
-    return templates().TemplateResponse(
+    return TEMPLATES.TemplateResponse(
         request=request,
         name='episode/episode_cards.html',
-        context={'episodes': episodes, 'pagination': pagination, 'route_url': f'{await base_url()}/eps', 'more': more} | await base_url_d(),
+        context={'episodes': episodes, 'pagination': pagination, 'route_url': f'{BASE_URL}/eps', 'more': more, **BASE_URL_D},
     )
 
 
 @router.get('/{ep_id}/', response_class=HTMLResponse)
 async def detail(ep_id: int, request: Request, sesssion: sqlmodel.Session = fastapi.Depends(get_session)):
     episode = sesssion.get(Episode, ep_id)
-    return templates().TemplateResponse(
-        request=request, name='episode/episode_detail.html', context={'episode': episode} | await base_url_d()
+    return TEMPLATES.TemplateResponse(
+        request=request, name='episode/episode_detail.html', context={'episode': episode, **BASE_URL_D}
     )
 
 
@@ -92,4 +92,4 @@ async def detail(ep_id: int, request: Request, sesssion: sqlmodel.Session = fast
 async def index(
     request: Request,
 ):
-    return templates().TemplateResponse(request=request, name='episode/episode_index.html', context=await base_url_d())
+    return TEMPLATES.TemplateResponse(request=request, name='episode/episode_index.html', context=BASE_URL_D)

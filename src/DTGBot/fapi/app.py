@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
 from loguru import logger
+from starlette.responses import RedirectResponse
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
@@ -12,6 +13,7 @@ from DTGBot.fapi.episode_route import router as ep_router
 from DTGBot.fapi.red_route import router as red_router
 from DTGBot.fapi.admin_route import router as admin_router
 from DTGBot.common.database import create_db
+from DTGBot.fapi.shared import BASE_URL
 
 dtg_settings = dtg_sett()
 STATIC = dtg_settings.guru_frontend / 'static'
@@ -50,7 +52,6 @@ async def favicon_ico() -> str:
     return 'page not found'
 
 
-@app.get('/', response_class=PlainTextResponse)
+@app.get('/', response_class=RedirectResponse)
 async def index():
-    logger.info('index ROUTE')
-    return 'This is the root endpoint'
+    return RedirectResponse(url=f'{BASE_URL}/eps')

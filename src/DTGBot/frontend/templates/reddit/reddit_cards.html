@@ -1,11 +1,17 @@
 {% for thread in threads %}
     <article class="card">
-        <a href="{{ thread.shortlink }}">
-            <span>{{ thread.ordinal_date }}</span>
-            <h1>{{ thread.title }}</h1>
-            {% for guru in thread.gurus %}
-                <span class="tag">{{ guru.name }}</span>
-            {% endfor %}
+        <a href="{{ thread.shortlink }}" class="card-link">
+            <div class="card-top-bar">
+                <span>{{ thread.ordinal_date }}</span>
+            </div>
+            <div class="card-content">
+                <h1>{{ thread.title }}</h1>
+            </div>
+            <div class="tag-container">
+                {% for guru in thread.gurus %}
+                    <span class="tag">{{ guru.name }}</span>
+                {% endfor %}
+            </div>
         </a>
     </article>
 

@@ -7,7 +7,7 @@ from fastapi.responses import HTMLResponse
 
 from DTGBot.common.database import get_session
 from DTGBot.common.models.guru_m import Guru
-from DTGBot.fapi.shared import Pagination, base_url, base_url_d, get_pagination, templates
+from DTGBot.fapi.shared import BASE_URL, BASE_URL_D, Pagination, get_pagination, TEMPLATES
 from DTGBot.fapi.sql_stmts import gurus_w_interest, search_column, select_page_more
 
 router = fastapi.APIRouter()
@@ -39,11 +39,10 @@ async def get(
     stmt = await gurus_w_interest()
     gurus, more = await select_page_more(session, stmt, pagination)
 
-    return templates().TemplateResponse(
+    return TEMPLATES.TemplateResponse(
         request=request,
         name='guru/guru_cards.html',
-        context={'gurus': gurus, 'pagination': pagination, 'route_url': f'{await base_url()}/guru', 'more': more}
-        | await base_url_d(),
+        context={'gurus': gurus, 'pagination': pagination, 'route_url': f'{BASE_URL}/guru', 'more': more, **BASE_URL_D},
     )
 
 
@@ -61,19 +60,18 @@ async def search(
         stmt = await gurus_w_interest()
         gurus, more = await select_page_more(session, stmt, pagination)
 
-    return templates().TemplateResponse(
+    return TEMPLATES.TemplateResponse(
         request=request,
         name='guru/guru_cards.html',
-        context={'gurus': gurus, 'pagination': pagination, 'route_url': f'{await base_url()}/guru', 'more': more}
-        | await base_url_d(),
+        context={'gurus': gurus, 'pagination': pagination, 'route_url': f'{BASE_URL}/guru', 'more': more, **BASE_URL_D},
     )
 
 
 @router.get('/{guru_id}/', response_class=HTMLResponse)
 async def detail(guru_id: int, request: Request, sesssion: sqlmodel.Session = fastapi.Depends(get_session)):
     guru = sesssion.get(Guru, guru_id)
-    return templates().TemplateResponse(
-        request=request, name='guru/guru_detail.html', context={'guru': guru} | await base_url_d()
+    return TEMPLATES.TemplateResponse(
+        request=request, name='guru/guru_detail.html', context={'guru': guru, **BASE_URL_D}
     )
 
 
@@ -81,8 +79,8 @@ async def detail(guru_id: int, request: Request, sesssion: sqlmodel.Session = fa
 async def index(
     request: Request,
 ):
-    return templates().TemplateResponse(
+    return TEMPLATES.TemplateResponse(
         request=request,
         name='guru/guru_index.html',
-        context=await base_url_d(),
+        context=BASE_URL_D,
     )

@@ -7,21 +7,17 @@
             </div>
             <div class="card-content">
                 <h1>{{ episode.title }}</h1>
-                {% if episode.notes %}
-                    <div class="ep-notes">
-                        {% for note in episode.notes %}
-                            <p>{{ note }}</p>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
-            {% if episode.gurus %}
-                <div class="tag_container">
-                    {% for guru in episode.gurus %}
-                        <span class="tag">{{ guru.name }}</span>
+                <div class="ep-notes">
+                    {% for note in episode.notes %}
+                        <p>{{ note }}</p>
                     {% endfor %}
                 </div>
-            {% endif %}
+            </div>
+            <div class="tag_container">
+                {% for guru in episode.gurus %}
+                    <span class="tag">{{ guru.name }}</span>
+                {% endfor %}
+            </div>
         </a>
     </article>
     {% if loop.last and more %}
