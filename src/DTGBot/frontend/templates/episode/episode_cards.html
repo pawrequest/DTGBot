@@ -1,29 +1,29 @@
 {% for episode in episodes %}
-    {#    <article class="card">#}
-    <a href="{{ episode.slug }}" class="card">
-        <div class="card-top-bar">
-            <span>{{ episode.number_str }}</span>
-            <span>{{ episode.ordinal_date }}</span>
-        </div>
-        <div class="card-content">
-            <h1>{{ episode.title }}</h1>
-            {% if episode.notes %}
-                <div class="ep-notes">
-                    {% for note in episode.notes %}
-                        <p>{{ note }}</p>
+    <article class="card">
+        <a href="{{ episode.slug }}" class="card-link">
+            <div class="card-top-bar">
+                <span>{{ episode.number_str }}</span>
+                <span>{{ episode.ordinal_date }}</span>
+            </div>
+            <div class="card-content">
+                <h1>{{ episode.title }}</h1>
+                {% if episode.notes %}
+                    <div class="ep-notes">
+                        {% for note in episode.notes %}
+                            <p>{{ note }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            {% if episode.gurus %}
+                <div class="tag_container">
+                    {% for guru in episode.gurus %}
+                        <span class="tag">{{ guru.name }}</span>
                     {% endfor %}
                 </div>
             {% endif %}
-        </div>
-        {% if episode.gurus %}
-            <div class="tag_container">
-                {% for guru in episode.gurus %}
-                    <span class="tag">{{ guru.name }}</span>
-                {% endfor %}
-            </div>
-        {% endif %}
-
-    </a>
+        </a>
+    </article>
     {% if loop.last and more %}
         {% include 'infinite_scroll.html' with context %}
     {% endif %}
