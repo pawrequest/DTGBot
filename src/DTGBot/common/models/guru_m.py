@@ -8,9 +8,7 @@ import sqlalchemy as sa
 import pydantic as _p
 
 from DTGBot.common.models.links import (
-    GuruEpisodeExclude,
     GuruEpisodeLink,
-    GuruRedditExclude,
     GuruRedditLink,
 )
 
@@ -37,11 +35,7 @@ class Guru(GuruBase, table=True):
     exclude_strs: list[str] | None = Field(default_factory=list, sa_column=sqlmodel.Column(sa.JSON))
 
     episodes: list['Episode'] = Relationship(back_populates='gurus', link_model=GuruEpisodeLink)
-    episode_excludes: list['Episode'] = Relationship(back_populates='guru_excludes', link_model=GuruEpisodeExclude)
-
     reddit_threads: list['RedditThread'] = Relationship(back_populates='gurus', link_model=GuruRedditLink)
-    reddit_excludes: list['RedditThread'] = Relationship(back_populates='guru_excludes', link_model=GuruRedditExclude)
-
     rout_prefix: ClassVar[str] = 'guru'
 
     @cached_property

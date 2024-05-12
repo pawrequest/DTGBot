@@ -47,12 +47,6 @@ async def search_column_specific(table, column, search_strs: list[str], excludes
     return select(table).where(and_(or_(*yes_cond, *no_cond)))
 
 
-async def search_titled_f_guru(titled: Episode | RedditThread, guru_name: str, excludes: list[str] | None = None):
-    excludes = excludes or []
-    logger.info(f'{excludes=}')
-    select(type(titled)).where(col(titled.title).ilike(f'%{guru_name}%'))
-
-
 async def select_episodes_with_guru(guru):
     return select(Episode).where(
         and_(
@@ -63,15 +57,55 @@ async def select_episodes_with_guru(guru):
                 *[col(Episode.title).ilike(f'%{_}%') for _ in guru.include_strs],
             ),
             *[not_(col(Episode.title).ilike(f'%{exclude}%')) for exclude in guru.exclude_strs],
-            not_(col(Episode.gurus).contains(guru)),
         )
     )
 
 
-async def select_threads_with_guru(guru_name: str):
-    return select(RedditThread).where(
-        col(RedditThread.title).ilike(f'%{guru_name}%'),
+async def select_threads_with_guru(guru):
+    return select(RedditThread).where(col(RedditThread.title).ilike(f'%{guru.name}%'))
+
+
+async def select_episodes_with_reddit(reddit: RedditThread):
+    return select(Episode).where(
+        or_(
+            col(Episode.title).ilike(f'%{reddit.title}%'),
+            col(Episode.notes).ilike(f'%{reddit.title}%'),
+            col(Episode.links).ilike(f'%{reddit.title}%'),
+        )
     )
+
+async def select_threads_with_episode(episode: Episode):
+    return select(RedditThread).where(col(RedditThread.title).ilike(f'%{episode.title}%'))
+
+
+
+async def select_new_threads_with_episode(episode: Episode):
+    stmt = await select_threads_with_episode(episode)
+    return stmt.where(not_(col(RedditThread.reddit_id).in_([_.reddit_id for _ in episode.reddit_threads])))
+
+    # return stmt.where(not_(episode in RedditThread.episodes))
+
+
+async def select_new_eps_with_reddit(reddit: RedditThread):
+    stmt = await select_episodes_with_reddit(reddit)
+    return stmt.where(not_(col(Episode.id).in_([_.id for _ in reddit.episodes]))).where(
+        not_(col(Episode.title).in_([_.title for _ in reddit.episodes]))
+    )
+
+    # return stmt.where(not_(reddit in Episode.reddit_threads))
+
+
+async def select_new_threads_with_guru(guru):
+    stmt = await select_threads_with_guru(guru)
+    return stmt.where(not_(col(RedditThread.id).in_([_.id for _ in guru.reddit_threads])))
+
+    # return stmt.where(not_(guru in RedditThread.gurus))
+
+
+async def select_new_eps_with_guru(guru):
+    stmt = await select_episodes_with_guru(guru)
+    return stmt.where(not_(col(Episode.id).in_([_.id for _ in guru.episodes])))
+    # return stmt.where(not_(guru in Episode.gurus))
 
 
 async def search_related_column(table, link_table, related_table, related_col, search_str):

@@ -6,7 +6,7 @@ from pathlib import Path
 import typing as _t
 
 from pawlogger import get_loguru
-from pydantic import HttpUrl, SecretStr, model_validator
+from pydantic import HttpUrl, SecretStr, model_validator, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from scrapaw.scrapaw_config import ScrapawConfig
 
@@ -65,6 +65,11 @@ class DTGConfig(BaseSettings):
     sleep: int = 60 * 60  # 1 hour
     max_dupes: int = 5  # 1 page in captivate
     scrape_limit: int | None = None
+
+    @field_validator('scrape_limit', mode='before')
+    def fix_int(cls, v):
+        if not v:
+            return None
 
     @model_validator(mode='after')
     def set_paths(self):

@@ -34,7 +34,7 @@ def get_session(engine=None) -> Session:
 def create_db(engine=None):
     if engine is None:
         engine = engine_()
-    from DTGBot.common.dtg_types import DB_MODEL_TYPE, LINK_TYPES, EXCLUDE_LINK_TYPES  # noqa: F401
+    from DTGBot.common.dtg_types import DB_MODEL_TYPE, LINK_TYPES   # noqa: F401
     SQLModel.metadata.create_all(engine)
     logger.info('tables created')
 

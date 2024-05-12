@@ -6,9 +6,7 @@ import sqlalchemy as sqa
 from scrapaw import EpisodeBase
 
 from DTGBot.common.models.links import (
-    EpisodeRedditExclude,
     EpisodeRedditLink,
-    GuruEpisodeExclude,
     GuruEpisodeLink,
 )
 from DTGBot.fapi.shared import dt_ordinal
@@ -25,11 +23,11 @@ class Episode(EpisodeBase, sqm.SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
 
     gurus: list['Guru'] = Relationship(back_populates='episodes', link_model=GuruEpisodeLink)
-    guru_excludes: list['Guru'] = Relationship(back_populates='episode_excludes', link_model=GuruEpisodeExclude)
+    # guru_excludes: list['Guru'] = Relationship(back_populates='episode_excludes', link_model=GuruEpisodeExclude)
     # guru_excludes: list[int] = sqm.Field(default_factory=list, sa_column=Column(sqm.JSON))
 
     reddit_threads: list['RedditThread'] = Relationship(back_populates='episodes', link_model=EpisodeRedditLink)
-    reddit_excludes: list['RedditThread'] = Relationship(back_populates='episode_excludes', link_model=EpisodeRedditExclude)
+    # reddit_excludes: list['RedditThread'] = Relationship(back_populates='episode_excludes', link_model=EpisodeRedditExclude)
     # reddit_excludes: list[int] = Field(default_factory=list, sa_column=Column(sqm.JSON))
     rout_prefix: ClassVar[str] = 'eps'
 

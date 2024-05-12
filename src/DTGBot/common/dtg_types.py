@@ -7,13 +7,15 @@ from DTGBot.common.models.guru_m import Guru
 from DTGBot.common.models.links import (
     EpisodeRedditLink,
     GuruEpisodeLink,
-    GuruRedditLink, EpisodeRedditExclude, GuruEpisodeExclude, GuruRedditExclude,
+    GuruRedditLink,
 )
 from DTGBot.common.models.reddit_m import RedditThread
 
 DB_MODEL_TYPE = Guru | Episode | RedditThread
 LINK_TYPES = GuruEpisodeLink | GuruRedditLink | EpisodeRedditLink
-EXCLUDE_LINK_TYPES = GuruEpisodeExclude | GuruRedditExclude | EpisodeRedditExclude
+
+
+# EXCLUDE_LINK_TYPES = GuruEpisodeExclude | GuruRedditExclude | EpisodeRedditExclude
 
 
 def quiet_cancel(func: callable) -> callable:

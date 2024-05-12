@@ -8,9 +8,7 @@ import sqlmodel as sqm
 from sqlmodel import Relationship
 
 from DTGBot.common.models.links import (
-    EpisodeRedditExclude,
     EpisodeRedditLink,
-    GuruRedditExclude,
     GuruRedditLink,
 )
 from DTGBot.fapi.shared import dt_ordinal
@@ -59,12 +57,13 @@ class RedditThread(RedditThreadBase, table=True, extend_existing=True):
     id: int | None = sqm.Field(default=None, primary_key=True)
 
     gurus: list['Guru'] = Relationship(back_populates='reddit_threads', link_model=GuruRedditLink)
-    guru_excludes: list['Guru'] = Relationship(back_populates='reddit_excludes', link_model=GuruRedditExclude)
+    # guru_excludes: list['Guru'] = Relationship(back_populates='reddit_excludes', link_model=GuruRedditExclude)
     # guru_excludes: list[int] = sqm.Field(default_factory=list, sa_column=Column(sqm.JSON))
 
     episodes: list['Episode'] = Relationship(back_populates='reddit_threads', link_model=EpisodeRedditLink)
+
     # episode_excludes: list[int] = sqm.Field(default_factory=list, sa_column=Column(sqm.JSON))
-    episode_excludes: list['Episode'] = Relationship(back_populates='reddit_excludes', link_model=EpisodeRedditExclude)
+    # episode_excludes: list['Episode'] = Relationship(back_populates='reddit_excludes', link_model=EpisodeRedditExclude)
 
     def __hash__(self):
         return hash(self.reddit_id)
