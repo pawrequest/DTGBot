@@ -28,3 +28,11 @@ def ordinal(n):
 
 def dt_ordinal(dt: datetime | date) -> str:
     return dt.strftime('%a {th} %b %Y').replace('{th}', ordinal(dt.day))
+
+
+async def base_url() -> str:
+    return '/dtg'
+
+
+async def base_url_d() -> dict[str, str]:
+    return {'BASE_URL': await base_url()}

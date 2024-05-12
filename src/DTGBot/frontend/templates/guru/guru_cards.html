@@ -1,5 +1,5 @@
 {% for guru in gurus %}
-    <a href="{{ guru.slug }}" class="card">
+    <a href="{{ BASE_URL }}/{{ guru.slug }}" class="card">
         <div class="card-content">
             <h1>{{ guru.name }}</h1>
         </div>

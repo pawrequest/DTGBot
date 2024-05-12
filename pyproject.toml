@@ -24,9 +24,6 @@ dependencies = [
     'python-multipart',
 ]
 [project.optional-dependencies]
-git = [
-    "scrapaw @ git+https://github.com/pawrequest/scrapaw",
-]
 dev = [
     "pytest-asyncio",
     'autodoc_pydantic',

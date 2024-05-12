@@ -4,16 +4,16 @@ services:
     restart: unless-stopped
     image: dtgbot
     volumes:
-      - C:\Users\RYZEN\prdev\envs\reddit.env:/app/reddit.env
+      - ${REDDIT_ENV}:/app/reddit.env
       - ${GURU_DATA}:/app/guru_data/
       - ${GURU_FRONTEND}:/app/guru_fontend/
     environment:
       - REDDIT_ENV=/app/reddit.env
       - GURU_DATA=/app/guru_data/
       - GURU_FRONTEND=/app/guru_fontend/
-    ports:
-      - "8000:8000"
-    command: uvicorn DTGBot.fapi.app:app --host 0.0.0.0 --port 8000
+    networks:
+      - dtgbot-network
+    command: uvicorn DTGBot.fapi.app:app --host 0.0.0.0 --port 8000 --proxy-headers --root-path /dtg
 
   nginx:
     restart: unless-stopped
@@ -21,7 +21,7 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./server/nginx/:/etc/nginx/conf.d:ro
+      - ./deploy/server/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       - fastapi
     networks:
@@ -31,5 +31,6 @@ services:
 networks:
   dtgbot-network:
     driver: bridge
+
 
 

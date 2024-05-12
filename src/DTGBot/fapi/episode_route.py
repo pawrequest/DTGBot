@@ -9,22 +9,18 @@ from pawlogger.config_loguru import logger
 
 from DTGBot.common.database import get_session
 from DTGBot.common.models.episode_m import Episode
-from DTGBot.fapi.shared import (
-    Pagination,
-    get_pagination,
-    templates,
-)
-from DTGBot.fapi.sql_stmts import search_column, eps_by_guruname, select_page_more
+from DTGBot.fapi.shared import (Pagination, base_url_d, get_pagination, templates, base_url)
+from DTGBot.fapi.sql_stmts import eps_by_guruname, search_column, select_page_more
 
 router = fastapi.APIRouter()
 SearchKind = _t.Literal['title', 'guru', 'notes']
 
 
 async def search_db(
-        session: sqlmodel.Session,
-        search_str: str,
-        search_kind: SearchKind = 'title',
-        pagination: Pagination = None,
+    session: sqlmodel.Session,
+    search_str: str,
+    search_kind: SearchKind = 'title',
+    pagination: Pagination = None,
 ) -> tuple[list[Episode], bool]:
     match search_kind:
         case 'guru':
@@ -42,9 +38,9 @@ async def search_db(
 
 @router.get('/get/', response_class=HTMLResponse)
 async def get(
-        request: Request,
-        session: sqlmodel.Session = fastapi.Depends(get_session),
-        pagination: Pagination = fastapi.Depends(get_pagination),
+    request: Request,
+    session: sqlmodel.Session = fastapi.Depends(get_session),
+    pagination: Pagination = fastapi.Depends(get_pagination),
 ):
     stmt = select(Episode).order_by(desc(Episode.date))
     episodes, more = await select_page_more(session, stmt, pagination)
@@ -52,17 +48,17 @@ async def get(
     return templates().TemplateResponse(
         request=request,
         name='episode/episode_cards.html',
-        context={'episodes': episodes, 'pagination': pagination, 'route_url': 'eps', 'more': more}
+        context={'episodes': episodes, 'pagination': pagination, 'route_url': f'{await base_url()}/eps', 'more': more} | await base_url_d(),
     )
 
 
 @router.post('/get/', response_class=HTMLResponse)
 async def search(
-        request: Request,
-        search_kind: SearchKind = Form(...),
-        search_str: str = Form(...),
-        session: sqlmodel.Session = fastapi.Depends(get_session),
-        pagination: Pagination = fastapi.Depends(get_pagination)
+    request: Request,
+    search_kind: SearchKind = Form(...),
+    search_str: str = Form(...),
+    session: sqlmodel.Session = fastapi.Depends(get_session),
+    pagination: Pagination = fastapi.Depends(get_pagination),
 ):
     if search_kind and search_str:
         logger.debug(f'{search_kind=} {search_str=}')
@@ -80,29 +76,20 @@ async def search(
     return templates().TemplateResponse(
         request=request,
         name='episode/episode_cards.html',
-        context={'episodes': episodes, 'pagination': pagination, 'route_url': 'eps', 'more': more}
+        context={'episodes': episodes, 'pagination': pagination, 'route_url': f'{await base_url()}/eps', 'more': more} | await base_url_d(),
     )
 
 
 @router.get('/{ep_id}/', response_class=HTMLResponse)
-async def detail(
-        ep_id: int,
-        request: Request,
-        sesssion: sqlmodel.Session = fastapi.Depends(get_session)
-):
+async def detail(ep_id: int, request: Request, sesssion: sqlmodel.Session = fastapi.Depends(get_session)):
     episode = sesssion.get(Episode, ep_id)
     return templates().TemplateResponse(
-        request=request,
-        name='episode/episode_detail.html',
-        context={'episode': episode}
+        request=request, name='episode/episode_detail.html', context={'episode': episode} | await base_url_d()
     )
 
 
 @router.get('/', response_class=HTMLResponse)
 async def index(
-        request: Request,
+    request: Request,
 ):
-    return templates().TemplateResponse(
-        request=request,
-        name='episode/episode_index.html',
-    )
+    return templates().TemplateResponse(request=request, name='episode/episode_index.html', context=await base_url_d())

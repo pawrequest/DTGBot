@@ -8,7 +8,7 @@
         {% if guru.episodes %}
             <h3>Featured in Episodes</h3>
             {% for episode in guru.episodes %}
-                <a href={{ episode.slug }}> {{ episode.title }}</a>
+                <a href="{{ BASE_URL }}/{{ episode.slug }}"> {{ episode.title }}</a>
             {% endfor %}
         {% endif %}
 

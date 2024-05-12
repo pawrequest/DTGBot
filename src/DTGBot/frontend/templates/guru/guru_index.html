@@ -10,7 +10,7 @@
                     <input type="hidden" name="search_kind" value="name">
                     <input class="form-control" type="search"
                            name="search_str" placeholder="Begin Typing To Filter..."
-                           hx-post="/guru/get/"
+                           hx-post="{{ BASE_URL }}/guru/get/"
                            hx-trigger="input changed delay:500ms, search"
                            hx-target="#search-results">
                 </div>
@@ -18,7 +18,7 @@
         </div>
     </div>
     <div id="search-results" class="cards"
-         hx-get="/guru/get/"
+         hx-get="{{ BASE_URL }}/guru/get/"
          hx-trigger="load" hx-target="this">
     </div>
 

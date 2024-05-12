@@ -7,8 +7,8 @@ from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
 from DTGBot.common.dtg_config import dtg_sett
-from DTGBot.fapi.episode_route import router as ep_router
 from DTGBot.fapi.guru_route import router as guru_router
+from DTGBot.fapi.episode_route import router as ep_router
 from DTGBot.fapi.red_route import router as red_router
 from DTGBot.fapi.admin_route import router as admin_router
 from DTGBot.common.database import create_db
@@ -26,10 +26,6 @@ async def lifespan(app: FastAPI):
         yield
     finally:
         ...
-
-
-def name_s(model):
-    return model.__name__.lower() + 's'
 
 
 app = FastAPI(lifespan=lifespan)
@@ -54,7 +50,7 @@ async def favicon_ico() -> str:
     return 'page not found'
 
 
-# @app.get('/', response_class=HTMLResponse)
-# async def index():
-#     logger.info('index')
-#     return RedirectResponse(url='/eps/')
+@app.get('/', response_class=PlainTextResponse)
+async def index():
+    logger.info('index ROUTE')
+    return 'This is the root endpoint'
