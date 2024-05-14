@@ -9,15 +9,12 @@ from pawlogger.config_loguru import logger
 
 from DTGBot.common.database import get_session
 from DTGBot.common.models.reddit_m import RedditThread
-from DTGBot.fapi.shared import (
-    Pagination,
-    get_pagination,
-    templates_mount, BASE_URL_D, BASE_URL,
-)
+from DTGBot.fapi.shared import Pagination, TEMPLATES, get_pagination
 from DTGBot.fapi.sql_stmts import reddit_by_guruname, search_column, select_page_more
 
 router = fastapi.APIRouter()
 SearchKind = _t.Literal['title', 'guru']
+HX_GET_ROUTE = f'{RedditThread.route_prefix}/get'  # noqa:
 
 
 async def search_db(
@@ -50,7 +47,12 @@ async def get(
     return TEMPLATES.TemplateResponse(
         request=request,
         name='reddit/reddit_cards.html',
-        context={'threads': threads, 'pagination': pagination, 'route_url': f'{BASE_URL}/red', 'more': more, **BASE_URL_D},
+        context={
+            'threads': threads,
+            'pagination': pagination,
+            'hx_get_route': HX_GET_ROUTE,
+            'more': more,
+        },
     )
 
 
@@ -72,7 +74,12 @@ async def search(
     return TEMPLATES.TemplateResponse(
         request=request,
         name='reddit/reddit_cards.html',
-        context={'threads': threads, 'pagination': pagination, 'route_url': f'{BASE_URL}/red', 'more': more, **BASE_URL_D},
+        context={
+            'threads': threads,
+            'pagination': pagination,
+            'hx_get_route': HX_GET_ROUTE,
+            'more': more,
+        },
     )
 
 
@@ -80,9 +87,8 @@ async def search(
 async def index(
     request: Request,
 ):
-    logger.debug('all_red')
     return TEMPLATES.TemplateResponse(
         request=request,
         name='reddit/reddit_index.html',
-        context=BASE_URL_D,
+        context={'hx_get_route': HX_GET_ROUTE},
     )

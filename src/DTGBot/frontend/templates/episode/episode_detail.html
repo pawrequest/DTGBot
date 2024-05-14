@@ -11,6 +11,13 @@
         </div>
         {#        </div>#}
 
+        {% if episode.gurus %}
+            <h3>Featured Gurus</h3>
+            {% for guru in episode.gurus %}
+                <a href="{{ guru.slug }}"> {{ guru.name }}</a>
+            {% endfor %}
+        {% endif %}
+
         {% if episode.notes %}
             <h3>Show Notes:</h3>
             {% for note in episode.notes %}
@@ -25,12 +32,6 @@
             {% endfor %}
         {% endif %}
 
-        {% if episode.gurus %}
-            <h3>Featured Gurus</h3>
-            {% for guru in episode.gurus %}
-                <a href="{{ BASE_URL }}/{{ guru.slug }}"> {{ guru.name }}</a>
-            {% endfor %}
-        {% endif %}
 
         {% if episode.reddit_threads %}
             <h3>Related Reddit Threads</h3>

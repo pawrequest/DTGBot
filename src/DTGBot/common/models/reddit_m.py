@@ -1,12 +1,13 @@
 # no dont do this!! from __future__ import annotations
 import hashlib
 from datetime import datetime
-from typing import TYPE_CHECKING
+from typing import ClassVar, TYPE_CHECKING
 
 from asyncpraw.models import Submission
 import sqlmodel as sqm
 from sqlmodel import Relationship
 
+from DTGBot.common.dtg_config import dtg_sett
 from DTGBot.common.models.links import (
     EpisodeRedditLink,
     GuruRedditLink,
@@ -57,13 +58,8 @@ class RedditThread(RedditThreadBase, table=True, extend_existing=True):
     id: int | None = sqm.Field(default=None, primary_key=True)
 
     gurus: list['Guru'] = Relationship(back_populates='reddit_threads', link_model=GuruRedditLink)
-    # guru_excludes: list['Guru'] = Relationship(back_populates='reddit_excludes', link_model=GuruRedditExclude)
-    # guru_excludes: list[int] = sqm.Field(default_factory=list, sa_column=Column(sqm.JSON))
-
     episodes: list['Episode'] = Relationship(back_populates='reddit_threads', link_model=EpisodeRedditLink)
-
-    # episode_excludes: list[int] = sqm.Field(default_factory=list, sa_column=Column(sqm.JSON))
-    # episode_excludes: list['Episode'] = Relationship(back_populates='reddit_excludes', link_model=EpisodeRedditExclude)
+    route_prefix: ClassVar[str] = f'{dtg_sett().url_prefix}/red'
 
     def __hash__(self):
         return hash(self.reddit_id)
@@ -76,12 +72,8 @@ class RedditThread(RedditThreadBase, table=True, extend_existing=True):
         return hashlib.md5(','.join([self.reddit_id]).encode('utf-8')).hexdigest()
 
     @property
-    def slug(self):
-        return f'/red/{self.id}'
-
-    @classmethod
-    def rout_prefix(cls):
-        return '/red/'
+    def slug(self) -> str:
+        return f'{self.route_prefix}/{self.id}'
 
 
 def submission_str(submisssion: Submission):

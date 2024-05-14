@@ -50,6 +50,7 @@ class RedditConfig(BaseSettings):
 class DTGConfig(BaseSettings):
     guru_frontend: Path
     guru_data: Path
+    url_prefix: str = ''
 
     podcast_url: HttpUrl = 'https://decoding-the-gurus.captivate.fm/'
     log_profile: _t.Literal['local', 'remote', 'default'] = 'local'

@@ -7,11 +7,13 @@ from fastapi.responses import HTMLResponse
 
 from DTGBot.common.database import get_session
 from DTGBot.common.models.guru_m import Guru
-from DTGBot.fapi.shared import BASE_URL, BASE_URL_D, Pagination, get_pagination, TEMPLATES
+from DTGBot.fapi.shared import Pagination, TEMPLATES, get_pagination
 from DTGBot.fapi.sql_stmts import gurus_w_interest, search_column, select_page_more
 
 router = fastapi.APIRouter()
 SearchKind = _t.Literal['name']
+
+HX_GET_ROUTE = f'{Guru.route_prefix}/get'  # noqa:
 
 
 async def search_db(
@@ -42,7 +44,12 @@ async def get(
     return TEMPLATES.TemplateResponse(
         request=request,
         name='guru/guru_cards.html',
-        context={'gurus': gurus, 'pagination': pagination, 'route_url': f'{BASE_URL}/guru', 'more': more, **BASE_URL_D},
+        context={
+            'gurus': gurus,
+            'pagination': pagination,
+            'hx_get_route': HX_GET_ROUTE,
+            'more': more,
+        },
     )
 
 
@@ -63,7 +70,12 @@ async def search(
     return TEMPLATES.TemplateResponse(
         request=request,
         name='guru/guru_cards.html',
-        context={'gurus': gurus, 'pagination': pagination, 'route_url': f'{BASE_URL}/guru', 'more': more, **BASE_URL_D},
+        context={
+            'gurus': gurus,
+            'pagination': pagination,
+            'hx_get_route': HX_GET_ROUTE,
+            'more': more,
+        },
     )
 
 
@@ -71,7 +83,9 @@ async def search(
 async def detail(guru_id: int, request: Request, sesssion: sqlmodel.Session = fastapi.Depends(get_session)):
     guru = sesssion.get(Guru, guru_id)
     return TEMPLATES.TemplateResponse(
-        request=request, name='guru/guru_detail.html', context={'guru': guru, **BASE_URL_D}
+        request=request,
+        name='guru/guru_detail.html',
+        context={'guru': guru},
     )
 
 
@@ -82,5 +96,5 @@ async def index(
     return TEMPLATES.TemplateResponse(
         request=request,
         name='guru/guru_index.html',
-        context=BASE_URL_D,
+        context={'hx_get_route': HX_GET_ROUTE},
     )

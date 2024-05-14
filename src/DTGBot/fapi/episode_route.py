@@ -9,9 +9,10 @@ from pawlogger.config_loguru import logger
 
 from DTGBot.common.database import get_session
 from DTGBot.common.models.episode_m import Episode
-from DTGBot.fapi.shared import (Pagination, BASE_URL_D, get_pagination, TEMPLATES, BASE_URL)
+from DTGBot.fapi.shared import Pagination, TEMPLATES, get_pagination
 from DTGBot.fapi.sql_stmts import eps_by_guruname, search_column, select_page_more
 
+HX_GET_ROUTE = f'{Episode.route_prefix}/get'  # noqa:
 router = fastapi.APIRouter()
 SearchKind = _t.Literal['title', 'guru', 'notes']
 
@@ -48,7 +49,12 @@ async def get(
     return TEMPLATES.TemplateResponse(
         request=request,
         name='episode/episode_cards.html',
-        context={'episodes': episodes, 'pagination': pagination, 'route_url': f'{BASE_URL}/eps', 'more': more, **BASE_URL_D},
+        context={
+            'episodes': episodes,
+            'pagination': pagination,
+            'hx_get_route': HX_GET_ROUTE,
+            'more': more,
+        },
     )
 
 
@@ -76,7 +82,12 @@ async def search(
     return TEMPLATES.TemplateResponse(
         request=request,
         name='episode/episode_cards.html',
-        context={'episodes': episodes, 'pagination': pagination, 'route_url': f'{BASE_URL}/eps', 'more': more, **BASE_URL_D},
+        context={
+            'episodes': episodes,
+            'pagination': pagination,
+            'hx_get_route': HX_GET_ROUTE,
+            'more': more,
+        },
     )
 
 
@@ -84,7 +95,11 @@ async def search(
 async def detail(ep_id: int, request: Request, sesssion: sqlmodel.Session = fastapi.Depends(get_session)):
     episode = sesssion.get(Episode, ep_id)
     return TEMPLATES.TemplateResponse(
-        request=request, name='episode/episode_detail.html', context={'episode': episode, **BASE_URL_D}
+        request=request,
+        name='episode/episode_detail.html',
+        context={
+            'episode': episode,
+        },
     )
 
 
@@ -92,4 +107,10 @@ async def detail(ep_id: int, request: Request, sesssion: sqlmodel.Session = fast
 async def index(
     request: Request,
 ):
-    return TEMPLATES.TemplateResponse(request=request, name='episode/episode_index.html', context=BASE_URL_D)
+    return TEMPLATES.TemplateResponse(
+        request=request,
+        name='episode/episode_index.html',
+        context={
+            'hx_get_route': HX_GET_ROUTE,
+        },
+    )

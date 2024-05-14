@@ -13,7 +13,6 @@ from DTGBot.fapi.episode_route import router as ep_router
 from DTGBot.fapi.red_route import router as red_router
 from DTGBot.fapi.admin_route import router as admin_router
 from DTGBot.common.database import create_db
-from DTGBot.fapi.shared import BASE_URL
 
 dtg_settings = dtg_sett()
 STATIC = dtg_settings.guru_frontend / 'static'
@@ -54,4 +53,4 @@ async def favicon_ico() -> str:
 
 @app.get('/', response_class=RedirectResponse)
 async def index():
-    return RedirectResponse(url=f'{BASE_URL}/eps')
+    return RedirectResponse(url=f'{dtg_sett().url_prefix}/eps')
