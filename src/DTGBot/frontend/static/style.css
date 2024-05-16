@@ -305,7 +305,8 @@ header {
 
 }
 
-.detail-link:hover {
+.detail-link:hover,
+.detail-link:focus {
     color: var(--clr-3);
 }
 
@@ -328,7 +329,8 @@ header {
     font-size: var(--fs-100);
 }
 
-.guru-container:hover {
+.guru-container:hover,
+.guru-container:focus {
     color: white;
 }
 
@@ -365,7 +367,8 @@ header {
 
 }
 
-.card-tag:hover {
+.card-tag:hover,
+.card-tag:focus {
     color: var(--clr-3);
 }
 
@@ -486,7 +489,8 @@ a span {
 
 }
 
-.play-btn:hover {
+.play-btn:hover,
+.play-btn:focus {
     color: var(--clr-3);
 }
 
