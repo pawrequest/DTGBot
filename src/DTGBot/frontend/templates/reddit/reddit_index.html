@@ -1,17 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1 class="heading">Reddit Threads</h1>
     <div class="search_wrapper">
         <div class="search">
             <p>Filter By Guru</p>
-            <form>
+            <form onsubmit="return false;">
                 <div class="form-input">
                     <input type="hidden" name="search_kind" value="guru">
                     <input class="form-control" type="search"
                            name="search_str" placeholder="Begin Typing To Filter..."
                            hx-post="{{ hx_get_route }}"
-                           hx-trigger="input changed delay:500ms, search"
+                           hx-trigger="input changed delay:1000ms, search"
                            hx-target="#search-results">
                 </div>
             </form>
@@ -19,13 +18,13 @@
 
         <div class="search">
             <p>Filter By Title</p>
-            <form>
+            <form onsubmit="return false;">
                 <div class="form-input">
                     <input type="hidden" name="search_kind" value="title">
                     <input class="form-control" type="search"
                            name="search_str" placeholder="Begin Typing To Filter..."
                            hx-post="{{ hx_get_route }}"
-                           hx-trigger="input changed delay:500ms, search"
+                           hx-trigger="input changed delay:1000ms, search"
                            hx-target="#search-results">
                 </div>
             </form>

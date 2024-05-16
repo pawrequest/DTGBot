@@ -7,32 +7,39 @@
     <link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet">
     <script src="https://unpkg.com/htmx.org@1.9.11"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-
 </head>
 
 <body>
-<header class="wrapper">
+<header>
     <img src="{{ url_for('img', path='/dtg_logo_cut.png') }}" alt="">
     <h1>DECODING THE GURUS</h1>
     <nav>
         <ul>
-            <li><a href="{{ URL_PREFIX }}/eps">Episodes</a></li>
-            <li><a href="{{ URL_PREFIX }}/guru">Gurus</a></li>
-            <li><a href="{{ URL_PREFIX }}/red">Reddits</a></li>
+            <li><a href="{{ URL_PREFIX }}/eps" class="{{ 'hlight' if request.path.startswith('/eps/') else '' }}">Episodes</a>
+            </li>
+            <li><a href="{{ URL_PREFIX }}/guru" class="{{ 'hlight' if request.path.startswith('/guru/') else '' }}">Gurus</a>
+            </li>
+            <li><a href="{{ URL_PREFIX }}/red" class="{{ 'hlight' if request.path.startswith('/red/') else '' }}">Reddits</a>
+            </li>
         </ul>
     </nav>
 </header>
 
 <main class="wrapper">
     {% block content %}{% endblock %}
-
 </main>
 
-<footer class="wrapper" style="background-image: url('{{ url_for('img', path='/dtg_logo_cut_xshort_flip.png') }}');">
+<footer style="background-image: url('{{ url_for('img', path='/footer.png') }}');">
     <ul>
-        <li class="foot-item">patreon</li>
-        <li class="foot-item">captivate</li>
-        <li class="foot-item">reddit</li>
+        <li class="foot-item">
+            <a href="https://www.patreon.com/DecodingTheGurus/posts">patreon</a>
+        </li>
+        <li class="foot-item">
+            <a href="https://decoding-the-gurus.captivate.fm/">captivate</a>
+        </li>
+        <li class="foot-item">
+            <a href="https://www.reddit.com/r/DecodingTheGurus/">reddit</a>
+        </li>
     </ul>
 </footer>
 </body>

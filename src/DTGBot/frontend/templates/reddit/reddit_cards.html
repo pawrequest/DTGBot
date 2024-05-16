@@ -1,6 +1,8 @@
 {% for thread in threads %}
-    <article class="card">
-        <a href="{{ thread.shortlink }}" class="card-link">
+    <article class="episode-card">
+        {#        <a href="{{ thread.shortlink }}" class="episode-container">#}
+        <div class="episode-container" onclick="location.href='{{ thread.shortlink }}'">
+
             <div class="card-top-bar">
                 <span>{{ thread.ordinal_date }}</span>
             </div>
@@ -9,10 +11,13 @@
             </div>
             <div class="tag-container">
                 {% for guru in thread.gurus %}
-                    <span class="tag">{{ guru.name }}</span>
+                    <a href="{{ guru.slug }}" class="card-tag">{{ guru.name }}</a>
+
+                    {#                    <span class="ep-tag">{{ guru.name }}</span>#}
                 {% endfor %}
             </div>
-        </a>
+        </div>
+        {#        </a>#}
     </article>
 
     {% if loop.last and more %}

@@ -11,6 +11,7 @@ services:
       - REDDIT_ENV=/app/reddit.env
       - GURU_DATA=/app/guru_data/
       - GURU_FRONTEND=/app/guru_fontend/
+      - URL_PREFIX=/dtg
     networks:
       - dtgbot-network
     command: uvicorn DTGBot.fapi.app:app --host 0.0.0.0 --port 8000 --proxy-headers --root-path /dtg

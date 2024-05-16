@@ -1,12 +1,21 @@
 {% for guru in gurus %}
-    <a href="{{ guru.slug }}" class="card">
-        <div class="card-content">
-            <h1>{{ guru.name }}</h1>
+    <article class="guru-card">
+        <div class="guru-container" onclick="location.href='{{ guru.slug }}'">
+            <h1 class="guru-card-title">{{ guru.name }}</h1>
+
+            {#    <a href="{{ guru.slug }}" class="guru-container">#}
+            {#        <div class="guru-content">#}
+            {#            <h1 class="guru-card-title">{{ guru.name }}</h1>#}
+            {#        </div>#}
+            <div class="tag-container">
+                {#            <p class="guru-tag">{{ guru.interest }} mentions</p>#}
+                <p class="card-tag">{{ guru.episodes|length }} episode mentions</p>
+                <p class="card-tag">{{ guru.reddit_threads|length }} reddit mentions</p>
+            </div>
         </div>
-        <div class="tag-container">
-            <p class="mentions">{{ guru.interest }} mentions</p>
-        </div>
-    </a>
+        {#    </a>#}
+    </article>
+
     {% if loop.last and more %}
         {% include 'infinite_scroll.html' with context %}
     {% endif %}

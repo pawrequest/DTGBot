@@ -6,12 +6,19 @@ from fastapi import Form, Request
 from fastapi.responses import HTMLResponse
 
 from DTGBot.common.database import get_session
+from DTGBot.common.models.episode_m import Episode
 from DTGBot.common.models.guru_m import Guru
+from DTGBot.common.models.links import GuruEpisodeLink
 from DTGBot.fapi.shared import Pagination, TEMPLATES, get_pagination
-from DTGBot.fapi.sql_stmts import gurus_w_interest, search_column, select_page_more
+from DTGBot.fapi.sql_stmts import (
+    gurus_w_interest,
+    search_column,
+    select_page_more,
+    search_related_column,
+)
 
 router = fastapi.APIRouter()
-SearchKind = _t.Literal['name']
+SearchKind = _t.Literal['name', 'notes']
 
 HX_GET_ROUTE = f'{Guru.route_prefix}/get'  # noqa:
 
@@ -25,6 +32,8 @@ async def search_db(
     match search_kind:
         case 'name':
             stmt = await search_column(Guru, Guru.name, search_str)
+        case 'notes':
+            stmt = await search_related_column(Guru, GuruEpisodeLink, Episode, Episode.notes, search_str)
         case _:
             raise ValueError(f'Invalid kind: {search_kind}')
 

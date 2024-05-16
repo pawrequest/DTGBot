@@ -2,20 +2,20 @@
 
 {% block content %}
     <article class="detail-page">
-        <h1 id='guru-{{ guru.id }}'>{{ guru.name }}</h1>
+        <h1>{{ guru.name }}</h1>
 
 
         {% if guru.episodes %}
             <h3>Featured in Episodes</h3>
             {% for episode in guru.episodes %}
-                <a href="{{ URL_PREFIX }}/{{ episode.slug }}"> {{ episode.title }}</a>
+                <a href="{{ episode.slug }}" class="detail-link"> {{ episode.title }}</a>
             {% endfor %}
         {% endif %}
 
         {% if guru.reddit_threads %}
             <h3>Related Reddit Threads</h3>
             {% for thread in guru.reddit_threads %}
-                <a href="{{ thread.shortlink }}">{{ thread.title }}</a><br>
+                <a href="{{ thread.shortlink }}" class="detail-link">{{ thread.title }}</a><br>
             {% endfor %}
         {% endif %}
         {#    </div>#}

@@ -1,6 +1,8 @@
 {% for episode in episodes %}
-    <article class="card">
-        <a href="{{ episode.slug }}" class="card-link">
+    <article class="episode-card">
+        {#        <a href="{{ episode.slug }}" class="card-container">#}
+        <div class="episode-container" onclick="location.href='{{ episode.slug }}'">
+
             <div class="card-top-bar">
                 <span>{{ episode.number_str }}</span>
                 <span>{{ episode.ordinal_date }}</span>
@@ -13,15 +15,17 @@
                     {% endfor %}
                 </div>
             </div>
-            <div class="tag_container">
+            <div class="tag-container">
                 {% for guru in episode.gurus %}
-                    <span class="tag">{{ guru.name }}</span>
+                    <a href="{{ guru.slug }}" class="card-tag">{{ guru.name }}</a>
                 {% endfor %}
             </div>
-        </a>
+        </div>
+        {#        </a>#}
     </article>
-    {% if loop.last and more %}
-        {% include 'infinite_scroll.html' with context %}
-    {% endif %}
 
 {% endfor %}
+{% if more %}
+    {% include 'infinite_scroll.html' with context %}
+{% endif %}
+
