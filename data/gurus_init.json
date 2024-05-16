@@ -1,0 +1,688 @@
+[
+  {
+    "name": "Paulo Coelho"
+  },
+  {
+    "name": "Konstantin Kisin"
+  },
+  {
+    "name": "Joe Rogan"
+  },
+  {
+    "name": "Elizabeth Gilbert"
+  },
+  {
+    "name": "Douglas Murray"
+  },
+  {
+    "name": "Barbara Fredrickson"
+  },
+  {
+    "name": "Richard Dawkins"
+  },
+  {
+    "name": "Esther Hicks"
+  },
+  {
+    "name": "Bren\u00e9 Brown"
+  },
+  {
+    "name": "Ben Shapiro"
+  },
+  {
+    "name": "Jack Kornfield"
+  },
+  {
+    "name": "Peter Boghossian"
+  },
+  {
+    "name": "Amy Cuddy"
+  },
+  {
+    "name": "Andrew Doyle"
+  },
+  {
+    "name": "Smriti Mehta"
+  },
+  {
+    "name": "Christopher Hitchens"
+  },
+  {
+    "name": "Gregg Braden"
+  },
+  {
+    "name": "Robin DiAngelo"
+  },
+  {
+    "name": "Steven Pinker"
+  },
+  {
+    "name": "Bari Weiss"
+  },
+  {
+    "name": "Malcolm Gladwell"
+  },
+  {
+    "name": "Marshall Rosenberg"
+  },
+  {
+    "name": "Alejandro Jodorowsky"
+  },
+  {
+    "name": "Lev Vygotsky"
+  },
+  {
+    "name": "Jonathan Pageau"
+  },
+  {
+    "name": "Dr Dan Wilson"
+  },
+  {
+    "name": "Jonathan Haidt"
+  },
+  {
+    "name": "Lex Fridman"
+  },
+  {
+    "name": "Coleman Hughes"
+  },
+  {
+    "name": "Grant Cardone"
+  },
+  {
+    "name": "Joe Dispenza"
+  },
+  {
+    "name": "Louise Hay"
+  },
+  {
+    "name": "Jon Kabat-Zinn"
+  },
+  {
+    "name": "Jordan Peterson",
+    "include_strs": [
+      "Peterson, Murray & Pageau",
+      "Jordan B. Peterson",
+      "The Passion of the Jordan and the Wisdom of the Bret"
+    ]
+  },
+  {
+    "name": "Robin Sharma"
+  },
+  {
+    "name": "Scientific Orthodoxy"
+  },
+  {
+    "name": "Teal Swan"
+  },
+  {
+    "name": "Gary Vaynerchuk"
+  },
+  {
+    "name": "Daniel Kahneman"
+  },
+  {
+    "name": "Alex Jones"
+  },
+  {
+    "name": "Bret Weinstein",
+    "include_strs": [
+      "The Passion of the Jordan and the Wisdom of the Bret"
+    ]
+  },
+  {
+    "name": "Kristin Neff"
+  },
+  {
+    "name": "Iyanla Vanzant"
+  },
+  {
+    "name": "Robert Kiyosaki"
+  },
+  {
+    "name": "Scott Adams"
+  },
+  {
+    "name": "Ken Wilber"
+  },
+  {
+    "name": "Elgen Strait"
+  },
+  {
+    "name": "Pema Ch\u00f6dr\u00f6n"
+  },
+  {
+    "name": "Andrew Huberman",
+    "include_strs": [
+      "Huberman"
+    ]
+  },
+  {
+    "name": "Reverend Sun Myung"
+  },
+  {
+    "name": "Ram Dass"
+  },
+  {
+    "name": "Eben Pagan"
+  },
+  {
+    "name": "Joseph Goldstein"
+  },
+  {
+    "name": "Napoleon Hill"
+  },
+  {
+    "name": "Plato"
+  },
+  {
+    "name": "Rutger Bregman"
+  },
+  {
+    "name": "Rumi"
+  },
+  {
+    "name": "Elon Musk"
+  },
+  {
+    "name": "Khalil Gibran"
+  },
+  {
+    "name": "Marianne Williamson"
+  },
+  {
+    "name": "Eckhart Tolle"
+  },
+  {
+    "name": "Aristotle"
+  },
+  {
+    "name": "John Dewey"
+  },
+  {
+    "name": "Julia Ebner"
+  },
+  {
+    "name": "Matt Go"
+  },
+  {
+    "name": "Rudolf Steiner"
+  },
+  {
+    "name": "Virginia Heffernan"
+  },
+  {
+    "name": "Albert Camus"
+  },
+  {
+    "name": "Angela Duckworth"
+  },
+  {
+    "name": "Byron Katie"
+  },
+  {
+    "name": "Baba Ramdev"
+  },
+  {
+    "name": "Gad Saad"
+  },
+  {
+    "name": "Confucius"
+  },
+  {
+    "name": "Seth Godin"
+  },
+  {
+    "name": "Jaron Lanier"
+  },
+  {
+    "name": "Jordan Hall"
+  },
+  {
+    "name": "Deepak Chopra"
+  },
+  {
+    "name": "Bruce Lipton"
+  },
+  {
+    "name": "Gabrielle Bernstein"
+  },
+  {
+    "name": "Paramahansa Yogananda"
+  },
+  {
+    "name": "Graham Hancock",
+    "include_strs": [
+      "Interview with Flint Dibble on Pseudo Archaeology and Science Communication"
+    ]
+  },
+  {
+    "name": "Robert Wright"
+  },
+  {
+    "name": "Lisa Nichols"
+  },
+  {
+    "name": "Matt Johnson"
+  },
+  {
+    "name": "Viktor Frankl"
+  },
+  {
+    "name": "Stuart Neil"
+  },
+  {
+    "name": "Carl Sagan"
+  },
+  {
+    "name": "Tamler Sommers"
+  },
+  {
+    "name": "Paulo Freire"
+  },
+  {
+    "name": "Sigmund Freud"
+  },
+  {
+    "name": "Mooji"
+  },
+  {
+    "name": "Tony Robbins"
+  },
+  {
+    "name": "Jordan Belfort"
+  },
+  {
+    "name": "Mihaly Csikszentmihalyi"
+  },
+  {
+    "name": "David Pizarro"
+  },
+  {
+    "name": "Peter Mc"
+  },
+  {
+    "name": "Stuart Ritchie"
+  },
+  {
+    "name": "Eric Weinstein"
+  },
+  {
+    "name": "Jiddu Krishnamurti"
+  },
+  {
+    "name": "Zig Ziglar\n"
+  },
+  {
+    "name": "James Damore"
+  },
+  {
+    "name": "Daniel Dennett"
+  },
+  {
+    "name": "Knowledge Fight"
+  },
+  {
+    "name": "Tal Ben-Shahar"
+  },
+  {
+    "name": "Heather Heying"
+  },
+  {
+    "name": "Tara Brach"
+  },
+  {
+    "name": "Shawn Achor"
+  },
+  {
+    "name": "Dalai Lama"
+  },
+  {
+    "name": "Daniel Goleman"
+  },
+  {
+    "name": "Jack Canfield"
+  },
+  {
+    "name": "Tim Ferriss"
+  },
+  {
+    "name": "Helen Lewis"
+  },
+  {
+    "name": "Josh Szeps"
+  },
+  {
+    "name": "Liam Bright"
+  },
+  {
+    "name": "Wim Hof"
+  },
+  {
+    "name": "Daniel Pink"
+  },
+  {
+    "name": "Daniel Schmachtenberger"
+  },
+  {
+    "name": "Jim Rohn"
+  },
+  {
+    "name": "Sharon Salzberg"
+  },
+  {
+    "name": "Susan Cain"
+  },
+  {
+    "name": "Tim Nguyen"
+  },
+  {
+    "name": "Yuval Noah Harari"
+  },
+  {
+    "name": "Tucker Carlson",
+    "include_strs": [
+      "Tucker Carlsen"
+    ]
+  },
+  {
+    "name": "Rick Rubin"
+  },
+  {
+    "name": "Sean Carroll"
+  },
+  {
+    "name": "Russell Brand"
+  },
+  {
+    "name": "Hasan Piker"
+  },
+  {
+    "name": "Thich Nhat Hanh"
+  },
+  {
+    "name": "Dale Carnegie"
+  },
+  {
+    "name": "Ed Diener"
+  },
+  {
+    "name": "Sam Harris"
+  },
+  {
+    "name": "Sonja Lyubomirsky"
+  },
+  {
+    "name": "Malala Yousafzai"
+  },
+  {
+    "name": "Richard Davidson"
+  },
+  {
+    "name": "Martin Seligman"
+  },
+  {
+    "name": "Eliyahu M. Goldratt"
+  },
+  {
+    "name": "Mick West"
+  },
+  {
+    "name": "Oprah Winfrey"
+  },
+  {
+    "name": "Shinzo Abe"
+  },
+  {
+    "name": "Seneca"
+  },
+  {
+    "name": "Swami Vivekananda"
+  },
+  {
+    "name": "Jean Piaget"
+  },
+  {
+    "name": "Sadhguru"
+  },
+  {
+    "name": "Jay Shetty"
+  },
+  {
+    "name": "Wayne Dyer"
+  },
+  {
+    "name": "Carl Jung"
+  },
+  {
+    "name": "Adyashanti"
+  },
+  {
+    "name": "Eliezer Yudkowksy"
+  },
+  {
+    "name": "Maria Montessori"
+  },
+  {
+    "name": "Paul Bloom"
+  },
+  {
+    "name": "Michael Shermer"
+  },
+  {
+    "name": "Adam Grant"
+  },
+  {
+    "name": "Don Miguel Ruiz"
+  },
+  {
+    "name": "Evan Thompson"
+  },
+  {
+    "name": "Anthony De"
+  },
+  {
+    "name": "Erich Fromm"
+  },
+  {
+    "name": "Jonathan Howard"
+  },
+  {
+    "name": "Sun Tzu"
+  },
+  {
+    "name": "John Vervaeke"
+  },
+  {
+    "name": "Julian Walker"
+  },
+  {
+    "name": "Thomas Sowell"
+  },
+  {
+    "name": "Carol Dweck"
+  },
+  {
+    "name": "Les Brown"
+  },
+  {
+    "name": "Travis View"
+  },
+  {
+    "name": "Matthieu Ricard"
+  },
+  {
+    "name": "Conspirituality Trio"
+  },
+  {
+    "name": "Socrates"
+  },
+  {
+    "name": "Simon Sinek"
+  },
+  {
+    "name": "Nathan Allebach"
+  },
+  {
+    "name": "Norman Vincent Peale"
+  },
+  {
+    "name": "Friedrich Nietzsche"
+  },
+  {
+    "name": "Sheryl Sandberg"
+  },
+  {
+    "name": "Richard Bandler"
+  },
+  {
+    "name": "Manvir Singh"
+  },
+  {
+    "name": "Dun Dun Daah"
+  },
+  {
+    "name": "Gwyneth Paltrow"
+  },
+  {
+    "name": "Marcus Aurelius"
+  },
+  {
+    "name": "Matthew Goodwin"
+  },
+  {
+    "name": "Ivan Illich"
+  },
+  {
+    "name": "Neale Donald Walsch"
+  },
+  {
+    "name": "David Deida"
+  },
+  {
+    "name": "Jamie Wheal"
+  },
+  {
+    "name": "Alan Watts"
+  },
+  {
+    "name": "Bill Maher"
+  },
+  {
+    "name": "Nassim Nicholas Taleb"
+  },
+  {
+    "name": "Robert Malone"
+  },
+  {
+    "name": "Jesse Singal"
+  },
+  {
+    "name": "Neil Levy"
+  },
+  {
+    "name": "Rupert Spira"
+  },
+  {
+    "name": "Annie Kelly"
+  },
+  {
+    "name": "Brett Weinstein"
+  },
+  {
+    "name": "Dave Rubin"
+  },
+  {
+    "name": "Jean-Paul Sartre"
+  },
+  {
+    "name": "Timbah Toast"
+  },
+  {
+    "name": "Thi Nguyen"
+  },
+  {
+    "name": "Howard Gardner"
+  },
+  {
+    "name": "Noam Chomsky"
+  },
+  {
+    "name": "Susan David"
+  },
+  {
+    "name": "Brian Tracy"
+  },
+  {
+    "name": "Brene Brown"
+  },
+  {
+    "name": "Mikhaila Peterson"
+  },
+  {
+    "name": "Rhonda Byrne"
+  },
+  {
+    "name": "Daniel Harper"
+  },
+  {
+    "name": "Desmond Tutu"
+  },
+  {
+    "name": "Laozi"
+  },
+  {
+    "name": "Dandapani"
+  },
+  {
+    "name": "Osho"
+  },
+  {
+    "name": "James Lindsay"
+  },
+  {
+    "name": "Matthew Remski"
+  },
+  {
+    "name": "Epictetus"
+  },
+  {
+    "name": "Glennon Doyle"
+  },
+  {
+    "name": "Hermann Hesse"
+  },
+  {
+    "name": "Michael Inzlicht"
+  },
+  {
+    "name": "Peter Attia"
+  },
+  {
+    "name": "Amanda Montell"
+  },
+  {
+    "name": "John Grinder"
+  },
+  {
+    "name": "Tim Pool"
+  },
+  {
+    "name": "Chris Williamson"
+  },
+  {
+    "name": "Dan Friesen"
+  },
+  {
+    "name": "Gabor Mat\u00e9"
+  },
+  {
+    "name": "Lynne McTaggart"
+  },
+  {
+    "name": "Destiny",
+    "exclude_strs": [
+      "Self Actualising Your Destiny"
+    ]
+  }
+]
