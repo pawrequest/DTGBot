@@ -278,8 +278,8 @@ header {
 }
 
 .ep-notes {
-    /*line-height: 1.6;*/
-    font-size: var(--fs-200);
+    line-height: 1.8;
+    font-size: var(--fs-300);
     display: -webkit-box;
     -webkit-line-clamp: 10;
     -webkit-box-orient: vertical;
@@ -291,7 +291,6 @@ header {
         padding-bottom: .5rem;
     }
 
-    /*@media (min-width: var(--breakpoint-lg)){*/
 
 }
 
@@ -329,13 +328,13 @@ header {
     font-size: var(--fs-100);
 }
 
-.guru-container:hover,
-.guru-container:focus {
-    color: white;
-}
+/*.guru-container:hover,*/
+/*.guru-container:focus {*/
+/*    color: var(--clr-5);*/
+/*}*/
 
-.guru-content {
-}
+/*.guru-content {*/
+/*}*/
 
 .tag-container {
     display: flex;
@@ -344,10 +343,10 @@ header {
     margin-top: auto;
     /*align-self: end;*/
 
-    :hover,
-    :focus {
-        color: var(--clr-3);
-    }
+    /*:hover,*/
+    /*:focus {*/
+    /*    color: var(--clr-3);*/
+    /*}*/
 }
 
 .card-tag {
@@ -495,26 +494,24 @@ a span {
 }
 
 footer {
-    bottom: 0;
-    height: 4rem;
-    /*height: 100%;*/
-    width: 100%;
-    /*padding-top: var(--margin-edge);*/
+    padding-top:3rem;
+    background-size: contain;
+    background-repeat: no-repeat;
 
-    > ul {
+    position: sticky;
+
+    ;
+
+    /*@media (min-width: 60rem) {*/
+    /*    position: sticky;*/
+    /*}*/
+    bottom: 0;
+    /*height: 4rem;*/
+
+    ul {
         margin-left: 50%;
         display: flex;
         gap: 1rem;
         flex-direction: row;
-        /*position: relative;*/
-        /*align-items: center;*/
-        /*justify-content: space-around;*/
-
-        > li {
-            /*flex-basis: 100%;*/
-            /*flex: 1;*/
-            /*color:red;*/
-            /*flex:1;*/
-        }
     }
 }
