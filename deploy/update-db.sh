@@ -1,5 +1,5 @@
 #!/bin/sh
 docker run --rm \
-  -v "../reddit.env":/app/reddit.env \
-  -v "../data/":/app/guru_data/ \
+  -v "$(pwd)/../reddit.env":/app/reddit.env \
+  -v "$(pwd)/../data":/app/guru_data \
   dtgbot:latest update-db
