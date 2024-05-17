@@ -66,4 +66,4 @@ format.quote-style = "single"
 allow-direct-references = true
 
 [project.scripts]
-update-db = "update_db:run"
+update-db = "DTGBot.update_db:run"
