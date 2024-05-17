@@ -22,8 +22,8 @@ from DTGBot.fapi.sql_stmts import (
     select_new_threads_with_guru,
 )
 
-dtg_settings = dtg_sett()
-r_settings = reddit_sett()
+DTG_SETTINGS = dtg_sett()
+R_SETTINGS = reddit_sett()
 
 
 async def spin(msg, delay=0.3):
@@ -79,8 +79,7 @@ async def update_episode_reddits(episode: Episode, session: Session):
         episode.reddit_threads.extend(new_threads)
     # else:
     #     logger.debug(f'No new threads matched {episode.title}', category='EP-MATCH')
-    session.add(episode)
-    session.commit()
+
 
 
 async def update_reddit_episodes(reddit: RedditThread, session: Session):
@@ -96,8 +95,8 @@ async def update_reddit_episodes(reddit: RedditThread, session: Session):
 
 async def get_eps(session: Session, http_session: ClientSession) -> AsyncGenerator[Episode, None]:
     dupes = 0
-    max_dupes = dtg_settings.max_dupes
-    async for ep_ in episode_generator(dtg_settings.scrap_config, http_session):
+    max_dupes = DTG_SETTINGS.max_dupes
+    async for ep_ in episode_generator(DTG_SETTINGS.scrap_config, http_session):
         ep = Episode.model_validate(ep_)
         episode__all = session.exec(select(Episode)).all()
 
@@ -108,23 +107,23 @@ async def get_eps(session: Session, http_session: ClientSession) -> AsyncGenerat
                 break
             continue
 
-        logger.info(f'Found New Episode: {ep.title}', category='episode')
         ep_ = Episode.model_validate(ep)
+        logger.info(f'Episode updater found new episode: "{ep.title}"', category='episode')
         yield ep_
 
 
 async def get_reddits(session: Session, max_dupes: int = None):
     dupes = 0
-    max_dupes = max_dupes or r_settings.max_red_dupes
+    max_dupes = max_dupes or R_SETTINGS.max_red_dupes
 
     async with Reddit(
-            client_id=r_settings.client_id,
-            client_secret=r_settings.client_secret.get_secret_value(),
-            user_agent=r_settings.user_agent,
-            redirect_uri=r_settings.redirect_uri,
-            refresh_token=r_settings.refresh_token.get_secret_value(),
+        client_id=R_SETTINGS.client_id,
+        client_secret=R_SETTINGS.client_secret.get_secret_value(),
+        user_agent=R_SETTINGS.user_agent,
+        redirect_uri=R_SETTINGS.redirect_uri,
+        refresh_token=R_SETTINGS.refresh_token.get_secret_value(),
     ) as redd:
-        subb = await redd.subreddit(r_settings.subreddit_name)
+        subb = await redd.subreddit(R_SETTINGS.subreddit_name)
         all_thread_ids = session.exec(select(RedditThread.reddit_id)).all()
 
         # async for sub in subb.new():
@@ -142,18 +141,18 @@ async def get_reddits(session: Session, max_dupes: int = None):
 
 async def backup_gurus():
     with Session(engine_()) as session:
-        if dtg_settings.gurus_json:
+        if DTG_SETTINGS.guru_backup_json:
             stmt = await gurus_w_interest()
             gurus = session.exec(stmt).all()
             gurus_base = [GuruBase.model_validate(guru) for guru in gurus]
             gurus_dicts = [{k: v} for _ in gurus_base for k, v in _.model_dump().items() if v]
-            with open(dtg_settings.gurus_json, 'w') as backup_file:
+            with open(DTG_SETTINGS.guru_backup_json, 'w') as backup_file:
                 logger.info(f'writing backup to {backup_file}')
                 json.dump(gurus_dicts, backup_file, indent=2)
 
 
 def gurus_from_file() -> list[dict]:
-    with open(dtg_settings.guru_update_json) as update_file:
+    with open(DTG_SETTINGS.guru_update_json) as update_file:
         gurus = json.load(update_file)
         return gurus
 
@@ -161,6 +160,7 @@ def gurus_from_file() -> list[dict]:
 async def update_gurus(session: Session, gurus: Sequence[dict]):
     for guru in gurus:
         await update_guru(guru, session)
+
 
 #
 # async def update_reddit(reddit: RedditThread, session: Session):

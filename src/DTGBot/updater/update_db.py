@@ -1,4 +1,5 @@
 import asyncio
+import sys
 from asyncio import create_task, gather
 
 import sqlmodel
@@ -22,7 +23,7 @@ from DTGBot.updater.updaters import (
     update_reddit_episodes,
 )
 
-dtg_settings = dtg_sett()
+DTG_SETTINGS = dtg_sett()
 
 
 @quiet_cancel
@@ -32,7 +33,7 @@ async def main():
         with sqlmodel.Session(engine_()) as session:
             tasks = [
                 create_task(import_gurus(session)),
-                create_task(reddit_task(session)),
+                # create_task(reddit_task(session)),
                 create_task(episode_task(session)),
             ]
             await gather(*tasks)
@@ -49,15 +50,24 @@ async def guru_links_task(session):
 
 
 async def episode_task(session):
-    if dtg_settings.log_profile == 'local':
+    if DTG_SETTINGS.log_profile == 'local':
         spinner = asyncio.create_task(spin('Fetching Episodes'))
     else:
         spinner = None
         logger.info('Fetching Episodes')
     try:
+        new_eps = []
+
         async with ClientSession() as http_session:
-            async for ep in get_eps(session, http_session):
-                await update_episode_reddits(ep, session)
+            new_eps = [_ async for _ in get_eps(session, http_session)]
+            # async for ep in get_eps(session, http_session):
+            #     new_eps.append(ep)
+        if new_eps:
+            logger.info(f'adding {len(new_eps)} episodes')
+            sorted_eps = sorted(new_eps, key=lambda x: x.date)
+            session.add_all(sorted_eps)
+            [await update_episode_reddits(ep, session) for ep in sorted_eps]
+            session.commit()
             await http_session.close()
     finally:
         if spinner:
@@ -65,14 +75,14 @@ async def episode_task(session):
 
 
 async def import_gurus(session):
-    if dtg_settings.guru_update_json.exists():
-        logger.info(f'updating from {dtg_settings.guru_update_json}', category='GURU')
+    if DTG_SETTINGS.guru_update_json.exists():
+        logger.info(f'updating from {DTG_SETTINGS.guru_update_json}', category='GURU')
         gurus = gurus_from_file()
         await update_gurus(session, gurus)
 
 
 async def reddit_task(session):
-    if dtg_settings.log_profile == 'local':
+    if DTG_SETTINGS.log_profile == 'local':
         spinner = asyncio.create_task(spin('Fetching Reddit Threads'))
     else:
         spinner = None
@@ -85,5 +95,10 @@ async def reddit_task(session):
             spinner.cancel()
 
 
-if __name__ == '__main__':
+def run():
     asyncio.run(main())
+
+
+if __name__ == '__main__':
+    run()
+    sys.exit(0)

@@ -65,3 +65,5 @@ format.quote-style = "single"
 [tool.hatch.metadata]
 allow-direct-references = true
 
+[project.scripts]
+update-db = "update_db:run"

@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import typing as _t
 
+from loguru import logger
 from pawlogger import get_loguru
 from pydantic import HttpUrl, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -48,7 +49,7 @@ class RedditConfig(BaseSettings):
 
 
 class DTGConfig(BaseSettings):
-    guru_frontend: Path
+    guru_frontend: Path | None = None
     guru_data: Path
     url_prefix: str = ''
 
@@ -61,18 +62,17 @@ class DTGConfig(BaseSettings):
     log_file: Path | None = None
     backup_dir: Path | None = None
     guru_update_json: Path | None = None
-    gurus_json: Path | None = None
+    guru_backup_json: Path | None = None
 
-    restore: bool = False
+    init_eps: bool = False
     debug: bool = False
-    sleep: int = 60 * 60  # 1 hour
     max_dupes: int = 5  # 1 page in captivate
     scrape_limit: int | None = None
 
-    @field_validator('scrape_limit', mode='before')
-    def fix_int(cls, v):
-        if not v:
-            return None
+    # @field_validator('scrape_limit', mode='before')
+    # def fix_int(cls, v):
+    #     if not v:
+    #         return None
 
     @model_validator(mode='after')
     def set_paths(self):
@@ -80,9 +80,18 @@ class DTGConfig(BaseSettings):
         self.backup_dir = self.backup_dir or self.guru_data / 'backup'
         if not self.backup_dir.exists():
             self.backup_dir.mkdir(parents=True)
-        self.gurus_json = self.gurus_json or self.backup_dir / 'gurus.json'
+        self.guru_backup_json = self.guru_backup_json or self.backup_dir / 'gurus.json'
         self.log_file = self.log_file or self.guru_data / 'logs' / 'dtgbot.log'
         self.db_driver_path = self.db_driver_path or f'sqlite:///{self.db_loc}'
+        self.guru_update_json = self.guru_update_json or self.guru_data / 'guru_init.json'
+        if not self.guru_frontend or not self.guru_frontend.exists():
+            try:
+                fe_path = Path(__file__).parent.parent / 'frontend'
+                assert fe_path.exists()
+                self.guru_frontend = fe_path
+            except AssertionError as e:
+                logger.exception(e)
+                raise
         return self
 
     @functools.cached_property
