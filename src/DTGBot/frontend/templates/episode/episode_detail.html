@@ -11,7 +11,7 @@
         {#        </div>#}
 
         {% if episode.gurus %}
-            <h2>Featured Gurus</h2>
+            <h2>Related Gurus</h2>
             <div class="tag-container">
                 {% for guru in episode.gurus %}
                     <a href="{{ guru.slug }}" class="detail-link">{{ guru.name }}</a>
@@ -19,30 +19,38 @@
             </div>
         {% endif %}
 
+{#    <div class="notes-html">#}
+{#        {{ episode.show_notes_html | safe }}#}
+{##}
+{#    </div>#}
+
         {% if episode.notes %}
-            <h2>Show Notes:</h2>
+            <h2>Show Notes</h2>
             {% for note in episode.notes %}
                 <p>{{ note }}</p>
             {% endfor %}
         {% endif %}
 
         {% if episode.links %}
-            <h2>Show Links:</h2>
-{#            <div class="tag-container">#}
-                {% for text, link in episode.links.items() %}
-                    <a href="{{ link }}" class="detail-link">{{ text }}</a><br>
-                {% endfor %}
-{#            </div>#}
+            <h2>Show Links (in new tab)</h2>
+            {#            <div class="tag-container">#}
+            {% for text, link in episode.links.items() %}
+                <a href="{{ link }}" class="detail-link"
+                   target="__blank"
+                >{{ text }}</a><br>
+            {% endfor %}
+            {#            </div>#}
         {% endif %}
 
 
         {% if episode.reddit_threads %}
-            <h2>Related Reddit Threads</h2>
-{#            <div class="tag-container">#}
-                {% for thread in episode.reddit_threads %}
-                    <a href="{{ thread.shortlink }}" class="detail-link">{{ thread.title }}</a><br>
-                {% endfor %}
-{#            </div>#}
+            <h2>On the SubReddit:</h2>
+            {#            <div class="tag-container">#}
+            {% for thread in episode.reddit_threads %}
+                <a href="{{ thread.shortlink }}" class="detail-link"
+                   target="__blank">{{ thread.title }}</a><br>
+            {% endfor %}
+            {#            </div>#}
         {% endif %}
 
     </article>

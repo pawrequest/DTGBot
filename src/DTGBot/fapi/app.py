@@ -30,15 +30,13 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
-
 app.mount('/static', StaticFiles(directory=STATIC), name='static')
-app.mount('/img', StaticFiles(directory=STATIC.parent / 'img'), name='img')
-templates = Jinja2Templates(directory=TEMPLATES_DIR)
+# templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 app.include_router(ep_router, prefix='/eps')
 app.include_router(guru_router, prefix='/guru')
 app.include_router(red_router, prefix='/red')
-app.include_router(admin_router, prefix='/admin')
+# app.include_router(admin_router, prefix='/admin')
 
 
 @app.get('/robots.txt', response_class=PlainTextResponse)

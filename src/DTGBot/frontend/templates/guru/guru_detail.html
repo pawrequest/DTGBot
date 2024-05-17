@@ -6,16 +6,21 @@
 
 
         {% if guru.episodes %}
-            <h3>Featured in Episodes</h3>
+            <h3>{{ guru.name }} mentioned in Episodes:</h3>
             {% for episode in guru.episodes %}
                 <a href="{{ episode.slug }}" class="detail-link"> {{ episode.title }}</a>
             {% endfor %}
         {% endif %}
 
         {% if guru.reddit_threads %}
-            <h3>Related Reddit Threads</h3>
+            <h3>{{ guru.name }} on the SubReddit (in new tab)</h3>
             {% for thread in guru.reddit_threads %}
-                <a href="{{ thread.shortlink }}" class="detail-link">{{ thread.title }}</a><br>
+                <a href="{{ thread.shortlink }}"
+                   class="detail-link"
+                   target="__blank"
+                >
+                    {{ thread.title }}
+                </a><br>
             {% endfor %}
         {% endif %}
         {#    </div>#}

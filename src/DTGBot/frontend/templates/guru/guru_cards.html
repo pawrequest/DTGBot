@@ -1,14 +1,8 @@
 {% for guru in gurus %}
-    <article class="guru-card">
-        <div class="guru-container" onclick="location.href='{{ guru.slug }}'">
+    <article class="card guru-card">
+        <div class="card-container guru-container" onclick="location.href='{{ guru.slug }}'">
             <h1 class="guru-card-title">{{ guru.name }}</h1>
-
-            {#    <a href="{{ guru.slug }}" class="guru-container">#}
-            {#        <div class="guru-content">#}
-            {#            <h1 class="guru-card-title">{{ guru.name }}</h1>#}
-            {#        </div>#}
             <div class="tag-container">
-                {#            <p class="guru-tag">{{ guru.interest }} mentions</p>#}
                 <p class="card-tag">{{ guru.episodes|length }} episode mentions</p>
                 <p class="card-tag">{{ guru.reddit_threads|length }} reddit mentions</p>
             </div>

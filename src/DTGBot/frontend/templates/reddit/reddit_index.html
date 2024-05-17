@@ -1,14 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="search_wrapper">
+    <div class="search-container">
         <div class="search">
-            <p>Filter By Guru</p>
             <form onsubmit="return false;">
                 <div class="form-input">
                     <input type="hidden" name="search_kind" value="guru">
                     <input class="form-control" type="search"
-                           name="search_str" placeholder="Begin Typing To Filter..."
+                           name="search_str" placeholder="Filter By Guru..."
                            hx-post="{{ hx_get_route }}"
                            hx-trigger="input changed delay:1000ms, search"
                            hx-target="#search-results">
@@ -17,12 +16,11 @@
         </div>
 
         <div class="search">
-            <p>Filter By Title</p>
             <form onsubmit="return false;">
                 <div class="form-input">
                     <input type="hidden" name="search_kind" value="title">
                     <input class="form-control" type="search"
-                           name="search_str" placeholder="Begin Typing To Filter..."
+                           name="search_str" placeholder="Filter By Title..."
                            hx-post="{{ hx_get_route }}"
                            hx-trigger="input changed delay:1000ms, search"
                            hx-target="#search-results">

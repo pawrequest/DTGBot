@@ -6,7 +6,7 @@ from pathlib import Path
 import typing as _t
 
 from pawlogger import get_loguru
-from pydantic import HttpUrl, SecretStr, model_validator, field_validator
+from pydantic import HttpUrl, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from scrapaw.scrapaw_config import ScrapawConfig
 
@@ -52,6 +52,8 @@ class DTGConfig(BaseSettings):
     guru_data: Path
     url_prefix: str = ''
 
+    db_driver_path: Path | None = None
+
     podcast_url: HttpUrl = 'https://decoding-the-gurus.captivate.fm/'
     log_profile: _t.Literal['local', 'remote', 'default'] = 'local'
 
@@ -80,6 +82,7 @@ class DTGConfig(BaseSettings):
             self.backup_dir.mkdir(parents=True)
         self.gurus_json = self.gurus_json or self.backup_dir / 'gurus.json'
         self.log_file = self.log_file or self.guru_data / 'logs' / 'dtgbot.log'
+        self.db_driver_path = self.db_driver_path or f'sqlite:///{self.db_loc}'
         return self
 
     @functools.cached_property

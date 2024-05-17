@@ -19,6 +19,7 @@ def get_db_url():
 @functools.lru_cache
 def engine_():
     db_url = get_db_url()
+    # db_url = dtg_sett().db_driver_path
     connect_args = {'check_same_thread': False}
     return create_engine(db_url, echo=dtg_config.dtg_sett().debug, connect_args=connect_args)
 

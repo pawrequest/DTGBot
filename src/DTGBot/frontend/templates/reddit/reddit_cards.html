@@ -1,7 +1,7 @@
 {% for thread in threads %}
-    <article class="episode-card">
+    <article class="card">
         {#        <a href="{{ thread.shortlink }}" class="episode-container">#}
-        <div class="episode-container" onclick="location.href='{{ thread.shortlink }}'">
+        <div class="card-container" onclick="location.href='{{ thread.shortlink }}'">
 
             <div class="card-top-bar">
                 <span>{{ thread.ordinal_date }}</span>
