@@ -1,6 +1,5 @@
 #!/bin/sh
 docker run --rm \
-  -v "${REDDIT_ENV}":/app/reddit.env \
-  -v "${GURU_DATA}":/app/guru_data/ \
-  -v "${GURU_FRONTEND}":/app/guru_fontend/ \
+  -v "../reddit.env":/app/reddit.env \
+  -v "../data/":/app/guru_data/ \
   dtgbot:latest run-updater
