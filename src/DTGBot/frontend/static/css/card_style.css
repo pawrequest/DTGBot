@@ -25,7 +25,8 @@
     cursor: pointer;
     outline: 3px solid var(--clr-2);
     padding: 1.5rem;
-    font-size: var(--fs-100);
+    font-size: var(--fs-400);
+    color: var(--clr-3);
     /*max-width: 100%;*/
     /*width: 100%;*/
 }
@@ -33,12 +34,10 @@
 
 .card-container {
     display: flex;
-    gap: 2rem;
+    gap: 1rem;
     flex-direction: column;
-    align-content: start;
 
-    /*height: 100%;*/
-    /*max-width: 30ch;*/
+    height: 100%;
 }
 
 .card-top-bar {
@@ -46,23 +45,23 @@
     justify-content: space-between;
 }
 
+.card-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    padding-inline: .2rem;
+    font-size: var(--fs-600);
+    color: var(--clr-dtg-orange-700);
+    text-align: center;
+    text-wrap: balance;
+    padding-bottom: .2rem;
+}
+
 .card-content {
     /*display: grid;*/
     /*grid-template-columns: 1fr;*/
     /*gap: 1rem;*/
-
-    h1 {
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        padding-inline: .2rem;
-        font-size: var(--fs-500);
-        color: var(--clr-dtg-orange-700);
-        text-align: center;
-        text-wrap: balance;
-        /*padding-bottom: .5em;*/
-    }
 }
 
 .card,
@@ -72,24 +71,29 @@
         /*:focus-within {*/
         color: var(--clr-dtg-orange-700);
 
-        .ep-notes {
+        .ep-notes-container {
             color: var(--clr-dtg-orange-700);
         }
     }
 }
 
-.ep-notes {
+.ep-notes-container {
+    flex: 1;
+    flex-direction: column;
+    /*max-width: 20rem;*/
     line-height: 1.7;
-    font-size: var(--fs-200);
+    font-size: var(--fs-500);
     display: -webkit-box;
     -webkit-line-clamp: 10;
     -webkit-box-orient: vertical;
     overflow: hidden;
     color: var(--clr-3);
+    padding-bottom: -.5rem;
 
 
     p {
         padding-bottom: .5rem;
+        /*color: #df4817;*/
     }
 
 
@@ -104,16 +108,19 @@
 
 .card-tag {
     display: inline-block;
-    border: 1px solid var(--clr-5);
+    border: 2px solid var(--clr-5);
     border-radius: .5rem;
     padding: .2rem;
-    font-size: var(--fs-200);
+    font-size: var(--fs-400);
     color: var(--clr-5);
 }
 
 .card-tag:hover,
 .card-tag:focus {
+    /*color: red;*/
     color: var(--clr-3);
+    border: 2px solid var(--clr-3);
+
 }
 
 

@@ -1,19 +1,17 @@
 {% for episode in episodes %}
     <article class="card">
-        {#        <a href="{{ episode.slug }}" class="card-container">#}
         <div class="card-container" onclick="location.href='{{ episode.slug }}'">
-
             <div class="card-top-bar">
                 <span>{{ episode.number_str }}</span>
                 <span>{{ episode.ordinal_date }}</span>
             </div>
-            <div class="card-content">
-                <h1>{{ episode.title }}</h1>
-                <div class="ep-notes">
-                    {% for note in episode.notes %}
-                        <p>{{ note }}</p>
-                    {% endfor %}
-                </div>
+            {#            <div class="card-content">#}
+            <h1 class="card-title">{{ episode.title }}</h1>
+            <div class="ep-notes-container">
+                {% for note in episode.notes %}
+                    <p>{{ note }}</p>
+                {% endfor %}
+                {#                </div>#}
             </div>
             <div class="tag-container">
                 {% for guru in episode.gurus %}

@@ -7,10 +7,19 @@
     --fw-bold: 700;
     --fw-xbold: 900;
 
-    /*--fs-100: calc(16px);*/
-    /*--fs-200: calc(16px + .5vw);*/
-    /*--fs-300: calc(16px + 1vw);*/
-    /*--fs-400: calc(16px + 1.5vw);*/
+    --fs-100: 12px;
+    --fs-200: calc(var(--fs-100) + .1em);
+    --fs-300: calc(var(--fs-100) + .2em);
+    --fs-400: calc(var(--fs-100) + .3em);
+    --fs-500: calc(var(--fs-100) + .4em);
+    --fs-600: calc(var(--fs-100) + .5em);
+    --fs-700: calc(var(--fs-100) + 1em);
+    --fs-800: calc(var(--fs-100) + 1.5em);
+    --fs-900: calc(var(--fs-100) + 2em);
+
+
+
+
     /*--fs-500: calc(16px + 2vw);*/
     /*--fs-600: calc(16px + 2.5vw);*/
     /*--fs-700: calc(16px + 3vw);*/
@@ -18,15 +27,24 @@
     /*--fs-900: calc(16px + 5vw);*/
 
 
-    --fs-100: calc(16px);
-    --fs-200: calc(16px + 0.1rem);
-    --fs-300: calc(16px + 0.2rem);
-    --fs-400: calc(16px + 0.3rem);
-    --fs-500: calc(16px + 0.4em);
-    --fs-600: calc(16px + .5rem);
-    --fs-700: calc(16px + 1rem);
-    --fs-800: calc(16px + 1.5rem);
-    --fs-900: calc(16px + 2rem);
+    /*--fs-100: 16px;*/
+    /*--fs-200: 18px;*/
+    /*--fs-300: 20px;*/
+    /*--fs-400: 22px;*/
+    /*--fs-500: 24px;*/
+    /*--fs-600: 26px;*/
+    /*--fs-700: 28px;*/
+    /*--fs-800: 30px;*/
+    /*--fs-900: 32px;*/
+
+    /*--fs-200: calc(16px + 0.1rem);*/
+    /*--fs-300: calc(16px + 0.2rem);*/
+    /*--fs-400: calc(16px + 0.3rem);*/
+    /*--fs-500: calc(16px + 0.4em);*/
+    /*--fs-600: calc(16px + .5rem);*/
+    /*--fs-700: calc(16px + 1rem);*/
+    /*--fs-800: calc(16px + 1.5rem);*/
+    /*--fs-900: calc(16px + 2rem);*/
 
 
     /*--clr-3: hsl(50, 90%, 60%);*/
@@ -43,13 +61,15 @@
     --breakpoint-lg: 900px;
 }
 
-
 *,
 *::before,
 *::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    /*border: 0;*/
+    /*font-size: 100%;*/
+    /*list-style: none;*/
 }
 
 /*for mobile debugging*/
@@ -74,7 +94,7 @@ html {
 
 body {
     background-color: var(--clr-bg);
-    font-size: 16px;
+    font-size: var(--fs-400);
     /*display: grid;*/
     /*grid-template-columns: 1fr;*/
     /*padding-inline: 1rem;*/
@@ -93,7 +113,11 @@ h3 {
     max-width: min(95%, 1400px);
     margin-inline: auto;
     display: grid;
-    gap: 1em;
+    gap: 2em;
+}
+
+.footer-wrapper {
+    max-width: min(100%, 1450px);
 }
 
 .hlight {
@@ -119,11 +143,11 @@ header {
         display: grid;
         margin-inline: auto;
         width: max-content;
-        margin-block: 2rem;
+        margin-block: 2em;
 
 
         ul {
-            padding-bottom: .3rem;
+            padding-bottom: .3em;
             border-block: 1px solid var(--clr-3);
             list-style: none;
             justify-content: space-evenly;
@@ -131,7 +155,7 @@ header {
 
             @media (min-width: 40rem) {
                 display: flex;
-                gap: 2rem;
+                gap: 2em;
             }
 
 
@@ -167,7 +191,7 @@ header {
     /*background: red;*/
     margin-block: 2em;
     justify-content: space-around;
-    /*padding-inline: 5rem;*/
+    /*padding-inline: 5em;*/
 
     @media (min-width: 40rem) {
         /*width: clamp(20rem, 50rem, 90%);*/
@@ -175,7 +199,7 @@ header {
         position: sticky;
         top: 0;
         z-index: 100;
-        padding-bottom: 1rem;
+        padding-bottom: 1em;
         /*background: var(--clr-bg);*/
         > * {
             flex: 1 1 auto;
@@ -185,9 +209,9 @@ header {
 
 .search {
     form input {
-        border-radius: .3rem;
-        padding-inline: .3rem;
-        font-size: var(--fs-200);
+        border-radius: .3em;
+        padding-inline: .3em;
+        font-size: var(--fs-400);
         /*width: 85%;*/
     }
 }
@@ -196,21 +220,22 @@ header {
 footer {
     background-image: url('../img/footer.png');
     background-repeat: no-repeat;
-
-    position: sticky;;
+    background-size: cover;
+    background-blend-mode: multiply;
+    position: sticky;
     bottom: 0;
     color: var(--clr-5);
 
 
     ul {
         display: flex;
-        gap: 1rem;
+        gap: 1em;
         justify-content: left;
-        padding-block: 2rem;
-        padding-left: 3em;
+        padding-block: 2em;
+        padding-left: 3rem;
 
         @media (max-width: 60rem) {
-            padding-block: .5rem;
+            padding-block: .5em;
         }
 
     }
