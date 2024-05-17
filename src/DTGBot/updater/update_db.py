@@ -56,19 +56,14 @@ async def episode_task(session):
         spinner = None
         logger.info('Fetching Episodes')
     try:
-        new_eps = []
-
         async with ClientSession() as http_session:
-            new_eps = [_ async for _ in get_eps(session, http_session)]
-            # async for ep in get_eps(session, http_session):
-            #     new_eps.append(ep)
-        if new_eps:
-            logger.info(f'adding {len(new_eps)} episodes')
-            sorted_eps = sorted(new_eps, key=lambda x: x.date)
-            session.add_all(sorted_eps)
-            [await update_episode_reddits(ep, session) for ep in sorted_eps]
-            session.commit()
-            await http_session.close()
+            if new_eps := [_ async for _ in get_eps(session, http_session)]:
+                logger.info(f'adding {len(new_eps)} episodes')
+                sorted_eps = sorted(new_eps, key=lambda x: x.date)
+                session.add_all(sorted_eps)
+                [await update_episode_reddits(ep, session) for ep in sorted_eps]
+                session.commit()
+                await http_session.close()
     finally:
         if spinner:
             spinner.cancel()
