@@ -12,4 +12,5 @@ COPY ./src .
 COPY ./pyproject.toml .
 COPY ./README.md .
 RUN pip install --no-cache-dir .
+ENV PYTHONPATH=/app
 
