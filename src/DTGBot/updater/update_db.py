@@ -33,7 +33,7 @@ async def main():
         with sqlmodel.Session(engine_()) as session:
             tasks = [
                 create_task(import_gurus(session)),
-                # create_task(reddit_task(session)),
+                create_task(reddit_task(session)),
                 create_task(episode_task(session)),
             ]
             await gather(*tasks)
