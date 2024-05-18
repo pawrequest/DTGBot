@@ -6,11 +6,9 @@ services:
     volumes:
       - ${REDDIT_ENV}:/app/reddit.env
       - ${GURU_DATA}:/app/guru_data/
-      - ${GURU_FRONTEND}:/app/guru_fontend/
     environment:
       - REDDIT_ENV=/app/reddit.env
       - GURU_DATA=/app/guru_data/
-      - GURU_FRONTEND=/app/guru_fontend/
       - URL_PREFIX=/dtg
     networks:
       - dtgbot-network
