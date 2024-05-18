@@ -18,11 +18,11 @@
     <h1>DECODING THE GURUS</h1>
     <nav>
         <ul>
-            <li><a href="{{ URL_PREFIX }}/eps" class="{{ 'hlight' if request.path.startswith('/eps/') else '' }}">Episodes</a>
+            <li><a href="{{ URL_PREFIX }}/eps" class="{{ 'hlight' if request.path.startswith(URL_PREFIX+'/eps/') else '' }}">Episodes</a>
             </li>
-            <li><a href="{{ URL_PREFIX }}/guru" class="{{ 'hlight' if request.path.startswith('/guru/') else '' }}">Gurus</a>
+            <li><a href="{{ URL_PREFIX }}/guru" class="{{ 'hlight' if request.path.startswith(URL_PREFIX+'/guru/') else '' }}">Gurus</a>
             </li>
-            <li><a href="{{ URL_PREFIX }}/red" class="{{ 'hlight' if request.path.startswith('/red/') else '' }}">Reddits</a>
+            <li><a href="{{ URL_PREFIX }}/red" class="{{ 'hlight' if request.path.startswith(URL_PREFIX+'/red/') else '' }}">Reddits</a>
             </li>
         </ul>
     </nav>
