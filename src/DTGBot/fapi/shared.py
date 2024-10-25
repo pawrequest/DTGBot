@@ -9,6 +9,7 @@ from DTGBot.common.dtg_config import dtg_sett
 PAGE_SIZE = 27
 
 TEMPLATES = Jinja2Templates(directory=str(dtg_sett().guru_frontend / 'templates'))
+TEMPLATES.env.globals.update({'URL_PREFIX': dtg_sett().url_prefix})
 
 
 def get_pagination(limit: int = Query(PAGE_SIZE, gt=0), offset: int = Query(0, ge=0)):
@@ -28,4 +29,3 @@ def dt_ordinal(dt: datetime | date) -> str:
     return dt.strftime('%a {th} %b %Y').replace('{th}', ordinal(dt.day))
 
 
-TEMPLATES.env.globals.update({'URL_PREFIX': dtg_sett().url_prefix})
