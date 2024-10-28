@@ -81,7 +81,6 @@ async def update_episode_reddits(episode: Episode, session: Session):
     #     logger.debug(f'No new threads matched {episode.title}', category='EP-MATCH')
 
 
-
 async def update_reddit_episodes(reddit: RedditThread, session: Session):
     stmt = await select_new_eps_with_reddit(reddit)
     if new_eps := session.exec(stmt).all():
@@ -117,11 +116,11 @@ async def get_reddits(session: Session, max_dupes: int = None):
     max_dupes = max_dupes or R_SETTINGS.max_red_dupes
 
     async with Reddit(
-        client_id=R_SETTINGS.client_id,
-        client_secret=R_SETTINGS.client_secret.get_secret_value(),
-        user_agent=R_SETTINGS.user_agent,
-        redirect_uri=R_SETTINGS.redirect_uri,
-        refresh_token=R_SETTINGS.refresh_token.get_secret_value(),
+            client_id=R_SETTINGS.client_id,
+            client_secret=R_SETTINGS.client_secret.get_secret_value(),
+            user_agent=R_SETTINGS.user_agent,
+            redirect_uri=R_SETTINGS.redirect_uri,
+            refresh_token=R_SETTINGS.refresh_token.get_secret_value(),
     ) as redd:
         subb = await redd.subreddit(R_SETTINGS.subreddit_name)
         all_thread_ids = session.exec(select(RedditThread.reddit_id)).all()
@@ -160,7 +159,6 @@ def gurus_from_file() -> list[dict]:
 async def update_gurus(session: Session, gurus: Sequence[dict]):
     for guru in gurus:
         await update_guru(guru, session)
-
 
 #
 # async def update_reddit(reddit: RedditThread, session: Session):

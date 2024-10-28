@@ -41,19 +41,6 @@ dev = [
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[tool.rye]
-managed = false
-dev-dependencies = [
-    "pytest-asyncio",
-    'autodoc_pydantic',
-    "pytest",
-    "sphinx",
-    "sphinx-autodoc-typehints",
-    "sphinx-rtd-theme",
-    "sphinx-readme",
-    "sphinx_rtd_dark_mode",
-    "myst-parser",
-]
 
 [tool.ruff]
 line-length = 120

@@ -5,20 +5,20 @@ import os
 from pathlib import Path
 import typing as _t
 
-from loguru import logger
+# from loguru import logger
 from pawlogger import get_loguru
 from pydantic import HttpUrl, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from scrapaw.scrapaw_config import ScrapawConfig
 
 
-# @functools.lru_cache
-# def dtg_env_from_env():
-#     guru_env = os.getenv('GURU_ENV')
-#     print(guru_env)
-#     if not guru_env or not Path(guru_env).exists():
-#         raise ValueError('GURU_ENV (path to environment file) not set')
-#     return guru_env
+@functools.lru_cache
+def dtg_env_from_env():
+    guru_env = os.getenv('GURU_ENV')
+    print(guru_env)
+    if not guru_env or not Path(guru_env).exists():
+        raise ValueError('GURU_ENV (path to environment file) not set')
+    return guru_env
 
 
 @functools.lru_cache
@@ -89,10 +89,10 @@ class DTGConfig(BaseSettings):
                 fe_path = Path(__file__).parent.parent / 'frontend'
                 assert fe_path.exists()
                 self.guru_frontend = fe_path
+                return self
             except AssertionError as e:
-                logger.exception(e)
+                print("ERROR:", e)
                 raise
-        return self
 
     @functools.cached_property
     def scrap_config(self):
