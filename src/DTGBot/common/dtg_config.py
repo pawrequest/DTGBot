@@ -50,7 +50,7 @@ class RedditConfig(BaseSettings):
 
 class DTGConfig(BaseSettings):
     guru_frontend: Path | None = None
-    guru_data: Path
+    guru_data: Path | None = None
     url_prefix: str = ''
 
     db_driver_path: Path | None = None
@@ -76,6 +76,7 @@ class DTGConfig(BaseSettings):
 
     @model_validator(mode='after')
     def set_paths(self):
+        self.guru_data = self.guru_data or Path(__file__).parent.parent.parent.parent / 'data'
         self.db_loc = self.db_loc or self.guru_data / 'guru.db'
         self.backup_dir = self.backup_dir or self.guru_data / 'backup'
         if not self.backup_dir.exists():
