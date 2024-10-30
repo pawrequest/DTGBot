@@ -1,5 +1,5 @@
 git+https://github.com/pawrequest/pawlogger
-git+https://github.com/pawrequest/scrapaw
+git+https://github.com/pawrequest/scrapaw@v0.2
 sqlmodel
 sqlalchemy
 pydantic
