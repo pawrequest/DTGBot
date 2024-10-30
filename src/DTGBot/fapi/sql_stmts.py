@@ -15,9 +15,11 @@ async def search_column(table, column, search_str: str):
     search = f'%{search_str}%'
     return select(table).where(col(column).ilike(search))
 
+
 # async def guru_by_notes(search_str:str):
 #     search = f'%{search_str}%'
 #     return select()
+
 
 async def search_guru_and_title(model, search_string: str):
     condition1 = col(Guru.name).ilike(f'%{search_string}%')
@@ -41,8 +43,8 @@ async def search_column_array(table, column, search_strs: list[str], excludes: l
 
 
 async def search_column_specific(table, column, search_strs: list[str], excludes: list[str] | None = None):
-    logger.info(f'{search_strs=}')
-    logger.info(f'{excludes=}')
+    logger.debug(f'{search_strs=}')
+    logger.debug(f'{excludes=}')
 
     excludes = excludes or []
     yes_cond = [column == search_str for search_str in search_strs]
@@ -77,9 +79,9 @@ async def select_episodes_with_reddit(reddit: RedditThread):
         )
     )
 
+
 async def select_threads_with_episode(episode: Episode):
     return select(RedditThread).where(col(RedditThread.title).ilike(f'%{episode.title}%'))
-
 
 
 async def select_new_threads_with_episode(episode: Episode):
@@ -116,8 +118,8 @@ async def search_related_column(table, link_table, related_table, related_col, s
     return select(table).join(link_table).join(related_table).where(col(related_col).ilike(search))
 
 
-eps_by_guruname = functools.partial(search_related_column, Episode, GuruEpisodeLink, Guru, Guru.name)
-reddit_by_guruname = functools.partial(search_related_column, RedditThread, GuruRedditLink, Guru, Guru.name)
+eps_by_guruname = functools.partial(search_related_column, table=Episode, link_table=GuruEpisodeLink, related_table=Guru, related_col=Guru.name)
+reddit_by_guruname = functools.partial(search_related_column, table=RedditThread, link_table=GuruRedditLink, related_table=Guru, related_col=Guru.name)
 GURU_INTEREST = func.count(GuruEpisodeLink.guru_id) + func.count(GuruRedditLink.guru_id)
 
 

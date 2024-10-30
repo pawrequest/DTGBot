@@ -17,8 +17,12 @@ def get_pagination(limit: int = Query(PAGE_SIZE, gt=0), offset: int = Query(0, g
 
 
 class Pagination(NamedTuple):
-    limit: int
-    offset: int
+    limit: int = PAGE_SIZE
+    offset: int = 0
+
+    @classmethod
+    def from_query(cls, limit: int = Query(PAGE_SIZE, gt=0), offset: int = Query(0, ge=0)):
+        return cls(limit=limit, offset=offset)
 
 
 def ordinal(n):

@@ -12,7 +12,7 @@ from DTGBot.common.models.episode_m import Episode
 from DTGBot.fapi.shared import Pagination, TEMPLATES, get_pagination
 from DTGBot.fapi.sql_stmts import eps_by_guruname, search_column, select_page_more
 
-HX_GET_ROUTE = f'{Episode.route_prefix}/get'  # noqa:
+HX_GET_ROUTE = f'{Episode.route_prefix}/get'
 router = fastapi.APIRouter()
 SearchKind = _t.Literal['title', 'guru', 'notes']
 

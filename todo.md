@@ -1,0 +1,12 @@
+- browser compatibility (display is screwed on chrome for eg gurometer dr k episode list view)
+- user accounts
+  - contribute
+    - add guru
+    - tag/untag guru from episode / thread
+- admin page
+    
+- CI/CD
+- abandon sqlmodel
+- SearchRequest SearchResponse types
+  - integrate into routes
+- map relationships
