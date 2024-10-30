@@ -9,7 +9,7 @@ readme = "README.md"
 requires-python = ">= 3.12"
 dependencies = [
     "pawlogger @ git+https://github.com/pawrequest/pawlogger",
-    "scrapaw @ git+https://github.com/pawrequest/scrapaw",
+    "scrapaw @ git+https://github.com/pawrequest/scrapaw@v0.2",
     "pawdantic @ git+https://github.com/pawrequest/pawdantic",
     'jinja2',
     'asyncpraw',
