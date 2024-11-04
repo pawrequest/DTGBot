@@ -6,9 +6,10 @@ import asyncio
 from aiohttp import ClientSession
 from asyncpraw import Reddit
 from loguru import logger
-from scrapaw import episode_generator
 from sqlmodel import Session, select
+from unicodedata import category
 
+from scrapaw import episode_generator
 from DTGBot.common.database import engine_
 from DTGBot.common.dtg_config import dtg_sett, reddit_sett
 from DTGBot.common.models.episode_m import Episode
@@ -49,7 +50,7 @@ async def update_guru(guru_update: dict, session):
     if db_guru := session.exec(db_guru_stmt).first():
         for key, value in guru_update.items():
             if not key == 'name' and hasattr(db_guru, key):
-                logger.info(f'{guru_update['name']}: {key} = {value}')
+                logger.debug(f'Updating Guru {guru_update['name']}: {key} = {value}')
                 setattr(db_guru, key, value)
     else:
         logger.info(f'creating new guru: {guru_update['name']}', category='GURU')
@@ -84,7 +85,7 @@ async def update_episode_reddits(episode: Episode, session: Session):
 async def update_reddit_episodes(reddit: RedditThread, session: Session):
     stmt = await select_new_eps_with_reddit(reddit)
     if new_eps := session.exec(stmt).all():
-        logger.warning(f'"{reddit.title}" matched {get_log_str(new_eps)}', category='RED-MATCH')
+        logger.info(f'"{reddit.title}" matched {get_log_str(new_eps)}', category='RED-MATCH')
         reddit.episodes.extend(new_eps)
     # else:
     #     logger.debug(f'No new episodes matched {reddit.title}', category='RED-MATCH')
@@ -95,20 +96,24 @@ async def update_reddit_episodes(reddit: RedditThread, session: Session):
 async def get_eps(session: Session, http_session: ClientSession) -> AsyncGenerator[Episode, None]:
     dupes = 0
     max_dupes = DTG_SETTINGS.max_dupes
+    eps = 0
     async for ep_ in episode_generator(DTG_SETTINGS.scrap_config, http_session):
+        # eps += 1
         ep = Episode.model_validate(ep_)
         episode__all = session.exec(select(Episode)).all()
 
         if ep in episode__all:
             dupes += 1
             if max_dupes is not None and dupes > max_dupes:
-                logger.info('Reached max duplicates')
+                logger.info('Reached max duplicate episodes - stopping search', category='episode')
                 break
             continue
 
         ep_ = Episode.model_validate(ep)
-        logger.info(f'Episode updater found new episode: "{ep.title}"', category='episode')
+        logger.debug(f'found new episode: "{ep.title}"', category='episode')
+        eps += 1
         yield ep_
+    logger.info(f'found {eps} new episodes', category='episode')
 
 
 async def get_reddits(session: Session, max_dupes: int = None):
@@ -116,26 +121,32 @@ async def get_reddits(session: Session, max_dupes: int = None):
     max_dupes = max_dupes or R_SETTINGS.max_red_dupes
 
     async with Reddit(
-            client_id=R_SETTINGS.client_id,
-            client_secret=R_SETTINGS.client_secret.get_secret_value(),
-            user_agent=R_SETTINGS.user_agent,
-            redirect_uri=R_SETTINGS.redirect_uri,
-            refresh_token=R_SETTINGS.refresh_token.get_secret_value(),
+        client_id=R_SETTINGS.client_id,
+        client_secret=R_SETTINGS.client_secret.get_secret_value(),
+        user_agent=R_SETTINGS.user_agent,
+        redirect_uri=R_SETTINGS.redirect_uri,
+        refresh_token=R_SETTINGS.refresh_token.get_secret_value(),
     ) as redd:
         subb = await redd.subreddit(R_SETTINGS.subreddit_name)
         all_thread_ids = session.exec(select(RedditThread.reddit_id)).all()
+        reds = 0
 
         # async for sub in subb.new():
         async for sub in subb.top(limit=None, time_filter='all'):
+            # reds += 1
             if sub.id in all_thread_ids:
+                logger.debug(f'skipping duplicate reddit thread: {sub.title}', category='reddit')
                 dupes += 1
                 if max_dupes is not None and dupes > max_dupes:
                     logger.info(f'Reached max duplicate reddit threads ({max_dupes})')
                     break
                 continue
+            else:
+                reds += 1
             thrd = RedditThread.from_submission(sub)
-            logger.info(f'Found New Reddit Thread: {thrd.title}', category='reddit')
+            logger.debug(f'found new reddit thread: {thrd.title}', category='reddit')
             yield thrd
+        logger.info(f'found {reds} new RedditThreads', category='reddit')
 
 
 async def backup_gurus():
@@ -159,6 +170,7 @@ def gurus_from_file() -> list[dict]:
 async def update_gurus(session: Session, gurus: Sequence[dict]):
     for guru in gurus:
         await update_guru(guru, session)
+
 
 #
 # async def update_reddit(reddit: RedditThread, session: Session):

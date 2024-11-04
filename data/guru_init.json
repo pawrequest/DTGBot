@@ -12,6 +12,13 @@
     "name": "Elizabeth Gilbert"
   },
   {
+    "name": "Donald Trump",
+    "include_strs": [
+      "Donald J Trump",
+      "Donald J. Trump"
+    ]
+  },
+  {
     "name": "Douglas Murray"
   },
   {

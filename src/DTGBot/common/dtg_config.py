@@ -7,8 +7,9 @@ import typing as _t
 
 # from loguru import logger
 from pawlogger import get_loguru
-from pydantic import HttpUrl, SecretStr, field_validator, model_validator
+from pydantic import HttpUrl, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
 from scrapaw.scrapaw_config import ScrapawConfig
 
 
@@ -43,7 +44,7 @@ class RedditConfig(BaseSettings):
     subreddit_name: str = 'test'
     wiki_name: str = 'test'
 
-    max_red_dupes: int = 1000
+    max_red_dupes: int = 20
 
     model_config = SettingsConfigDict(env_ignore_empty=True, env_file=reddit_env_from_env(), extra='ignore')
 
@@ -92,7 +93,7 @@ class DTGConfig(BaseSettings):
                 self.guru_frontend = fe_path
                 return self
             except AssertionError as e:
-                print("ERROR:", e)
+                print('ERROR:', e)
                 raise
 
     @functools.cached_property
@@ -114,7 +115,7 @@ class DTGConfig(BaseSettings):
 @functools.lru_cache
 def dtg_sett():
     sett = DTGConfig()
-    logger = get_loguru(log_file=sett.log_file, profile=sett.log_profile)
+    logger = get_loguru(log_file=sett.log_file, profile=sett.log_profile, level='DEBUG')
     logger.info('DTGBotConfig loaded')
     return sett
 

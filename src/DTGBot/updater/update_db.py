@@ -8,7 +8,7 @@ from loguru import logger
 from sqlmodel import select
 
 from DTGBot.common.dtg_config import dtg_sett
-from DTGBot.common.database import create_db, engine_
+from DTGBot.common.database import create_db, engine_, trim_db
 from DTGBot.common.dtg_types import quiet_cancel
 from DTGBot.common.models.guru_m import Guru
 from DTGBot.updater.updaters import (
@@ -24,6 +24,7 @@ from DTGBot.updater.updaters import (
 )
 
 DTG_SETTINGS = dtg_sett()
+DEBUG_TRIM = False
 
 
 @quiet_cancel
@@ -31,6 +32,10 @@ async def main():
     try:
         create_db()
         with sqlmodel.Session(engine_()) as session:
+            if DEBUG_TRIM:
+                ...
+                trim_db(session=session)
+
             tasks = [
                 create_task(import_gurus(session)),
                 create_task(reddit_task(session)),
@@ -39,7 +44,7 @@ async def main():
             await gather(*tasks)
             await guru_links_task(session)
 
-            logger.warning('update complete')
+            logger.info('update complete')
     finally:
         await backup_gurus()
 
@@ -71,9 +76,10 @@ async def episode_task(session):
 
 async def import_gurus(session):
     if DTG_SETTINGS.guru_update_json.exists():
-        logger.info(f'updating from {DTG_SETTINGS.guru_update_json}', category='GURU')
+        logger.info(f'Updating gurus from {DTG_SETTINGS.guru_update_json}', category='GURU')
         gurus = gurus_from_file()
         await update_gurus(session, gurus)
+        logger.info(f'Updated {len(gurus)} Gurus', category='GURU')
 
 
 async def reddit_task(session):
@@ -82,6 +88,7 @@ async def reddit_task(session):
     else:
         spinner = None
         logger.info('Fetching Reddit Threads')
+        reds = 0
     try:
         async for reddit in get_reddits(session):
             await update_reddit_episodes(reddit, session)
