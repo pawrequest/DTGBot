@@ -1,3 +1,3 @@
 DTGBOT
 
-added CI/CD 
+CI not pushing ngnix? 
