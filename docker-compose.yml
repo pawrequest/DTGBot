@@ -35,9 +35,7 @@ services:
     build:
       context: ./deploy/server/nginx  # Use the Nginx directory as the context
     volumes:
-       - /etc/letsencrypt/live/pawrequest.com:/etc/letsencrypt/live/pawrequest.com:ro
-       - /etc/letsencrypt/archive/pawrequest.com:/etc/letsencrypt/archive/pawrequest.com:ro
-       - /etc/letsencrypt/privkey.pem:/etc/letsencrypt/live/pawrequest.com/privkey.pem:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     ports:
       - "80:80"
       - "443:443"
