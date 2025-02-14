@@ -22,7 +22,6 @@ dependencies = [
     "httpx",
     "pydantic-settings",
     'python-multipart',
-    'alembic',
 ]
 [project.optional-dependencies]
 dev = [
