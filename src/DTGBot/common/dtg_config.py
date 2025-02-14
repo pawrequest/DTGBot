@@ -5,10 +5,10 @@ import os
 from pathlib import Path
 import typing as _t
 
-# from loguru import logger
 from pawlogger import get_loguru
-from pydantic import HttpUrl, SecretStr, field_validator, model_validator
+from pydantic import HttpUrl, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
 from scrapaw.scrapaw_config import ScrapawConfig
 
 
