@@ -1,3 +1,3 @@
 DTGBOT
 
-CI not pushing ngnix? 
+rebuild src on server
