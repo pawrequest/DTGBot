@@ -33,7 +33,7 @@ services:
   nginx:
     restart: unless-stopped
     build:
-      context: ./deploy/server/nginx  # Use the Nginx directory as the context
+      context: ./deploy/server/  # Use the Nginx directory as the context
     ports:
       - "80:80"
       - "443:443"
