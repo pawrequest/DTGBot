@@ -31,3 +31,12 @@ jobs:
             docker compose down
             docker compose up -d --build --force-recreate
           EOF
+
+      - name: Check if Nginx container is running
+        run: |
+         container_state=$(docker inspect --format '{{.State.Status}}' nginx)
+         if [[ "$container_state" != "running" ]]; then
+           echo "Nginx container is not in 'running' state, it's in $container_state, exiting."
+           exit 1
+         fi
+          
