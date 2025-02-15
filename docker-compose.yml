@@ -23,7 +23,7 @@ services:
     ports:
       - "80:80"
     volumes:
-      - /deploy/server/nginx/conf.d:/etc/nginx/conf.d
+      - ./deploy/server/nginx/conf.d:/etc/nginx/conf.d
     depends_on:
       - fastapi
     networks:
