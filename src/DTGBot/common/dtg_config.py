@@ -2,11 +2,9 @@ from __future__ import annotations
 
 import functools
 import os
-import ssl
 from pathlib import Path
 import typing as _t
 
-from loguru import logger
 from pawlogger import get_loguru
 from pydantic import HttpUrl, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -94,12 +92,10 @@ class GuruConfig(BaseSettings):
 
     @model_validator(mode='after')
     def set_ssl(self):
-        logger.info(f'{self.lets_encrypt=}')
         if not self.lets_encrypt:
             return self
         if not self.lets_encrypt_path or not self.lets_encrypt_path.exists():
             raise ValueError('lets_encrypt_path must be set and exist')
-        logger.info(f'setting ssl paths relative to  {self.lets_encrypt_path=}')
         self.ssl_key = self.lets_encrypt_path / 'privkey.pem'
         self.ssl_cert = self.lets_encrypt_path / 'fullchain.pem'
         return self
@@ -126,6 +122,10 @@ def guru_config():
     sett = GuruConfig()
     logger = get_loguru(log_file=sett.log_file, profile=sett.log_profile)
     logger.info('DTGBotConfig loaded')
+    logger.info(f'{sett.lets_encrypt=}')
+    if sett.lets_encrypt:
+        logger.info(f'{sett.ssl_key=}')
+        logger.info(f'{sett.ssl_cert=}')
     return sett
 
 
