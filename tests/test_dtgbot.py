@@ -1,10 +1,10 @@
 import pytest
-from DTGBot.common.dtg_config import DTGConfig, RedditConfig
+from DTGBot.common.dtg_config import GuruConfig, RedditConfig
 from DTGBot.updater.dtg_bot import DTG
 
 
 def test_1():
-    guru_conf = DTGConfig()
+    guru_conf = GuruConfig()
     reddit_config = RedditConfig()
 
 

@@ -8,14 +8,19 @@ services:
     volumes:
       - ${REDDIT_ENV}:/app/reddit.env
       - ${GURU_DATA}:/app/guru_data/
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     environment:
       - REDDIT_ENV=/app/reddit.env
       - GURU_DATA=/app/guru_data/
       - URL_PREFIX=/dtg
+      - LETS_ENCRYPT=1
+      - LETS_ENCRYPT_PATH=/etc/letsencrypt/live/pawrequest.com
     networks:
       - dtgbot-network
-    command: uvicorn DTGBot.fapi.app:app --host 0.0.0.0 --port 8000 --proxy-headers --root-path /dtg
-
+    command: >
+      uvicorn DTGBot.fapi.app:app --host 0.0.0.0 --port 8000 --proxy-headers --root-path /dtg 
+      --ssl-keyfile ${LETS_ENCRYPT_PATH}/privkey.pem 
+      --ssl-certfile ${LETS_ENCRYPT_PATH}/fullchain.pem
 
   nginx:
     restart: unless-stopped

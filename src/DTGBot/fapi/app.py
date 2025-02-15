@@ -7,13 +7,19 @@ from starlette.responses import RedirectResponse
 from starlette.staticfiles import StaticFiles
 
 from DTGBot.common.dtg_config import dtg_sett
+
 from DTGBot.fapi.guru_route import router as guru_router
 from DTGBot.fapi.episode_route import router as ep_router
 from DTGBot.fapi.red_route import router as red_router
 from DTGBot.common.database import create_db
+import ssl
 
-STATIC = dtg_sett().guru_frontend / 'static'
+GURU_CONFIG = dtg_sett()
 
+STATIC = GURU_CONFIG.guru_frontend / 'static'
+
+ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+ssl_context.load_cert_chain(GURU_CONFIG.ssl_cert, keyfile=GURU_CONFIG.ssl_key)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

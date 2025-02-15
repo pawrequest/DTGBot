@@ -2,13 +2,14 @@ from __future__ import annotations
 
 import functools
 import os
+import ssl
 from pathlib import Path
 import typing as _t
 
+from loguru import logger
 from pawlogger import get_loguru
 from pydantic import HttpUrl, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
 from scrapaw.scrapaw_config import ScrapawConfig
 
 
@@ -40,15 +41,29 @@ class RedditConfig(BaseSettings):
     model_config = SettingsConfigDict(env_ignore_empty=True, env_file=reddit_env_from_env(), extra='ignore')
 
 
-class DTGConfig(BaseSettings):
-    guru_frontend: Path | None = None
+class GuruConfig(BaseSettings):
+    # mandatory
     guru_data: Path | None = None
-    url_prefix: str = ''
 
+    # optional
+    lets_encrypt: bool = False
+    lets_encrypt_path: Path | None = None
+    log_profile: _t.Literal['local', 'remote', 'default'] = 'local'
+    podcast_url: HttpUrl = 'https://decoding-the-gurus.captivate.fm/'
+
+    ## scrapaw
+    debug: bool = False
+    max_dupes: int = 5  # 1 page in captivate
+    scrape_limit: int | None = None
+
+    # calculated
+    guru_frontend: Path | None = None
+    url_prefix: str = ''
     db_driver_path: Path | None = None
 
-    podcast_url: HttpUrl = 'https://decoding-the-gurus.captivate.fm/'
-    log_profile: _t.Literal['local', 'remote', 'default'] = 'local'
+    ssl_key: Path | None = None
+    ssl_cert: Path | None = None
+
 
     db_loc: Path | None = None
     log_file: Path | None = None
@@ -56,12 +71,8 @@ class DTGConfig(BaseSettings):
     guru_update_json: Path | None = None
     guru_backup_json: Path | None = None
 
-    debug: bool = False
-    max_dupes: int = 5  # 1 page in captivate
-    scrape_limit: int | None = None
-
     @model_validator(mode='after')
-    def set_paths(self):
+    def calculate_paths(self):
         self.guru_data = self.guru_data or Path(__file__).parent.parent.parent.parent / 'data'
         self.db_loc = self.db_loc or self.guru_data / 'guru.db'
         self.backup_dir = self.backup_dir or self.guru_data / 'backup'
@@ -78,8 +89,21 @@ class DTGConfig(BaseSettings):
                 self.guru_frontend = fe_path
                 return self
             except AssertionError as e:
-                print("ERROR:", e)
+                print('ERROR:', e)
                 raise
+
+    @model_validator(mode='after')
+    def set_ssl(self):
+        logger.info(f'{self.lets_encrypt=}')
+        if not self.lets_encrypt:
+            return self
+        if not self.lets_encrypt_path or not self.lets_encrypt_path.exists():
+            raise ValueError('lets_encrypt_path must be set and exist')
+        logger.info(f'setting ssl paths relative to  {self.lets_encrypt_path=}')
+        self.ssl_key = self.lets_encrypt_path / 'privkey.pem'
+        self.ssl_cert = self.lets_encrypt_path / 'fullchain.pem'
+        return self
+
 
     @functools.cached_property
     def scrap_config(self):
@@ -99,7 +123,7 @@ class DTGConfig(BaseSettings):
 
 @functools.lru_cache
 def dtg_sett():
-    sett = DTGConfig()
+    sett = GuruConfig()
     logger = get_loguru(log_file=sett.log_file, profile=sett.log_profile)
     logger.info('DTGBotConfig loaded')
     return sett
