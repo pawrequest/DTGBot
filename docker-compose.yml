@@ -31,6 +31,8 @@ services:
       - fastapi
     networks:
       - dtgbot-network
+    environment:
+        - LETS_ENCRYPT_PATH=/etc/letsencrypt/live/pawrequest.com
 
 networks:
   dtgbot-network:
