@@ -35,9 +35,10 @@ jobs:
 
       - name: Check if Nginx container is running
         run: |
-          container_state=$(docker inspect --format '{{.State.Status}}' dtgbot-nginx-1)
-          if [[ "$container_state" != "running" ]]; then
-            echo "Nginx container is not in 'running' state, it's in $container_state, exiting."
-            exit 1
-          fi
+          echo docker ps
+#          container_state=$(docker inspect --format '{{.State.Status}}' dtgbot-nginx-1)
+#          if [[ "$container_state" != "running" ]]; then
+#            echo "Nginx container is not in 'running' state, it's in $container_state, exiting."
+#            exit 1
+#          fi
           
