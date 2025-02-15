@@ -34,17 +34,9 @@ class RedditConfig(BaseSettings):
     client_id: str
     client_secret: SecretStr
     user_agent: str
-
-    custom_flair_id: SecretStr | None = None
     redirect_uri: str
-
-    send_key: SecretStr
-
     subreddit_name: str = 'test'
-    wiki_name: str = 'test'
-
     max_red_dupes: int = 1000
-
     model_config = SettingsConfigDict(env_ignore_empty=True, env_file=reddit_env_from_env(), extra='ignore')
 
 
@@ -64,15 +56,9 @@ class DTGConfig(BaseSettings):
     guru_update_json: Path | None = None
     guru_backup_json: Path | None = None
 
-    init_eps: bool = False
     debug: bool = False
     max_dupes: int = 5  # 1 page in captivate
     scrape_limit: int | None = None
-
-    # @field_validator('scrape_limit', mode='before')
-    # def fix_int(cls, v):
-    #     if not v:
-    #         return None
 
     @model_validator(mode='after')
     def set_paths(self):
@@ -103,8 +89,8 @@ class DTGConfig(BaseSettings):
             debug=self.debug,
             max_dupes=self.max_dupes,
             scrape_limit=self.scrape_limit,
-            _env_file=None,
-            _env_ignore_empty=True,
+            # _env_file=None,
+            # _env_ignore_empty=True,
         )
 
     model_config = SettingsConfigDict()
