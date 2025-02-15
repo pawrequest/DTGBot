@@ -11,3 +11,4 @@ aiohttp
 pydantic-settings
 python-multipart
 jinja2
+uvicorn[standard]
