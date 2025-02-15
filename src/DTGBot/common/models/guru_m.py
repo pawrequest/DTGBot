@@ -7,7 +7,7 @@ from sqlmodel import Field, Relationship, SQLModel
 import sqlalchemy as sa
 import pydantic as _p
 
-from DTGBot.common.dtg_config import dtg_sett
+from DTGBot.common.dtg_config import guru_config
 from DTGBot.common.models.links import (
     GuruEpisodeLink,
     GuruRedditLink,
@@ -37,7 +37,7 @@ class Guru(GuruBase, table=True):
 
     episodes: list['Episode'] = Relationship(back_populates='gurus', link_model=GuruEpisodeLink)
     reddit_threads: list['RedditThread'] = Relationship(back_populates='gurus', link_model=GuruRedditLink)
-    route_prefix: ClassVar[str] = f'{dtg_sett().url_prefix}/guru'
+    route_prefix: ClassVar[str] = f'{guru_config().url_prefix}/guru'
 
     @cached_property
     def slug(self):

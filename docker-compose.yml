@@ -19,8 +19,8 @@ services:
       - dtgbot-network
     command: >
       uvicorn DTGBot.fapi.app:app --host 0.0.0.0 --port 8000 --proxy-headers --root-path /dtg 
-      --ssl-keyfile ${LETS_ENCRYPT_PATH}/privkey.pem 
-      --ssl-certfile ${LETS_ENCRYPT_PATH}/fullchain.pem
+      --ssl-keyfile /etc/letsencrypt/live/pawrequest.com/privkey.pem 
+      --ssl-certfile /etc/letsencrypt/live/pawrequest.com/fullchain.pem
 
   nginx:
     restart: unless-stopped

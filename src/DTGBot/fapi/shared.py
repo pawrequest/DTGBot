@@ -4,12 +4,12 @@ from typing import NamedTuple
 from fastapi import Query
 from starlette.templating import Jinja2Templates
 
-from DTGBot.common.dtg_config import dtg_sett
+from DTGBot.common.dtg_config import guru_config
 
 PAGE_SIZE = 27
 
-TEMPLATES = Jinja2Templates(directory=str(dtg_sett().guru_frontend / 'templates'))
-TEMPLATES.env.globals.update({'URL_PREFIX': dtg_sett().url_prefix})
+TEMPLATES = Jinja2Templates(directory=str(guru_config().guru_frontend / 'templates'))
+TEMPLATES.env.globals.update({'URL_PREFIX': guru_config().url_prefix})
 
 
 def get_pagination(limit: int = Query(PAGE_SIZE, gt=0), offset: int = Query(0, ge=0)):

@@ -7,7 +7,7 @@ from asyncpraw.models import Submission
 import sqlmodel as sqm
 from sqlmodel import Relationship
 
-from DTGBot.common.dtg_config import dtg_sett
+from DTGBot.common.dtg_config import guru_config
 from DTGBot.common.models.links import (
     EpisodeRedditLink,
     GuruRedditLink,
@@ -59,7 +59,7 @@ class RedditThread(RedditThreadBase, table=True, extend_existing=True):
 
     gurus: list['Guru'] = Relationship(back_populates='reddit_threads', link_model=GuruRedditLink)
     episodes: list['Episode'] = Relationship(back_populates='reddit_threads', link_model=EpisodeRedditLink)
-    route_prefix: ClassVar[str] = f'{dtg_sett().url_prefix}/red'
+    route_prefix: ClassVar[str] = f'{guru_config().url_prefix}/red'
 
     def __hash__(self):
         return hash(self.reddit_id)

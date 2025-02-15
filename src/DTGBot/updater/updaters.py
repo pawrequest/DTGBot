@@ -10,7 +10,7 @@ from scrapaw import episode_generator
 from sqlmodel import Session, select
 
 from DTGBot.common.database import engine_
-from DTGBot.common.dtg_config import dtg_sett, reddit_sett
+from DTGBot.common.dtg_config import guru_config, reddit_sett
 from DTGBot.common.models.episode_m import Episode
 from DTGBot.common.models.guru_m import Guru, GuruBase
 from DTGBot.common.models.reddit_m import RedditThread
@@ -22,7 +22,7 @@ from DTGBot.fapi.sql_stmts import (
     select_new_threads_with_guru,
 )
 
-DTG_SETTINGS = dtg_sett()
+DTG_SETTINGS = guru_config()
 R_SETTINGS = reddit_sett()
 
 

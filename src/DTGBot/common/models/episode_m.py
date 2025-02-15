@@ -5,7 +5,7 @@ import sqlmodel as sqm
 import sqlalchemy as sqa
 from scrapaw import EpisodeBase
 
-from DTGBot.common.dtg_config import dtg_sett
+from DTGBot.common.dtg_config import guru_config
 from DTGBot.common.models.links import (
     EpisodeRedditLink,
     GuruEpisodeLink,
@@ -25,7 +25,7 @@ class Episode(EpisodeBase, sqm.SQLModel, table=True):
 
     gurus: list['Guru'] = Relationship(back_populates='episodes', link_model=GuruEpisodeLink)
     reddit_threads: list['RedditThread'] = Relationship(back_populates='episodes', link_model=EpisodeRedditLink)
-    route_prefix: ClassVar[str] = f'{dtg_sett().url_prefix}/eps'
+    route_prefix: ClassVar[str] = f'{guru_config().url_prefix}/eps'
 
     @property
     def number_str(self) -> str:

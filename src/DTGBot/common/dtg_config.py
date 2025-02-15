@@ -122,7 +122,7 @@ class GuruConfig(BaseSettings):
 
 
 @functools.lru_cache
-def dtg_sett():
+def guru_config():
     sett = GuruConfig()
     logger = get_loguru(log_file=sett.log_file, profile=sett.log_profile)
     logger.info('DTGBotConfig loaded')

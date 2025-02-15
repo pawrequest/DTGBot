@@ -7,15 +7,13 @@ from loguru import logger
 from starlette.responses import RedirectResponse
 from starlette.staticfiles import StaticFiles
 
-from DTGBot.common.dtg_config import dtg_sett
+from DTGBot.common.dtg_config import guru_config
 from DTGBot.fapi.guru_route import router as guru_router
 from DTGBot.fapi.episode_route import router as ep_router
 from DTGBot.fapi.red_route import router as red_router
 from DTGBot.common.database import create_db
 
-GURU_CONFIG = dtg_sett()
-
-
+GURU_CONFIG = guru_config()
 STATIC = GURU_CONFIG.guru_frontend / 'static'
 
 @asynccontextmanager
@@ -57,4 +55,4 @@ async def favicon_ico() -> str:
 
 @app.get('/', response_class=RedirectResponse)
 async def index():
-    return RedirectResponse(url=f'{dtg_sett().url_prefix}/eps')
+    return RedirectResponse(url=f'{guru_config().url_prefix}/eps')

@@ -7,7 +7,7 @@ from aiohttp import ClientSession
 from loguru import logger
 from sqlmodel import select
 
-from DTGBot.common.dtg_config import dtg_sett
+from DTGBot.common.dtg_config import guru_config
 from DTGBot.common.database import create_db, engine_
 from DTGBot.common.dtg_types import quiet_cancel
 from DTGBot.common.models.guru_m import Guru
@@ -23,7 +23,7 @@ from DTGBot.updater.updaters import (
     update_reddit_episodes,
 )
 
-DTG_SETTINGS = dtg_sett()
+DTG_SETTINGS = guru_config()
 
 
 @quiet_cancel
