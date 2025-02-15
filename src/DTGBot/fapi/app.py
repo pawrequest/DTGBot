@@ -29,7 +29,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-ssl_context.load_cert_chain(GURU_CONFIG.ssl_cert, keyfile=GURU_CONFIG.ssl_key)
+ssl_context.load_cert_chain(str(GURU_CONFIG.ssl_cert), keyfile=str(GURU_CONFIG.ssl_key))
 
 
 app.mount('/static', StaticFiles(directory=STATIC), name='static')
