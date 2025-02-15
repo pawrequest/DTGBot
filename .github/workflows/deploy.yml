@@ -22,7 +22,7 @@ jobs:
 
       - name: Deploy to DigitalOcean
         run: |
-          ssh paw@pawrequest.com << 'EOF'
+          ssh paw@pawrequest.com << EOF
             cd ~/dtgbot
             git pull origin main
             git fetch --all
@@ -30,6 +30,7 @@ jobs:
           
             docker compose down
             docker compose up -d --build --force-recreate
+            sleep 5   
           EOF
 
       - name: Check if Nginx container is running
