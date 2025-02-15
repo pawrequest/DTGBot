@@ -34,11 +34,11 @@ services:
     restart: unless-stopped
     build:
       context: ./deploy/server/nginx  # Use the Nginx directory as the context
-    volumes:
-      - /etc/letsencrypt:/etc/letsencrypt:ro
+#    volumes:
+#      - /etc/letsencrypt:/etc/letsencrypt:ro
     ports:
       - "80:80"
-      - "443:443"
+#      - "443:443"
     depends_on:
       - fastapi
     networks:
