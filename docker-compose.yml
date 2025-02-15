@@ -25,6 +25,7 @@ services:
       - "443:443"
     volumes:
       - ./deploy/server/nginx/conf.d:/etc/nginx/conf.d
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
       - fastapi
     networks:
