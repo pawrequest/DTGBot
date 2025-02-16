@@ -123,6 +123,7 @@ def guru_config():
     logger = get_loguru(log_file=sett.log_file, profile=sett.log_profile)
     logger.info('DTGBotConfig loaded')
     logger.info(f'{sett.lets_encrypt=}')
+    logger.info(f'{sett.lets_encrypt_path=}')
     if sett.lets_encrypt:
         logger.info(f'{sett.ssl_key=}')
         logger.info(f'{sett.ssl_cert=}')
