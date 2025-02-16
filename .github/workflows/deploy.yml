@@ -30,7 +30,9 @@ jobs:
           
             docker compose down
             cd deploy
-            run-prod.sh
+#            run-prod.sh
+            docker compose -f ../docker-compose.yml -f ./docker-compose.dev.yml up --build --force-recreate
+               
 #            docker compose -f up -d --build --force-recreate
           EOF
 
