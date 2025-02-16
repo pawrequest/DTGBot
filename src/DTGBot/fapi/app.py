@@ -30,8 +30,13 @@ app = FastAPI(lifespan=lifespan)
 
 
 if GURU_CONFIG.lets_encrypt_path:
+    if not GURU_CONFIG.lets_encrypt_path.exists():
+        raise ValueError(f'{GURU_CONFIG.lets_encrypt_path=} not found')
     ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
     ssl_context.load_cert_chain(str(GURU_CONFIG.ssl_cert), keyfile=str(GURU_CONFIG.ssl_key))
+else:
+    ssl_context = None
+    logger.warning('SSL not enabled')
 
 
 app.mount('/static', StaticFiles(directory=STATIC), name='static')
