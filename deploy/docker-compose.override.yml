@@ -1,0 +1,23 @@
+services:
+  fastapi:
+    volumes:
+      - ${REDDIT_ENV}:/app/reddit.env
+      - ${GURU_DATA}:/app/guru_data/
+    environment:
+      - REDDIT_ENV=/app/reddit.env
+      - GURU_DATA=/app/guru_data/
+      - URL_PREFIX=/dtg
+      - LETS_ENCRYPT_PATH=0
+
+  nginx:
+    ports:
+      - "80:80"
+    volumes:
+      - ./deploy/server/nginx/conf.d:/etc/nginx/conf.d
+    environment:
+        - LETS_ENCRYPT_PATH=0
+
+networks:
+  dtgbot-network:
+    driver: bridge
+
