@@ -4,16 +4,11 @@ services:
     build:
       context: .
     image: dtgbot
-    volumes:
-      - ${REDDIT_ENV}:/app/reddit.env
-      - ${GURU_DATA}:/app/guru_data/
     environment:
       - REDDIT_ENV=/app/reddit.env
       - GURU_DATA=/app/guru_data/
     networks:
       - dtgbot-network
-#    ports:
-#      - "8000:8000"
 
   nginx:
     restart: unless-stopped

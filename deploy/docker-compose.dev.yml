@@ -1,5 +1,8 @@
 services:
   fastapi:
+    volumes:
+      - D:\prdev\envs\reddit.env:/app/reddit.env
+      - D:\prdev\repos\dtg\dtgbot\data:/app/guru_data/
     command: ["uvicorn", "DTGBot.fapi.app:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers"]
 
   nginx:

@@ -29,7 +29,9 @@ jobs:
             git reset --hard origin/main
           
             docker compose down
-            docker compose up -d --build --force-recreate
+            cd deploy
+            run-prod.sh
+#            docker compose -f up -d --build --force-recreate
           EOF
 
 #      - name: Check if Nginx container is running

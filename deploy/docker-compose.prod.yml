@@ -1,6 +1,8 @@
 services:
   fastapi:
     volumes:
+      - ${REDDIT_ENV}:/app/reddit.env
+      - ${GURU_DATA}:/app/guru_data/
       - /etc/letsencrypt:/etc/letsencrypt:ro
     environment:
       - URL_PREFIX=/dtg
