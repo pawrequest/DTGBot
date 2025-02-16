@@ -12,7 +12,6 @@ services:
       - REDDIT_ENV=/app/reddit.env
       - GURU_DATA=/app/guru_data/
       - URL_PREFIX=/dtg
-      - LETS_ENCRYPT=1
       - LETS_ENCRYPT_PATH=/etc/letsencrypt/live/pawrequest.com
     networks:
       - dtgbot-network

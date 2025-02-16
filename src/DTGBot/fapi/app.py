@@ -29,7 +29,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 
-if GURU_CONFIG.lets_encrypt:
+if GURU_CONFIG.lets_encrypt_path:
     ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
     ssl_context.load_cert_chain(str(GURU_CONFIG.ssl_cert), keyfile=str(GURU_CONFIG.ssl_key))
 

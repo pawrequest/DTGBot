@@ -44,7 +44,6 @@ class GuruConfig(BaseSettings):
     guru_data: Path | None = None
 
     # optional
-    lets_encrypt: bool = False
     lets_encrypt_path: Path | None = None
     log_profile: _t.Literal['local', 'remote', 'default'] = 'local'
     podcast_url: HttpUrl = 'https://decoding-the-gurus.captivate.fm/'
@@ -92,10 +91,10 @@ class GuruConfig(BaseSettings):
 
     @model_validator(mode='after')
     def set_ssl(self):
-        if not self.lets_encrypt:
+        if not self.lets_encrypt_path:
             return self
-        if not self.lets_encrypt_path or not self.lets_encrypt_path.exists():
-            raise ValueError('lets_encrypt_path must be set and exist')
+        elif not self.lets_encrypt_path.exists():
+            raise ValueError(f'{self.lets_encrypt_path=} not found')
         self.ssl_key = self.lets_encrypt_path / 'privkey.pem'
         self.ssl_cert = self.lets_encrypt_path / 'fullchain.pem'
         return self
@@ -122,11 +121,7 @@ def guru_config():
     sett = GuruConfig()
     logger = get_loguru(log_file=sett.log_file, profile=sett.log_profile)
     logger.info('DTGBotConfig loaded')
-    logger.info(f'{sett.lets_encrypt=}')
     logger.info(f'{sett.lets_encrypt_path=}')
-    if sett.lets_encrypt:
-        logger.info(f'{sett.ssl_key=}')
-        logger.info(f'{sett.ssl_cert=}')
     return sett
 
 
