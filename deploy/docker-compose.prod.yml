@@ -1,24 +1,35 @@
 services:
   fastapi:
+    restart: unless-stopped
+    build:
+      context: ..
+    image: dtgbot
     volumes:
       - ${REDDIT_ENV}:/app/reddit.env
       - ${GURU_DATA}:/app/guru_data/
-      - /etc/letsencrypt:/etc/letsencrypt:ro
     environment:
+      - REDDIT_ENV=/app/reddit.env
+      - GURU_DATA=/app/guru_data/
       - URL_PREFIX=/dtg
-      - LETS_ENCRYPT_PATH=/etc/letsencrypt/live/pawrequest.com
-    command: ["uvicorn", "DTGBot.fapi.app:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers", "--root-path", "/dtg", "--ssl-keyfile", "/etc/letsencrypt/live/pawrequest.com/privkey.pem", "--ssl-certfile", "/etc/letsencrypt/live/pawrequest.com/fullchain.pem"]
+    command: [ "uvicorn", "DTGBot.fapi.app:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers", "--forwarded-allow-ips", "172.19.0.0/16", "--root-path", "/dtg" ]
+    networks:
+      - dtgbot-network
 
   nginx:
+    restart: unless-stopped
+    image: nginx:latest
     ports:
+      - "80:80"
       - "443:443"
+    depends_on:
+      - fastapi
     volumes:
-      - ./deploy/server/nginx/conf.d:/etc/nginx/conf.d
+      - ./server/nginx/conf.d:/etc/nginx/conf.d
       - /etc/letsencrypt:/etc/letsencrypt:ro
-    environment:
-        - LETS_ENCRYPT_PATH=/etc/letsencrypt/live/pawrequest.com
+      - /var/www/certbot:/var/www/certbot
+    networks:
+      - dtgbot-network
 
 networks:
   dtgbot-network:
     driver: bridge
-

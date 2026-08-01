@@ -4,8 +4,8 @@ import functools
 import os
 from pathlib import Path
 import typing as _t
-
-from pawlogger import get_loguru
+from loguru import logger
+from pawlogger import configure_loguru
 from pydantic import HttpUrl, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from scrapaw.scrapaw_config import ScrapawConfig
@@ -119,7 +119,7 @@ class GuruConfig(BaseSettings):
 @functools.lru_cache
 def guru_config():
     sett = GuruConfig()
-    logger = get_loguru(log_file=sett.log_file, profile=sett.log_profile)
+    configure_loguru(log_file=sett.log_file)
     logger.info('DTGBotConfig loaded')
     logger.info(f'{sett.lets_encrypt_path=}')
     return sett
