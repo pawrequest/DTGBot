@@ -15,9 +15,11 @@ async def search_column(table, column, search_str: str):
     search = f'%{search_str}%'
     return select(table).where(col(column).ilike(search))
 
+
 # async def guru_by_notes(search_str:str):
 #     search = f'%{search_str}%'
 #     return select()
+
 
 async def search_guru_and_title(model, search_string: str):
     condition1 = col(Guru.name).ilike(f'%{search_string}%')
@@ -77,9 +79,9 @@ async def select_episodes_with_reddit(reddit: RedditThread):
         )
     )
 
+
 async def select_threads_with_episode(episode: Episode):
     return select(RedditThread).where(col(RedditThread.title).ilike(f'%{episode.title}%'))
-
 
 
 async def select_new_threads_with_episode(episode: Episode):

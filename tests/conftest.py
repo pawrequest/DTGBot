@@ -77,9 +77,7 @@ def test_logger(tmp_path):
     match = re.match(pat_xml, LOG1)
 
     assert match
-    assert match.string.endswith(
-        f' | INFO     | DTGBot.tests.conftest:test_logger:{logged_line} - test\n'
-    )
+    assert match.string.endswith(f' | INFO     | DTGBot.tests.conftest:test_logger:{logged_line} - test\n')
 
 
 @pytest.fixture(scope='session')

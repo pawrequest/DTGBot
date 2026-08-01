@@ -16,6 +16,7 @@ from DTGBot.common.database import create_db
 GURU_CONFIG = guru_config()
 STATIC = GURU_CONFIG.guru_frontend / 'static'
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     try:

@@ -69,9 +69,7 @@ async def de_duplicate(session):
         keeper = eps[0]
         for dup in eps[1:]:
             # migrate GuruEpisodeLink rows
-            dup_guru_links = session.exec(
-                select(GuruEpisodeLink).where(GuruEpisodeLink.episode_id == dup.id)
-            ).all()
+            dup_guru_links = session.exec(select(GuruEpisodeLink).where(GuruEpisodeLink.episode_id == dup.id)).all()
             for link in dup_guru_links:
                 exists = session.exec(
                     select(GuruEpisodeLink).where(
@@ -104,8 +102,6 @@ async def de_duplicate(session):
     session.commit()
     logger.info(f'de_duplicate: removed {removed} duplicate episode(s)')
     return removed
-
-
 
 
 async def episode_task(session):

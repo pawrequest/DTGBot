@@ -61,7 +61,6 @@ class GuruConfig(BaseSettings):
     ssl_key: Path | None = None
     ssl_cert: Path | None = None
 
-
     db_loc: Path | None = None
     log_file: Path | None = None
     backup_dir: Path | None = None
@@ -98,7 +97,6 @@ class GuruConfig(BaseSettings):
         self.ssl_key = self.lets_encrypt_path / 'privkey.pem'
         self.ssl_cert = self.lets_encrypt_path / 'fullchain.pem'
         return self
-
 
     @functools.cached_property
     def scrap_config(self):

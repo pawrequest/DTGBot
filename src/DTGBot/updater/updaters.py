@@ -41,7 +41,7 @@ async def spin(msg, delay=0.3):
 
 
 def get_log_str(objs):
-    return f'{len(objs)} {type(objs[0]).__name__}s: \n{';\n'.join([obj.title if hasattr(obj, 'title') else obj.name for obj in objs])}'
+    return f'{len(objs)} {type(objs[0]).__name__}s: \n{";\n".join([obj.title if hasattr(obj, "title") else obj.name for obj in objs])}'
 
 
 async def update_guru(guru_update: dict, session):
@@ -49,10 +49,10 @@ async def update_guru(guru_update: dict, session):
     if db_guru := session.exec(db_guru_stmt).first():
         for key, value in guru_update.items():
             if not key == 'name' and hasattr(db_guru, key):
-                logger.info(f'{guru_update['name']}: {key} = {value}')
+                logger.info(f'{guru_update["name"]}: {key} = {value}')
                 setattr(db_guru, key, value)
     else:
-        logger.info(f'creating new guru: {guru_update['name']}', category='GURU')
+        logger.info(f'creating new guru: {guru_update["name"]}', category='GURU')
         db_guru = Guru.model_validate(guru_update)
     session.add(db_guru)
     session.commit()
@@ -117,11 +117,11 @@ async def get_reddits(session: Session, max_dupes: int = None):
     max_dupes = max_dupes or R_SETTINGS.max_red_dupes
 
     async with Reddit(
-            client_id=R_SETTINGS.client_id,
-            client_secret=R_SETTINGS.client_secret.get_secret_value(),
-            user_agent=R_SETTINGS.user_agent,
-            redirect_uri=R_SETTINGS.redirect_uri,
-            refresh_token=R_SETTINGS.refresh_token.get_secret_value(),
+        client_id=R_SETTINGS.client_id,
+        client_secret=R_SETTINGS.client_secret.get_secret_value(),
+        user_agent=R_SETTINGS.user_agent,
+        redirect_uri=R_SETTINGS.redirect_uri,
+        refresh_token=R_SETTINGS.refresh_token.get_secret_value(),
     ) as redd:
         subb = await redd.subreddit(R_SETTINGS.subreddit_name)
         all_thread_ids = session.exec(select(RedditThread.reddit_id)).all()
@@ -160,6 +160,7 @@ def gurus_from_file() -> list[dict]:
 async def update_gurus(session: Session, gurus: Sequence[dict]):
     for guru in gurus:
         await update_guru(guru, session)
+
 
 #
 # async def update_reddit(reddit: RedditThread, session: Session):

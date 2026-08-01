@@ -34,6 +34,7 @@ class RedditThreadOut(RedditThreadBase):
     gurus: list[GuruBase]
     episodes: list[scrapaw.EpisodeBase]
 
+
 # class EpisodeMeta(BaseModel):
 #     length: int
 #     msg: str = ""

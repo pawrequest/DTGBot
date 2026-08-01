@@ -27,5 +27,3 @@ def ordinal(n):
 
 def dt_ordinal(dt: datetime | date) -> str:
     return dt.strftime('%a {th} %b %Y').replace('{th}', ordinal(dt.day))
-
-
