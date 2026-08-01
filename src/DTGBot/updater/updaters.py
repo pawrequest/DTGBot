@@ -106,9 +106,10 @@ async def get_eps(session: Session, http_session: ClientSession) -> AsyncGenerat
                 break
             continue
 
-        ep_ = Episode.model_validate(ep)
-        logger.info(f'Episode updater found new episode: "{ep.title}"', category='episode')
-        yield ep_
+        else:
+            ep_ = Episode.model_validate(ep)
+            logger.info(f'Episode updater found new episode: "{ep.title}"', category='episode')
+            yield ep_
 
 
 async def get_reddits(session: Session, max_dupes: int = None):

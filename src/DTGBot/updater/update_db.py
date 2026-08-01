@@ -11,6 +11,8 @@ from DTGBot.common.dtg_config import guru_config
 from DTGBot.common.database import create_db, engine_
 from DTGBot.common.dtg_types import quiet_cancel
 from DTGBot.common.models.guru_m import Guru
+from DTGBot.common.models.links import EpisodeRedditLink, GuruEpisodeLink
+from DTGBot.common.models.episode_m import Episode
 from DTGBot.updater.updaters import (
     backup_gurus,
     get_eps,
@@ -38,6 +40,7 @@ async def main():
             ]
             await gather(*tasks)
             await guru_links_task(session)
+            await de_duplicate(session)
 
             logger.warning('update complete')
     finally:
@@ -47,6 +50,62 @@ async def main():
 async def guru_links_task(session):
     gurus = session.exec(select(Guru)).all()
     await gather(*[update_guru_links(db_guru, session) for db_guru in gurus])
+
+
+async def de_duplicate(session):
+    """Remove duplicate episodes (same title+date hash), keeping the lowest id and migrating links."""
+    from collections import defaultdict
+
+    all_episodes: list[Episode] = session.exec(select(Episode)).all()
+    by_title: dict[int, list[Episode]] = defaultdict(list)
+    for ep in all_episodes:
+        by_title[hash(ep)].append(ep)
+
+    removed = 0
+    for title, eps in by_title.items():
+        if len(eps) < 2:
+            continue
+        eps.sort(key=lambda e: e.id)
+        keeper = eps[0]
+        for dup in eps[1:]:
+            # migrate GuruEpisodeLink rows
+            dup_guru_links = session.exec(
+                select(GuruEpisodeLink).where(GuruEpisodeLink.episode_id == dup.id)
+            ).all()
+            for link in dup_guru_links:
+                exists = session.exec(
+                    select(GuruEpisodeLink).where(
+                        GuruEpisodeLink.guru_id == link.guru_id,
+                        GuruEpisodeLink.episode_id == keeper.id,
+                    )
+                ).first()
+                if not exists:
+                    session.add(GuruEpisodeLink(guru_id=link.guru_id, episode_id=keeper.id))
+                session.delete(link)
+
+            # migrate EpisodeRedditLink rows
+            dup_reddit_links = session.exec(
+                select(EpisodeRedditLink).where(EpisodeRedditLink.episode_id == dup.id)
+            ).all()
+            for link in dup_reddit_links:
+                exists = session.exec(
+                    select(EpisodeRedditLink).where(
+                        EpisodeRedditLink.reddit_thread_id == link.reddit_thread_id,
+                        EpisodeRedditLink.episode_id == keeper.id,
+                    )
+                ).first()
+                if not exists:
+                    session.add(EpisodeRedditLink(reddit_thread_id=link.reddit_thread_id, episode_id=keeper.id))
+                session.delete(link)
+
+            session.delete(dup)
+            removed += 1
+
+    session.commit()
+    logger.info(f'de_duplicate: removed {removed} duplicate episode(s)')
+    return removed
+
+
 
 
 async def episode_task(session):
