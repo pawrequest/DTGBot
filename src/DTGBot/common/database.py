@@ -1,4 +1,5 @@
 import functools
+from typing import Any, Generator
 
 from loguru import logger
 from sqlalchemy import create_engine, text
@@ -24,7 +25,7 @@ def engine_():
     return create_engine(db_url, echo=dtg_config.guru_config().debug, connect_args=connect_args)
 
 
-def get_session(engine=None) -> Session:
+def get_session(engine=None) -> Generator[Session, Any, None]:
     if engine is None:
         engine = engine_()
     with Session(engine) as session:

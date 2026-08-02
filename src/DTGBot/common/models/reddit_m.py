@@ -64,7 +64,9 @@ class RedditThread(RedditThreadBase, table=True, extend_existing=True):
     def __hash__(self):
         return hash(self.reddit_id)
 
-    def __eq__(self, other):
+    def __eq__(self, other:object):
+        if not isinstance(other, RedditThread):
+            return NotImplemented
         return self.reddit_id == other.reddit_id
 
     @property

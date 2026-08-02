@@ -1,4 +1,5 @@
 import asyncio
+from typing import Callable
 
 from loguru import logger
 
@@ -18,7 +19,7 @@ LINK_TYPES = GuruEpisodeLink | GuruRedditLink | EpisodeRedditLink
 # EXCLUDE_LINK_TYPES = GuruEpisodeExclude | GuruRedditExclude | EpisodeRedditExclude
 
 
-def quiet_cancel(func: callable) -> callable:
+def quiet_cancel(func: Callable) -> Callable:
     """
     Async Decorator to catch CancelledError and log it quietly
 

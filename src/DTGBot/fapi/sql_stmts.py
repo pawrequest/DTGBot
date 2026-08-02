@@ -43,10 +43,10 @@ async def search_column_array(table, column, search_strs: list[str], excludes: l
 
 
 async def search_column_specific(table, column, search_strs: list[str], excludes: list[str] | None = None):
+    excludes = excludes or []
     logger.info(f'{search_strs=}')
     logger.info(f'{excludes=}')
 
-    excludes = excludes or []
     yes_cond = [column == search_str for search_str in search_strs]
     no_cond = [not_(column.ilike(f'%{search_str}%')) for search_str in excludes]
     return select(table).where(and_(or_(*yes_cond, *no_cond)))
